@@ -1,0 +1,13 @@
+# Carpetas creadas por la configuración
+
+.backup/
+.cache/
+.cask
+.etc/
+.local/
+elpa/
+elpy/
+indium-chrome-profile/
+straight/build/
+straight/repos/
+straight/build-cache.el
