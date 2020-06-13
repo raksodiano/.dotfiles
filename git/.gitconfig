@@ -1,0 +1,12 @@
+[user]
+	name = Oskar E. Torres O.
+	email = oskar.torres.1234@gmail.com
+[alias]
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+[push]
+	default = simple
+[magit]
+	hideCampaign = true
