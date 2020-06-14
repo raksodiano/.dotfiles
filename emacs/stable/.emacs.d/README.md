@@ -8,7 +8,7 @@ Paquetes Requeridos
 - Hunspell
   * Usado para los diccionarios
 
-- Texlive
+- Texlive y Auctex
   * Usado para la generación de archivos PDF's a través de org-mode y Latex
 
 - PIP

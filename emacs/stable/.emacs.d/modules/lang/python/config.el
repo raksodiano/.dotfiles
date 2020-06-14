@@ -113,7 +113,7 @@
   :after (python)
   :init (add-hook 'python-mode-hook #'sphinx-doc-mode))
 
-(use-package pydoc-info)
+;; (use-package pydoc-info)
 
 (use-package company-anaconda
   :if (executable-find "python")

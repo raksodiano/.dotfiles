@@ -4,8 +4,12 @@
 [alias]
 	co = checkout
 	br = branch
-	ci = commit
+	cm = commit
 	st = status
+[github]
+	user = raksodiano
+[gitlab]
+	user = raksodiano
 [push]
 	default = simple
 [magit]
