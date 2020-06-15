@@ -4,7 +4,7 @@
 
 ;;; Code:
 (use-package nginx-mode
-  :ensure t
+  :straight t
   :mode
   ("/nginx/sites-\\(?:available\\|enabled\\)/" . nginx-mode))
 

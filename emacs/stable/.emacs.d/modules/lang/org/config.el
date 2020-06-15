@@ -8,37 +8,37 @@
   :after org)
 
 (use-package org-bullets
-  :ensure t
+  :straight t
   :after org
   :init
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
 (use-package org-download
-  :ensure t
+  :straight t
   :after org
   :init
   (setq-default org-download-image-dir "~/org/imagenes/"))
 
 (use-package ob-restclient
-  :ensure t
+  :straight t
   :after org)
 
 (use-package htmlize
-  :ensure t
+  :straight t
   :after org)
 
 (use-package deft
-  :ensure t
+  :straight t
   :after org)
 
 (use-package noflet
-  :ensure t)
+  :straight t)
 
 (use-package ob-translate
-  :ensure t)
+  :straight t)
 
 (use-package org
-  :ensure t
+  :straight t
   :straight org-plus-contrib
   ;; :pin org
   :bind (("C-c a" . org-agenda-list)
@@ -262,10 +262,10 @@
   :commands (org-babel-execute:plantuml))
 
 (use-package ob-async
-  :ensure t)
+  :straight t)
 
 (use-package org-tree-slide
-  :ensure t
+  :straight t
   :config
   (progn
     (setq org-tree-slide--lighter " Slide")

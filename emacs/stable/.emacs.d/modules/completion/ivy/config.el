@@ -3,14 +3,14 @@
 ;; Herramienta simple para el completado del minibuffer de Emacs.
 
 ;;; Code:
-(use-package flx)
-  ;; :ensure t)
+(use-package flx
+  :straight t)
 
-(use-package avy)
-;; :ensure t)
+(use-package avy
+  :straight t)
 
 (use-package ivy
-  ;; :ensure t
+  :straight t
   :diminish ivy-mode
   :bind (("C-! r" . swiper)
          ("C-! s" . swiper)
@@ -51,13 +51,8 @@
   :config
   (setq counsel-find-file-at-point t))
 
-(use-package imenu-anywhere)
-;; :ensure t)
-
-(use-package imenu+
-  :disabled ;; ver razón en https://redd.it/3ahj2d
-  :init
-  (setf imenup-ignore-comments-flag t))
+(use-package imenu-anywhere
+  :straight t)
 
 (provide 'config)
 ;;; config.el ends here

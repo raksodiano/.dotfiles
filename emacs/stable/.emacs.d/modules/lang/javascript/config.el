@@ -4,7 +4,7 @@
 
 ;;; Code:
 (use-package js2-mode
-  :ensure t
+  :straight t
   :config
   (add-hook 'js-mode-hook 'tern-mode))
 
@@ -14,14 +14,14 @@
 (add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
 
 (use-package js-format
-  :ensure t
+  :straight t
   :after js2-mode
   :config (add-hook 'js2-mode-hook
                     (lambda()
                       (js-format-setup "standard"))))
 
 (use-package tern
-  :ensure t
+  :straight t
   :config
   ;; Force restart of tern in new projects
   ;; $ M-x delete-tern-process
@@ -32,7 +32,7 @@
     (delete-process "Tern")))
 
 (use-package company-tern
-  :ensure t
+  :straight t
   :init
   (defun cfg:js-mode-hook ()
     (add-to-list 'company-backends 'company-tern))
@@ -41,7 +41,7 @@
 
 (use-package json-mode
   :mode "\\.json\\'"
-  :ensure t)
+  :straight t)
 
 (use-package typescript-mode
   :hook (typescript-mode .
@@ -58,9 +58,9 @@
 
 ;; Indium se conecta con una pestaña del navegador web o un proceso de NodeJS
 ;; y provee varias características para el desarrollo en JavaScript
-(use-package indium ;; https://indium.readthedocs.io/en/latest/setup.html
-  :config
-  (add-hook 'js-mode-hook #'indium-interaction-mode))
+;; (use-package indium ;; https://indium.readthedocs.io/en/latest/setup.html
+;;   :config
+;;   (add-hook 'js-mode-hook #'indium-interaction-mode))
 
 (provide 'config)
 ;;; config.el ends here

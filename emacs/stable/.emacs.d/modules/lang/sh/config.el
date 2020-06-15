@@ -4,10 +4,10 @@
 
 ;;; Code:
 (use-package sh-script
-  :ensure t)
+  :straight t)
 
 (use-package company-shell
-  :ensure t)
+  :straight t)
 
 (provide 'config)
 ;;; config.el ends here

@@ -9,7 +9,7 @@
 ;;   (load-theme 'afternoon t))
 
 (use-package dracula-theme
-  :ensure t
+  :straight t
   :config
   (load-theme 'dracula t)
   (set-face-foreground 'font-lock-variable-name-face "gray"))

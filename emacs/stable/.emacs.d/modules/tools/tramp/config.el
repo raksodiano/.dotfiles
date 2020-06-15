@@ -4,7 +4,7 @@
 
 ;;; Code:
 (use-package sudo-edit
-  :ensure t)
+  :straight t)
 
 (use-package tramp
   :config
@@ -19,7 +19,7 @@
                                          (tramp-parse-sconfig "~/.ssh/config"))))
 
 (use-package counsel-tramp
-  :ensure t
+  :straight t
   :bind ("C-c s" . counsel-tramp)
   :config
   (add-hook 'counsel-tramp-pre-command-hook '(lambda () (projectile-mode 0)

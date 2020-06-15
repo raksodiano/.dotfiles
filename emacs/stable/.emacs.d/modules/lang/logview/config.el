@@ -4,7 +4,7 @@
 
 ;;; Code:
 (use-package logview
-  :ensure t
+  :straight t
   :config (add-hook 'logview-mode-hook 'auto-revert-mode))
 
 (provide 'config)

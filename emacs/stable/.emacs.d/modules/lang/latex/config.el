@@ -19,7 +19,7 @@
   (add-hook 'LaTeX-mode-hook 'yas-minor-mode-on))
 
 (use-package auctex
-  :ensure t
+  :straight t
   :defer t)
 
 (bind-key "C-c c" 'TeX-clean)
@@ -32,7 +32,7 @@
 (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
 
 (use-package magic-latex-buffer
-  :ensure t)
+  :straight t)
 
 (add-hook 'latex-mode-hook 'magic-latex-buffer)
 
@@ -53,7 +53,7 @@
                 (set-fill-column 120)))))
 
 (use-package company-auctex
-  :ensure t
+  :straight t
   :config
   (defun cfg:TeX-mode-hook ()
     (company-auctex-init))
@@ -61,11 +61,11 @@
   (add-hook 'TeX-mode-hook 'cfg:TeX-mode-hook))
 
 (use-package latex-preview-pane
-  :ensure t
+  :straight t
   :commands (latex-preview-pane-mode))
 
 (use-package latex-math-preview
-  :ensure t)
+  :straight t)
 
 ;; (use-package latex-extra
 ;;   :ensure t)

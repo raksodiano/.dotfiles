@@ -10,7 +10,7 @@
     (elpy-format-code)))
 
 (use-package elpy
-  :ensure t
+  :straight t
   :diminish
   :after (python)
   :custom
@@ -29,7 +29,7 @@
 (setq python-shell-completion-native-enable nil)
 
 (use-package py-isort
-  :ensure t
+  :straight t
   :after (elpy)
   :init
   (defun my/sort-imports ()
@@ -105,7 +105,7 @@
   (add-hook 'before-save-hook #'before-save-py-importmagic-fix))
 
 (use-package isortify
-  :ensure t
+  :straight t
   :config
   (add-hook 'python-mode-hook 'isort-mode))
 

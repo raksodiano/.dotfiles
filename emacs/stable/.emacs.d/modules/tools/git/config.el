@@ -8,7 +8,7 @@
       vc-handled-backends nil)
 
 (use-package magit
-  :ensure t
+  :straight t
   :init
   (progn
     ;; (setq magit-git-executable "tg")
@@ -64,7 +64,7 @@
           magit-log-buffer-file-locket t)))
 
 (use-package git-gutter
-  :ensure t
+  :straight t
   :defer 1
   :config
   (bind-keys :prefix-map rakso-git-gutter
@@ -129,30 +129,30 @@
       (message "NO git-gutters!"))))
 
 (use-package gitconfig-mode
-  :ensure t
+  :straight t
   :mode ("/\\.?git/?config$"
          "/\\.gitmodules$")
   :init (add-hook 'gitconfig-mode-hook 'flyspell-mode))
 
 (use-package gitignore-mode
-  :ensure t
+  :straight t
   :mode ("/\\.gitignore$"
          "/\\.git/info/exclude$"
          "/git/ignore$"))
 
 (use-package gitattributes-mode
-  :ensure t
+  :straight t
   :defer t)
 
 (use-package git-timemachine
-  :ensure t
+  :straight t
   :commands git-timemachine
   :bind (:map git-timemachine-mode
               ("c" . git-timemachine-show-current-revision)
               ("b" . git-timemachine-switch-branch)))
 
 (use-package smerge-mode
-  :ensure t
+  :straight t
   :config
   (defun enable-smerge-maybe ()
     (when (and buffer-file-name (vc-backend buffer-file-name))

@@ -4,6 +4,7 @@
 
 ;;; Code:
 (use-package all-the-icons
+  :straight t
   :commands (all-the-icons-octicon
              all-the-icons-faicon
              all-the-icons-fileicon
@@ -13,15 +14,15 @@
              all-the-icons-install-fonts))
 
 (use-package all-the-icons-dired
-  :ensure t
+  :straight t
   :config
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
 (use-package all-the-icons-gnus
-  :ensure t)
+  :straight t)
 
 (use-package all-the-icons-ivy
-  :ensure t
+  :straight t
   :config
   (all-the-icons-ivy-setup))
 

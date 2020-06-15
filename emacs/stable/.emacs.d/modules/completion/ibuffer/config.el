@@ -39,7 +39,7 @@
 
 ;; Shackle
 (use-package shackle
-  ;; :ensure t
+  :straight t
   :init (shackle-mode)
   :config
   (setq shackle-default-size 0.4)

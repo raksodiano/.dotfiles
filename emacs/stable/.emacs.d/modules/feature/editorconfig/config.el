@@ -17,11 +17,11 @@
 ;; :ensure t)
 
 (use-package free-keys
-  :ensure t
+  :straight t
   :bind ("C-h C-k" . free-keys))
 
 (use-package multiple-cursors
-  :ensure t
+  :straight t
   :init
   (setq mc/list-file (concat cache-dir ".mc-lists.el"))
   :config
@@ -37,20 +37,20 @@
              ("C-p" . mc/mark-previous-lines)))
 
 (use-package comment-dwim-2
-  :ensure t
+  :straight t
   :bind ("M-;" . comment-dwim-2))
 
 (use-package paredit)
 ;; :ensure t)
 
 (use-package format-all
-  :ensure t
+  :straight t
   :defer t
   :bind (:map prog-mode-map
               ("<M-f8>" . format-all-buffer)))
 
 (use-package editorconfig
-  :ensure t
+  :straight t
   :diminish ""
   :config
   (editorconfig-mode 1))
@@ -86,7 +86,7 @@
   (global-hungry-delete-mode))
 
 (use-package lorem-ipsum
-  :ensure t
+  :straight t
   :config
   (bind-keys :prefix-map rakso-lorem-ipsum
              :prefix "C-c l"

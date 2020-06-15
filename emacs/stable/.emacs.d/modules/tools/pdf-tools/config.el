@@ -4,7 +4,7 @@
 
 ;;; Code:
 (use-package pdf-tools
-  :ensure t
+  :straight t
   :bind (:map pdf-view-mode-map
               ("<s-spc>" .  pdf-view-scroll-down-or-next-page)
               ("g"  . pdf-view-first-page)
@@ -34,7 +34,7 @@
         pdf-view-midnight-colors '("white smoke" . "gray5"))
 
   (use-package org-pdfview
-    :ensure t))
+    :straight t))
 
 (provide 'config)
 ;;; config.el ends here

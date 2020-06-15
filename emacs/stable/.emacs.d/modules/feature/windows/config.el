@@ -10,7 +10,7 @@
 (bind-key "C-<down>" 'windmove-down)
 
 (use-package buffer-move
-  :ensure t
+  :straight t
   :bind (("C-S-<up>" . buf-move-up)
          ("C-S-<down>" . buf-move-down)
          ("C-S-<left>" . buf-move-left)
@@ -37,7 +37,7 @@
 ;;   (global-set-key (kbd "C-x o") 'ace-window))
 
 (use-package golden-ratio
-  :ensure t
+  :straight t
   :init
   (golden-ratio-mode 1)
   :config
@@ -60,10 +60,10 @@
   (winner-mode 1))
 
 (use-package windresize
-  :ensure t )
+  :straight t )
 
 (use-package zygospore
-  :ensure t
+  :straight t
   :bind (("C-x 1" . zygospore-toggle-delete-other-windows)
          ("C-x k" . kill-buffer-and-window)))
 

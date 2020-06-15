@@ -21,8 +21,6 @@ Instalación
 -----------
 
 ```bash
-$ git clone https://github.com/raksodiano/Emacs.git ~/.emacs.d/
-
 $ emacs --batch --eval='(load-file "~/.emacs.d/init.el")'
 ```
 

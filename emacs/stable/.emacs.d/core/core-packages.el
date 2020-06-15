@@ -3,8 +3,6 @@
 ;;
 
 ;;; Code:
-(setq nsm-settings-file (concat cache-dir "network-security.data"))
-(setq network-security-level 'medium)
 
 ;; Install use-package using straight
 (straight-use-package 'use-package)
@@ -25,27 +23,6 @@
                                    ("gnu" . 8)
                                    ("org" . 6)))
 
-(defun rakso-update-one-package (package)
-  "Actualiza un paquete PACKAGE"
-  (when (package-installed-p package)
-    (let* ((newest-pkg (car-safe (cdr (assq package package-archive-contents))))
-           (new-ver (and newest-pkg (package-desc-version newest-pkg)))
-           (builtin-pkg (cdr (assq package package--builtins)))
-           (installed-pkg (car-safe (cdr (assq package package-alist))))
-           (old-dir (and installed-pkg (package-desc-dir installed-pkg)))
-           (old-ver (or (and installed-pkg (package-desc-version installed-pkg))
-                        (and builtin-pkg (package--bi-desc-version builtin-pkg)))))
-      (when (and new-ver (version-list-< old-ver new-ver))
-
-        (condition-case nil
-            ;; en caso de algún error tratando de bajar algún paquete, captura
-            ;; el error para que no interfiera con la inicialización de Emacs
-            (progn (package-install newest-pkg)
-                   (message (format "Paquete «%s» actualizado de la versión %s a la versión %s"
-                                    (package-desc-name newest-pkg) old-ver new-ver))))
-        (when old-dir
-          (delete-directory old-dir t))))))
-
 (package-initialize)
 
 (when (not package-archive-contents)
@@ -57,23 +34,23 @@
 (require 'bind-key)
 
 (use-package validate
-  :ensure t)
+  :straight t)
 
 (use-package diminish
-  :ensure t)
+  :straight t)
 
 (diminish 'undo-tree-mode)
 (diminish 'hs-minor-mode)
 (diminish 'auto-revert-mode)
 
 (use-package package-lint
-  :ensure t)
+  :straight t)
 
 (use-package hydra
-  :ensure t)
+  :straight t)
 
 (use-package speed-type
-  :ensure t)
+  :straight t)
 
 (use-package vlf-setup
   :straight vlf

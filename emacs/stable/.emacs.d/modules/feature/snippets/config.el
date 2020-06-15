@@ -4,7 +4,7 @@
 
 ;;; Code:
 (use-package yasnippet
-  :ensure t
+  :straight t
   :defer 2
   :diminish yas-minor-mode
   :config

@@ -3,14 +3,14 @@
 ;;
 
 ;;; Code:
-;; (use-package vterm
-;;   :ensure t
-;;   :custom
-;;   (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
-;;   (vterm-always-compile-module t))
+(use-package vterm
+  :straight t
+  :custom
+  (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
+  (vterm-always-compile-module t))
 
 (use-package eshell-toggle
-  :ensure t
+  :straight t
   :custom
   (eshell-toggle-init-function #'(lambda (dir)
                                    (my/goto-term))))

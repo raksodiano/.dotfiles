@@ -34,7 +34,7 @@
   :mode "\\.yml$")
 
 (use-package web-mode
-  :ensure t
+  :straight t
   :mode
   (("\\.phtml\\'" . web-mode)
    ("\\.html\\'" . web-mode)

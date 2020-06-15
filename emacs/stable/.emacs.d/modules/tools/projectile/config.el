@@ -4,7 +4,7 @@
 
 ;;; Code:
 (use-package projectile
-  :ensure t
+  :straight t
   :diminish projectile-mode
   :config
   (setq projectile-known-projects-file (concat cache-dir "projectile-bookmarks.eld")
@@ -16,7 +16,7 @@
   (projectile-mode))
 
 (use-package counsel-projectile
-  :ensure t
+  :straight t
   :bind ("C-x r R" . counsel-projectile-rg)
   :config
   (setq counsel-projectile-rg-options-history (list "-uuu"))
@@ -24,10 +24,10 @@
   (add-hook 'prog-mode-hook 'counsel-projectile-mode))
 
 (use-package term-projectile
-  :ensure t)
+  :straight t)
 
 (use-package rg
-  :ensure t
+  :straight t
   :config (setq rg-command-line-flags (list "-uuu")))
 
 (setq projectile-switch-project-action 'neotree-projectile-action)

@@ -4,7 +4,7 @@
 
 ;;; Code:
 (use-package flycheck
-  :ensure t
+  :straight t
   :bind (("C-c e p" . flycheck-previous-error)
          ("C-c e n" . flycheck-next-error))
   :config

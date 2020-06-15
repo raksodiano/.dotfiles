@@ -4,12 +4,12 @@
 
 ;;; Code:
 (use-package page-break-lines
-  :ensure t
+  :straight t
   :diminish page-break-lines-mode
   :config (turn-on-page-break-lines-mode))
 
 (use-package dashboard
-  :ensure t
+  :straight t
   :functions (widget-forward
               winner-undo
               open-custom-file
@@ -120,8 +120,6 @@
       ("H" browse-homepage "Browse Homepage" :exit t)
       ("R" restore-session "Restore Previous Session" :exit t)
       ("E" dashboard-edit-config "Open custom file" :exit t)
-      ("U" rakso-update "Update Emacs" :exit t)
-      ("C-U" rakso-update-and-restart "Update Emacs and restart" :exit t)
       ("<f2>" open-dashboard "Open Dashboard" :exit t)
       ("q" quit-dashboard "Quit Dashboard" :exit t)
       ("C-g" nil "quit"))

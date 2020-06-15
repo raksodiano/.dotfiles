@@ -4,7 +4,7 @@
 
 ;;; Code:
 (use-package cask
-  :ensure t)
+  :straight t)
 
 (use-package cask-mode)
 
@@ -12,11 +12,11 @@
   :after (flycheck-mode))
 
 (use-package slime
-  :ensure t
+  :straight t
   :init (slime-setup))
 
 (use-package slime-company
-  :ensure t)
+  :straight t)
 
 (setq inferior-lisp-program "sbcl")
 (setq slime-auto-connect 'ask)

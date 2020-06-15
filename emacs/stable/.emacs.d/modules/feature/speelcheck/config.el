@@ -38,7 +38,7 @@
     (flyspell-mode 1))
 
   (use-package flyspell-correct
-    :ensure t
+    :straight t
     :after flyspell
     :bind (:map flyspell-mode-map
                 ("C-c s" . flyspell-correct-word-generic))

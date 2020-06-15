@@ -8,7 +8,7 @@
       (parrot-start-animation)))
 
 (use-package parrot
-  :ensure t
+  :straight t
   :config
   (parrot-mode)
   (add-hook 'before-save-hook 'parrot-start-animation)

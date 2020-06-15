@@ -57,16 +57,12 @@
 (defvar projectile-dir (concat local-dir "projectile/")
   "Projectile Save.")
 
-(defvar straight-dir (concat local-dir "straight/")
-  "Straight Save.")
-
 (dolist
     (dir
      (list org-dir
            org-imagenes-dir
            workspace-dir
            latex-dir
-           ;; w-org-dir
            backup-dir
            cache-dir
            etc-dir
@@ -80,13 +76,10 @@
            url-dir
            bookmark-dir
            packages-dir
-           projectile-dir
-           straight-dir))
+           projectile-dir))
 
   (unless (file-directory-p dir)
     (make-directory dir t)))
-
-(setq straight-install-dir straight-dir)
 
 (provide 'core-constants)
 ;;; core-constants.el ends here

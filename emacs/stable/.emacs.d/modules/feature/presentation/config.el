@@ -4,7 +4,7 @@
 
 ;;; Code:
 (use-package presentation
-  :ensure t
+  :straight t
   :config (global-set-key
            (kbd "<f6>") (lambda ()
                           (interactive)

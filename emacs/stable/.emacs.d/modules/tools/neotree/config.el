@@ -4,10 +4,10 @@
 
 ;;; Code:
 (use-package shrink-path
-  :ensure t)
+  :straight t)
 
 (use-package neotree
-  :ensure t
+  :straight t
   :straight (neotree
              :type git
              :host github

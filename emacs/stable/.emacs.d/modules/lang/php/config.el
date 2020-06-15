@@ -9,10 +9,10 @@
   (add-hook 'php-mode-hook 'php-refactor-mode))
 
 (use-package php-mode
-  :ensure t)
+  :straight t)
 
 (use-package company-php
-  :ensure t
+  :straight t
   :config
   (defun cfg:php-mode-hook ()
     (interactive)

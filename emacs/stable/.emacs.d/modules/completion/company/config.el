@@ -4,7 +4,7 @@
 
 ;;; CODE:
 (use-package company
-  ;; :ensure t
+  :straight t
   :init
   (setq company-backends '((company-files
                             company-keywords
@@ -27,7 +27,7 @@
   (add-hook 'after-init-hook 'company-statistics-mode))
 
 (use-package company-quickhelp
-  ;; :ensure t
+  :straight t
   :after company
   :config (company-quickhelp-mode 1))
 
