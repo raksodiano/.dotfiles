@@ -159,7 +159,8 @@
   (add-hook 'python-mode-hook #'def-python-mode)
   :config
   (global-set-key [remap python-indent-shift-left] 'python-indent-shift-left)
-  (global-set-key [remap python-indent-shift-right] 'python-indent-shift-right))
+  (global-set-key [remap python-indent-shift-right] 'python-indent-shift-right)
+  :hook (python-mode-hook . lsp))
 
 (provide 'config)
 ;;; config.el ends here

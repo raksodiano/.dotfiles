@@ -28,6 +28,9 @@
   (setq ivy-on-del-error-function nil
         ivy-initial-inputs-alist nil))
 
+(use-package lsp-ivy
+  :straight t)
+
 ;; (use-package ivy-rich
 ;;   :init (setf ivy-format-function #'ivy-format-function-line)
 ;;   :config (ivy-rich-mode 1))
@@ -38,7 +41,7 @@
         ("C-r" . counsel-expression-history)))
 
 (use-package counsel
-  :ensure t
+  :straight t
   :bind ((("M-x" . counsel-M-x)
           ("M-y" . counsel-yank-pop)
           ("M-SPC" . counsel-shell-history)

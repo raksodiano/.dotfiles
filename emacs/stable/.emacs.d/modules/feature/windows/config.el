@@ -17,42 +17,22 @@
          ("C-S-<right>" . buf-move-right)))
 
 ;; (use-package switch-window
-;;   :ensure t
-;;   :bind (("C-x o" . switch-window))
-;;   :commands (switch-window
-;;              switch-window-then-maximize
-;;              switch-window-then-split-below
-;;              switch-window-then-split-right
-;;              switch-window-then-delete
-;;              switch-window-then-swap-buffer)
-;;   :init
-;;   (setq switch-window-shortcut-style 'qwerty
-;;         switch-window-qwerty-shortcuts '("a" "s" "d" "f" "g" "h" "j" "k" "l")))
+;;   :straight t
+;;   :bind (("C-x o" . switch-window)
+;;          ("C-x 1" . switch-window-then-maximize)
+;;          ("C-x 2" . switch-window-then-split-below)
+;;          ("C-x 3" . switch-window-then-split-right)
+;;          ("C-x 0" . switch-window-then-delete)))
 
-;; (use-package ace-window
-;;   :ensure t
-;;   :init
-;;   (setq aw-scope 'frame) ;; this is the key here
-;;   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-;;   (global-set-key (kbd "C-x o") 'ace-window))
-
-(use-package golden-ratio
+(use-package ace-window
   :straight t
   :init
-  (golden-ratio-mode 1)
-  :config
-  (setq
-   ;; golden-ratio-auto-scale t
-   golden-ratio-adjust-factor 1
-   golden-ratio-wide-adjust-factor 1
-   golden-ratio-exclude-modes '("dired-mode"
-                                "ediff-mode"
-                                "eshell-mode"
-                                "neotree-mode"
-                                "sr-speedbar-mode")))
+  (setq aw-scope 'frame) ;; this is the key here
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (global-set-key (kbd "C-x o") 'ace-window))
 
-(use-package windmove)
-;; :ensure nil)
+(use-package windmove
+  :straight t)
 
 (use-package winner
   :ensure nil
@@ -60,7 +40,7 @@
   (winner-mode 1))
 
 (use-package windresize
-  :straight t )
+  :straight t)
 
 (use-package zygospore
   :straight t
