@@ -55,15 +55,25 @@
   :config
   (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
   (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
-  ;; :commands lsp-ui-mode
-  ;; :bind (lsp-ui-mode-map
-  ;;        ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
-  ;;        ([remap xref-find-references] . lsp-ui-peek-find-references))
-  ;; :setq  ((lsp-ui-sideline-enable . t)
-  ;;         (lsp-ui-sideline-ignore-duplicate . t)
-  ;;         (lsp-ui-sideline-show-hover . nil)
-  ;;         (lsp-ui-doc-enable . nil))
-  ;; :config (lsp-ui-mode))
+;; :commands lsp-ui-mode
+;; :bind (lsp-ui-mode-map
+;;        ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
+;;        ([remap xref-find-references] . lsp-ui-peek-find-references))
+;; :setq  ((lsp-ui-sideline-enable . t)
+;;         (lsp-ui-sideline-ignore-duplicate . t)
+;;         (lsp-ui-sideline-show-hover . nil)
+;;         (lsp-ui-doc-enable . nil))
+;; :config (lsp-ui-mode))
+
+(use-package dap-mode
+  :config
+  (dap-mode 1)
+  (dap-ui-mode 1)
+  (require 'dap-firefox)
+  (dap-firefox-setup)
+  (require 'dap-chrome)
+  (dap-chrome-setup)
+  (require 'dap-python))
 
 (provide 'config)
 ;;; config.el ends here

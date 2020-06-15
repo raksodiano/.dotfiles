@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: bf
+# key: bf
+# --
+
+{\bf $1}
