@@ -9,6 +9,13 @@
       (python-black-format-buffer)
     (elpy-format-code)))
 
+(defun python-template ()
+  (interactive)
+  (insert "#!/usr/bin/env python\n# -*- coding: utf-8 -*-\n\n"))
+
+(add-hook 'python-mode-hook '(lambda ()
+                               (when (empty-buffer?) (python-template))))
+
 (use-package elpy
   :straight t
   :diminish
@@ -52,19 +59,6 @@
          (selection (completing-read "Pick django command: " (mapcar 'string-trim options)))
          (command (concat python-bin " " manage-py-file " " selection)))
     (compile command)))
-
-;; (reformatter-define python-black-format
-;;   :program "black"
-;;   :args '("-")
-;;   :group 'python)
-
-;; (defun python-template ()
-;;   "Python Template."
-;;   (interactive)
-;;   (insert "#!/usr/bin/env python\n# -*- coding: utf-8 -*-\n\n"))
-
-;; (add-hook 'python-mode-hook
-;;           '(lambda () (when (eq (buffer-size) 0) (python-template))))
 
 (use-package pony-mode
   :after (python)
@@ -113,7 +107,7 @@
   :after (python)
   :init (add-hook 'python-mode-hook #'sphinx-doc-mode))
 
-;; (use-package pydoc-info)
+(use-package pydoc-info)
 
 (use-package company-anaconda
   :if (executable-find "python")
@@ -160,6 +154,13 @@
   :config
   (global-set-key [remap python-indent-shift-left] 'python-indent-shift-left)
   (global-set-key [remap python-indent-shift-right] 'python-indent-shift-right)
+  ;; (python-indent . 4)
+  ;; (python-indent-offset . 4)
+  ;; (py-switch-buffers-on-execute-p . t)
+  ;; (py-split-window-on-execute . nil)
+  ;; (lsp-pyls-plugins-pycodestyle-enabled . nil)
+  ;; (lsp-pyls-plugins-pyflakes-enabled . nil)
+  ;; (lsp-pyls-plugins-flake8-enabled . t)
   :hook (python-mode-hook . lsp))
 
 (provide 'config)
