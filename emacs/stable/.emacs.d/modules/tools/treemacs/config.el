@@ -77,11 +77,6 @@
   :after treemacs projectile
   :straight t)
 
-(use-package treemacs-icons-dired
-  :after treemacs dired
-  :straight t
-  :config (treemacs-icons-dired-mode))
-
 (use-package treemacs-magit
   :after treemacs magit
   :straight t)
@@ -89,7 +84,8 @@
 (use-package treemacs-persp
   :after treemacs persp-mode
   :straight t
-  :config (treemacs-set-scope-type 'Perspectives))
+  :config
+  (treemacs-set-scope-type 'Perspectives))
 
 (provide 'config)
 ;;; config.el ends here

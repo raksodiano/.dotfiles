@@ -3,6 +3,12 @@
 ;;
 
 ;;; Code:
+;; Resize Windows
+(global-set-key (kbd "M-<up>") 'shrink-window)
+(global-set-key (kbd "M-<down>") 'enlarge-window)
+(global-set-key (kbd "M-<left>") 'enlarge-window-horizontally)
+(global-set-key (kbd "M-<right>") 'shrink-window-horizontally)
+
 ;; Mover Buffers
 (bind-key "C-<left>" 'windmove-left)
 (bind-key "C-<right>" 'windmove-right)
@@ -15,14 +21,6 @@
          ("C-S-<down>" . buf-move-down)
          ("C-S-<left>" . buf-move-left)
          ("C-S-<right>" . buf-move-right)))
-
-;; (use-package switch-window
-;;   :straight t
-;;   :bind (("C-x o" . switch-window)
-;;          ("C-x 1" . switch-window-then-maximize)
-;;          ("C-x 2" . switch-window-then-split-below)
-;;          ("C-x 3" . switch-window-then-split-right)
-;;          ("C-x 0" . switch-window-then-delete)))
 
 (use-package ace-window
   :straight t

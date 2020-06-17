@@ -26,5 +26,14 @@
   :config
   (all-the-icons-ivy-setup))
 
+(use-package treemacs-icons-dired
+  :after treemacs dired
+  :straight t
+  :config
+  (treemacs-icons-dired-mode))
+
+(setq dashboard-set-heading-icons t)
+(setq dashboard-set-file-icons t)
+
 (provide 'config)
 ;;; config.el ends here

@@ -8,10 +8,8 @@
 
 (use-package tramp
   :config
-  (setq tramp-persistency-file-name (
-                                     concat tramp-dir "tramp")
-        tramp-auto-save-directory (
-                                   concat tramp-dir "tramp-autosave")
+  (setq tramp-persistency-file-name (concat tramp-dir "tramp")
+        tramp-auto-save-directory (concat tramp-dir "tramp-autosave")
         tramp-debug-buffer nil
         tramp-verbose 10
         tramp-shell-prompt-pattern "\\(?:^\\|\r\\)[^]#$%>\n]*#?[]#$%>] *\\(^[\\[[0-9;]*[a-zA-Z] *\\)*")

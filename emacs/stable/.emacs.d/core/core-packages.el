@@ -8,9 +8,9 @@
 (straight-use-package 'use-package)
 
 ;; setup zsh as a default shell when is available
-(let ((zsh-path (executable-find "zsh")))
-  (when zsh-path
-    (setq shell-file-name zsh-path)))
+;; (let ((zsh-path (executable-find "zsh")))
+;;   (when zsh-path
+;;     (setq shell-file-name zsh-path)))
 
 (setq package--init-file-ensured t
       package-user-dir (expand-file-name "elpa" packages-dir)
