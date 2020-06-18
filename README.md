@@ -25,8 +25,10 @@ few command lines.
 
 ```
  emacs           ➔ configuration for python, js, php, org, latex, etc.
+ emacsClient     ➔ connect to emacs daemon.
  git             ➔ global git config and aliases
  htop            ➔ interactive process viewer
+ mpd             ➔ music player daemon
  systemd         ➔ systemd units
  tmux            ➔ terminal multiplexer
  xonsh           ➔ xonsh settings, aliases, and custom prompts
