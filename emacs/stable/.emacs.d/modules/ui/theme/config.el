@@ -8,11 +8,28 @@
 ;;   :config
 ;;   (load-theme 'afternoon t))
 
-(use-package dracula-theme
-  :straight t
+;; (use-package dracula-theme
+;;   :straight t
+;;   :config
+;;   (load-theme 'dracula t)
+;;   (set-face-foreground 'font-lock-variable-name-face "gray"))
+
+(use-package kaolin-themes
+  :init
+  (setq kaolin-themes-bold t
+        kaolin-themes-italic t
+        kaolin-themes-italic-comments t
+        kaolin-themes-underline t
+        kaolin-themes-hl-line-colored t
+        kaolin-themes-distinct-fringe t
+        kaolin-themes-distinct-company-scrollbar t
+        kaolin-themes-git-gutter-solid t
+        kaolin-ocean-alt-bg t)
   :config
-  (load-theme 'dracula t)
-  (set-face-foreground 'font-lock-variable-name-face "gray"))
+  (load-theme 'kaolin-ocean t)
+  ;; (load-theme 'kaolin-aurora t)
+  ;; (load-theme 'kaolin-valley-dark t)
+  (kaolin-treemacs-theme))
 
 (treemacs-create-theme "Atom"
   :config
@@ -171,7 +188,7 @@
                           :face '(:inherit font-lock-doc-face :slant normal)))
      :extensions (fallback))))
 
-(treemacs-load-theme "Atom")
+;; (treemacs-load-theme "Atom")
 
 (setq extensions '("org" "yml" "yaml" "sh" "zsh" "fish" "c" "h" "cpp" "cxx" "hpp"
                    "tpp" "cc" "hh" "hs" "lhs" "cabal" "py" "pyc" "rs" "el" "elc"

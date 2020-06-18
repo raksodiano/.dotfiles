@@ -96,11 +96,10 @@
 
   (lorem-ipsum-use-default-bindings))
 
-;; (use-package eldoc
-;;   :ensure nil
-;;   :diminish eldoc-mode
-;;   :init
-;;   (setf eldoc-idle-delay 1.0))
+;; (use-package highlight-numbers
+;;   :straight t
+;;   :hook
+;;   (foo-mode-hook . 'highlight-numbers-mode))
 
 (use-package ranger
   :init

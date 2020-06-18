@@ -17,7 +17,7 @@
   :straight t
   :after org
   :init
-  (setq-default org-download-image-dir "~/org/imagenes/"))
+  (setq-default org-download-image-dir org-imagenes-dir))
 
 (use-package ob-restclient
   :straight t
@@ -92,7 +92,7 @@
         org-default-notes-file (concat org-directory "/notes.org"))
 
   ;; set the archive
-  (setq org-archive-location "~/org/archive.org::datetree/** Archived")
+  (setq org-archive-location (concat org-directory "/archive.org::datetree/** Archived"))
 
   ;; highlight code blocks syntax
   (setq org-src-fontify-natively  t
@@ -264,81 +264,81 @@
 (use-package ob-async
   :straight t)
 
-(use-package org-tree-slide
-  :straight t
-  :config
-  (progn
-    (setq org-tree-slide--lighter " Slide")
+;; (use-package org-tree-slide
+;;   :straight t
+;;   :config
+;;   (progn
+;;     (setq org-tree-slide--lighter " Slide")
 
-    (defvar org-tree-slide-text-scale 4
-      "Text scale ratio to default when `org-tree-slide-mode' is enabled.")
+;;     (defvar org-tree-slide-text-scale 4
+;;       "Text scale ratio to default when `org-tree-slide-mode' is enabled.")
 
-    (defun org-tree-slide-set-profile ()
-      "Customize org-tree-slide variables."
-      (interactive)
-      (setq org-tree-slide-header t)
-      (setq org-tree-slide-slide-in-effect nil)
-      (setq org-tree-slide-heading-emphasis t)
-      (setq org-tree-slide-cursor-init t) ;Move cursor to the head of buffer
-      (setq org-tree-slide-modeline-display 'lighter)
-      (setq org-tree-slide-skip-done nil)
-      (setq org-tree-slide-skip-comments t)
-      (setq org-tree-slide-activate-message
-            (concat "Starting Org presentation. "
-                    "Use arrow keys to navigate the slides."))
-      (setq org-tree-slide-deactivate-message "Ended presentation.")
-      (message "Custom `org-tree-slide' profile: ON"))
+;;     (defun org-tree-slide-set-profile ()
+;;       "Customize org-tree-slide variables."
+;;       (interactive)
+;;       (setq org-tree-slide-header t)
+;;       (setq org-tree-slide-slide-in-effect nil)
+;;       (setq org-tree-slide-heading-emphasis t)
+;;       (setq org-tree-slide-cursor-init t) ;Move cursor to the head of buffer
+;;       (setq org-tree-slide-modeline-display 'lighter)
+;;       (setq org-tree-slide-skip-done nil)
+;;       (setq org-tree-slide-skip-comments t)
+;;       (setq org-tree-slide-activate-message
+;;             (concat "Starting Org presentation. "
+;;                     "Use arrow keys to navigate the slides."))
+;;       (setq org-tree-slide-deactivate-message "Ended presentation.")
+;;       (message "Custom `org-tree-slide' profile: ON"))
 
-    (defvar writegood-mode-state nil
-      "Variable to store the state of `writegood-mode'.")
+;;     (defvar writegood-mode-state nil
+;;       "Variable to store the state of `writegood-mode'.")
 
-    (defun org-tree-slide-start ()
-      "Set up the frame for the slideshow."
-      (interactive)
-      (when (fboundp 'writegood-mode)
-        (setq writegood-mode-state writegood-mode)
-        (writegood-mode -1))
-      (flyspell-mode -1)
-      (text-scale-set org-tree-slide-text-scale))
-    (add-hook 'org-tree-slide-play-hook #'org-tree-slide-start)
+;;     (defun org-tree-slide-start ()
+;;       "Set up the frame for the slideshow."
+;;       (interactive)
+;;       (when (fboundp 'writegood-mode)
+;;         (setq writegood-mode-state writegood-mode)
+;;         (writegood-mode -1))
+;;       (flyspell-mode -1)
+;;       (text-scale-set org-tree-slide-text-scale))
+;;     (add-hook 'org-tree-slide-play-hook #'org-tree-slide-start)
 
-    (defun org-tree-slide-stop()
-      "Undo the frame setup for the slideshow."
-      (interactive)
-      (when (and (fboundp 'writegood-mode)
-                 writegood-mode-state)
-        (writegood-mode 1)
-        (setq writegood-mode-state nil))
-      (flyspell-mode 1)
-      (text-scale-set 0))
-    (add-hook 'org-tree-slide-stop-hook #'org-tree-slide-stop)
+;;     (defun org-tree-slide-stop()
+;;       "Undo the frame setup for the slideshow."
+;;       (interactive)
+;;       (when (and (fboundp 'writegood-mode)
+;;                  writegood-mode-state)
+;;         (writegood-mode 1)
+;;         (setq writegood-mode-state nil))
+;;       (flyspell-mode 1)
+;;       (text-scale-set 0))
+;;     (add-hook 'org-tree-slide-stop-hook #'org-tree-slide-stop)
 
-    (defun org-tree-slide-text-scale-reset ()
-      "Reset time scale to `modi/org-tree-slide-text-scale'."
-      (interactive)
-      (text-scale-set org-tree-slide-text-scale))
+;;     (defun org-tree-slide-text-scale-reset ()
+;;       "Reset time scale to `modi/org-tree-slide-text-scale'."
+;;       (interactive)
+;;       (text-scale-set org-tree-slide-text-scale))
 
-    (defun org-tree-slide-text-scale-inc1 ()
-      "Increase text scale by 1."
-      (interactive)
-      (text-scale-increase 1))
+;;     (defun org-tree-slide-text-scale-inc1 ()
+;;       "Increase text scale by 1."
+;;       (interactive)
+;;       (text-scale-increase 1))
 
-    (defun org-tree-slide-text-scale-dec1 ()
-      "Decrease text scale by 1."
-      (interactive)
-      (text-scale-decrease 1))
+;;     (defun org-tree-slide-text-scale-dec1 ()
+;;       "Decrease text scale by 1."
+;;       (interactive)
+;;       (text-scale-decrease 1))
 
-    (bind-keys
-     :map org-tree-slide-mode-map
-     ("C-b" . org-tree-slide-move-previous-tree)
-     ("C-f" . org-tree-slide-move-next-tree)
-     ("C-0" . org-tree-slide-text-scale-reset)
-     ("C-+" . org-tree-slide-text-scale-inc1)
-     ("C--" . org-tree-slide-text-scale-dec1)
-     ("C-1" . org-tree-slide-content)
-     ("C-2" . org-tree-slide-set-profile)
-     ("C-3" . org-tree-slide-simple-profile)
-     ("C-4" . org-tree-slide-presentation-profile))))
+;;     (bind-keys
+;;      :map org-tree-slide-mode-map
+;;      ("C-b" . org-tree-slide-move-previous-tree)
+;;      ("C-f" . org-tree-slide-move-next-tree)
+;;      ("C-0" . org-tree-slide-text-scale-reset)
+;;      ("C-+" . org-tree-slide-text-scale-inc1)
+;;      ("C--" . org-tree-slide-text-scale-dec1)
+;;      ("C-1" . org-tree-slide-content)
+;;      ("C-2" . org-tree-slide-set-profile)
+;;      ("C-3" . org-tree-slide-simple-profile)
+;;      ("C-4" . org-tree-slide-presentation-profile))))
 
 (provide 'config)
 ;;; config.el ends here

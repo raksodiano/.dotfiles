@@ -3,19 +3,6 @@
 ;;
 
 ;;; Code:
-(defun my/python-format-code ()
-  (interactive)
-  (if (executable-find "black")
-      (python-black-format-buffer)
-    (elpy-format-code)))
-
-(defun python-template ()
-  (interactive)
-  (insert "#!/usr/bin/env python\n# -*- coding: utf-8 -*-\n\n"))
-
-(add-hook 'python-mode-hook '(lambda ()
-                               (when (empty-buffer?) (python-template))))
-
 (use-package elpy
   :straight t
   :diminish
@@ -161,7 +148,25 @@
   ;; (lsp-pyls-plugins-pycodestyle-enabled . nil)
   ;; (lsp-pyls-plugins-pyflakes-enabled . nil)
   ;; (lsp-pyls-plugins-flake8-enabled . t)
-  :hook (python-mode-hook . lsp))
+  ;; :hook (python-mode-hook . lsp)
+  )
+
+(defun my/python-format-code ()
+  (interactive)
+  (if (executable-find "black")
+      (python-black-format-buffer)
+    (elpy-format-code)))
+
+(defun python-template ()
+  (interactive)
+  (insert "#!/usr/bin/env python\n# -*- coding: utf-8 -*-\n\n"))
+
+(add-hook 'python-mode-hook '(lambda ()
+                               (when (empty-buffer?) (python-template))))
+
+(use-package py-autopep8
+  :straight t)
+(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
 
 (provide 'config)
 ;;; config.el ends here
