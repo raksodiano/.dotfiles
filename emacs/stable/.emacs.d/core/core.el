@@ -78,7 +78,7 @@
       scroll-down-aggressively 0.02)
 
 (modify-all-frames-parameters '((fullscreen . maximized)))
-(add-hook 'window-setup-hook 'toggle-frame-maximized t)
+;; (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
 (setq-default indent-tabs-mode nil
               tab-width 2)
