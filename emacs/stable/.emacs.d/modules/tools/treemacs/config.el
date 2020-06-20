@@ -68,14 +68,17 @@
   (:map global-map
         ("M-0"       . treemacs-select-window)
         ("C-x t 1"   . treemacs-delete-other-windows)
-        ([f2] . treemacs)
+        ([f8] . treemacs)
+        ([f9] . treemacs-project-follow-cleanup)
         ("C-x t B"   . treemacs-bookmark)
         ("C-x t C-t" . treemacs-find-file)
         ("C-x t M-t" . treemacs-find-tag)))
 
 (use-package treemacs-projectile
   :after treemacs projectile
-  :straight t)
+  :straight t
+  :config
+  (setq treemacs-header-function #'treemacs-projectile-create-header))
 
 (use-package treemacs-magit
   :after treemacs magit

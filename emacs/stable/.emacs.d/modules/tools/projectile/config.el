@@ -3,12 +3,18 @@
 ;;
 
 ;;; Code:
+
+(use-package org-projectile
+  :straight t
+  :config
+  (setq org-projectile-projects-file (concat cache-dir "projectile-bookmarks.org")))
+
 (use-package projectile
   :straight t
   :diminish projectile-mode
   :config
-  (setq projectile-known-projects-file (concat cache-dir "projectile-bookmarks.eld")
-        projectile-cache-file (concat cache-dir "projectile.cache")
+  (setq projectile-cache-file (concat cache-dir "projectile.cache")
+        projectile-known-projects-file (concat cache-dir "projectile-bookmarks.org")
         projectile-file-exists-remote-cache-expire (* 10 60)
         projectile-indexing-method 'alien
         projectile-enable-caching t
@@ -31,7 +37,8 @@
   :straight t
   :config (setq rg-command-line-flags (list "-uuu")))
 
-(setq projectile-switch-project-action 'neotree-projectile-action)
+(setq projectile-switch-project-action 'treemacs-projectile)
+;; (setq projectile-switch-project-action 'neotree-projectile-action)
 
 (provide 'config)
 ;;; config.el ends here

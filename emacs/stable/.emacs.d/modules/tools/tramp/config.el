@@ -18,7 +18,7 @@
 
 (use-package counsel-tramp
   :straight t
-  :bind ("C-c s" . counsel-tramp)
+  :bind ("C-c T" . counsel-tramp)
   :config
   (add-hook 'counsel-tramp-pre-command-hook '(lambda () (projectile-mode 0)
                                                (editorconfig-mode 0)))

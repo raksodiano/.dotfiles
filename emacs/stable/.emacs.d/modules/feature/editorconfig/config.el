@@ -3,6 +3,14 @@
 ;;
 
 ;;; Code:
+;; Colapse blocks
+(add-hook 'prog-mode-hook 'hs-minor-mode)
+(add-hook 'latex-mode-hook 'hs-minor-mode)
+(bind-key "C-c S" 'hs-show-all)
+(bind-key "C-c s" 'hs-show-block)
+(bind-key "C-c H" 'hs-hide-all)
+(bind-key "C-c h" 'hs-hide-block)
+
 (bind-key "M-p" 'backward-paragraph)
 (bind-key "M-n" 'forward-paragraph)
 (bind-key "RET" 'newline-and-indent)
@@ -13,8 +21,37 @@
 (bind-key "C-+" 'text-scale-increase)
 (bind-key "C--" 'text-scale-decrease)
 
+(defun rakso/setup-mode ()
+  (nlinum-mode 1)
+  (set-fill-column 120)
+  (column-number-mode 1))
+
+(add-hook 'prog-mode-hook 'rakso/setup-mode)
+
 (use-package bug-hunter)
 ;; :ensure t)
+
+(use-package s
+  :straight t)
+
+(use-package dash
+  :straight t)
+
+(use-package origami
+  :straight t
+  :bind (("C-c o :" . origami-recursively-toggle-node)
+         ("C-c o a" . origami-toggle-all-nodes)
+         ("C-c o t" . origami-toggle-node)
+         ("C-c o o" . origami-show-only-node)
+         ("C-c o u" . origami-undo)
+         ("C-c o U" . origami-redo)
+         ("C-c o C-r" . origami-reset))
+  :config
+  (setq origami-show-fold-header t)
+  (add-to-list 'origami-parser-alist '((python-mode . origami-indent-parser)
+                                       (emacs-lisp . origami-indent-parser)))
+  :init
+  (add-hook 'prog-mode-hook 'origami-mode))
 
 (use-package free-keys
   :straight t

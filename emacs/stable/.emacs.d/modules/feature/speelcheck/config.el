@@ -41,7 +41,7 @@
     :straight t
     :after flyspell
     :bind (:map flyspell-mode-map
-                ("C-c s" . flyspell-correct-word-generic))
+                ("C-c f" . flyspell-correct-word-generic))
     :config
     (setq flyspell-correct-interface 'flyspell-correct-popup))
 
