@@ -4,16 +4,29 @@
 
 ;;; Code:
 (use-package emms
+  :init
+  (setq emms-directory (concat cache-dir "emms/"))
   :config
   (require 'emms-setup)
   (require 'emms-player-mpd)
-  (emms-all)(setq emms-seek-seconds 5)
+  (emms-all)
+  (setq emms-seek-seconds 5)
   (setq emms-player-list '(emms-player-mpd))
   (setq emms-info-functions '(emms-info-mpd))
   (setq emms-player-mpd-server-name "localhost"))
 
 (setq emms-player-list '(emms-player-mpd))
 (setq emms-info-functions '(emms-info-mpd))
+
+(defun mpd/start-music-daemon ()
+  "Start MPD, connects to it and syncs the metadata cache."
+  (interactive)
+  (shell-command "mpd")
+  (mpd/update-database)
+  (emms-player-mpd-connect)
+  (emms-cache-set-from-mpd-all)
+  (message "MPD Started!"))
+;; (global-set-key (kbd "s-m c") 'mpd/start-music-daemon)
 
 (defun rakso/music-browser ()
   (interactive)

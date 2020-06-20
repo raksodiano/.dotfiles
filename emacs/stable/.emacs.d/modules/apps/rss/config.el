@@ -32,13 +32,17 @@
       (string< a-tags b-tags))))
 
 (setf elfeed-search-sort-function #'hrs/custom-elfeed-sort)
-(global-set-key (kbd "C-c r") 'elfeed)
+;; (global-set-key (kbd "C-c r") 'elfeed)
 
 (defun hrs/elfeed-current-entry ()
   (cond ((eq major-mode 'elfeed-show-mode)
          elfeed-show-entry)
         ((eq major-mode 'elfeed-search-mode)
          (elfeed-search-selected t))))
+
+(bind-keys :prefix-map rakso/app-elfeed
+           :prefix "C-c A r"
+           ("r" . elfeed))
 
 (provide 'config)
 ;;; config.el ends here
