@@ -20,7 +20,7 @@
 
 (elfeed-goodies/setup)
 
-(defun hrs/custom-elfeed-sort (a b)
+(defun rakso/custom-elfeed-sort (a b)
   (let* ((a-tags (format "%s" (elfeed-entry-tags a)))
          (b-tags (format "%s" (elfeed-entry-tags b)))
          (a-title (elfeed-feed-title (elfeed-entry-feed a)))
@@ -31,10 +31,10 @@
           (string< b-title a-title))
       (string< a-tags b-tags))))
 
-(setf elfeed-search-sort-function #'hrs/custom-elfeed-sort)
+(setf elfeed-search-sort-function #'rakso/custom-elfeed-sort)
 ;; (global-set-key (kbd "C-c r") 'elfeed)
 
-(defun hrs/elfeed-current-entry ()
+(defun rakso/elfeed-current-entry ()
   (cond ((eq major-mode 'elfeed-show-mode)
          elfeed-show-entry)
         ((eq major-mode 'elfeed-search-mode)

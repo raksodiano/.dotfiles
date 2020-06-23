@@ -18,6 +18,21 @@
 (setq emms-player-list '(emms-player-mpd))
 (setq emms-info-functions '(emms-info-mpd))
 
+(defun mpd/update-database ()
+  "Updates the MPD database synchronously."
+  (interactive)
+  (call-process "mpc" nil nil nil "update")
+  (message "MPD Database Updated!"))
+;; (global-set-key (kbd "s-m u") 'mpd/update-database)
+
+(defun mpd/kill-music-daemon ()
+  "Stops playback and kill the music daemon."
+  (interactive)
+  (emms-stop)
+  (call-process "killall" nil nil nil "mpd")
+  (message "MPD Killed!"))
+;; (global-set-key (kbd "s-m k") 'mpd/kill-music-daemon)
+
 (defun mpd/start-music-daemon ()
   "Start MPD, connects to it and syncs the metadata cache."
   (interactive)
@@ -53,16 +68,16 @@
 Include the album if it's non-nil. Escape some entities in the
 message, since Pango (?) can't seem to parse them."
   (if album
-      (concat "by: <i>" (hrs/entity-escape artist) "</i>\n"
-              "from: <i>" (hrs/entity-escape album) "</i>")
-    (concat "by: <i>" (hrs/entity-escape artist) "</i>")))
+      (concat "by: <i>" (rakso/entity-escape artist) "</i>\n"
+              "from: <i>" (rakso/entity-escape album) "</i>")
+    (concat "by: <i>" (rakso/entity-escape artist) "</i>")))
 
 (defun rakso/notify-current-song ()
-  (let* ((album (hrs/music-current-album))
-         (artist (hrs/music-current-artist))
-         (title (hrs/music-current-title))
-         (message (hrs/music-notification-message album artist)))
-    (hrs/notify-send title message)))
+  (let* ((album (rakso/music-current-album))
+         (artist (rakso/music-current-artist))
+         (title (rakso/music-current-title))
+         (message (rakso/music-notification-message album artist)))
+    (rakso/notify-send title message)))
 
 (add-hook 'emms-player-started-hook '(lambda () (rakso/notify-current-song)))
 

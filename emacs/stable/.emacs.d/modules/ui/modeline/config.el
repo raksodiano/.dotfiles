@@ -39,10 +39,15 @@
 (use-package doom-modeline
   :straight t
   :defer t
-  :custom
-  (doom-modeline-modal-icon nil)
+  :init
+  (setq doom-modeline-buffer-modification-icon t)
+  (setq doom-modeline-number-limit 99)
+  (setq doom-modeline-persp-name t)
+  :custom (doom-modeline-modal-icon nil)
   :hook (after-init . doom-modeline-mode)
-  :config (add-hook 'doom-modeline-mode-hook '(lambda () (display-battery-mode))))
+  :config
+  (add-hook 'doom-modeline-mode-hook '(lambda ()
+                                        (display-battery-mode))))
 
 (provide 'config)
 ;;; config.el ends here

@@ -143,6 +143,9 @@
               ring-bell-function #'ignore
               visible-bell nil)
 
+(setq display-time-24hr-format t)
+(setq display-time-format "%H:%M - %d %B %Y")
+
 ;;
 ;; Load files
 ;;
