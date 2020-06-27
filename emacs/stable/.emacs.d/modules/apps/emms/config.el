@@ -4,6 +4,8 @@
 
 ;;; Code:
 (use-package emms
+  :straight t
+  :defer t
   :init
   (setq emms-directory (concat cache-dir "emms/"))
   :config

@@ -4,11 +4,13 @@
 
 ;;; Code:
 (use-package elfeed
+  :defer t
   :straight t
   :config
   (elfeed-set-max-connections 32))
 
 (use-package elfeed-org
+  :defer t
   :straight t
   :config
   (progn
@@ -16,6 +18,7 @@
     (setq rmh-elfeed-org-files (list (concat org-dir "feeds.org")))))
 
 (use-package elfeed-goodies
+  :defer t
   :straight t)
 
 (elfeed-goodies/setup)
