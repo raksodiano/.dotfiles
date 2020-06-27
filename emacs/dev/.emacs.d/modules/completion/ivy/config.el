@@ -12,10 +12,10 @@
 (leaf ivy
       :straight t
       :diminish ivy-mode
-      :bind (ivy-mode-map
-             ("C-! r" . swiper)
-             ("C-! s" . swiper)
-             ("C-! a" . swiper-all))
+      ;; :bind (("C-! r" . swiper)
+      ;;        ("C-! s" . swiper)
+      ;;        ("C-! a" . swiper-all)
+      ;;        (:map ivy-mode-map))
       :config
       (ivy-mode 1)
       (setq ivy-wrap t
@@ -31,30 +31,32 @@
 (leaf lsp-ivy
       :straight t)
 
-;; (use-package ivy-rich
+;; (leaf ivy-rich
 ;;   :init (setf ivy-format-function #'ivy-format-function-line)
 ;;   :config (ivy-rich-mode 1))
 
 (leaf swiper
-      :bind (read-expression-map
-             ("C-r" . counsel-expression-history)))
+      :straight t)
+;; :bind
+;; (:map read-expression-map
+;;       ("C-r" . counsel-expression-history)))
 
 (leaf counsel
       :straight t
-      :bind (("M-x" . counsel-M-x)
-             ("M-y" . counsel-yank-pop)
-             ("M-SPC" . counsel-shell-history)
-             ("C-c b" . counsel-imenu)
-             ("C-h f" . counsel-describe-function)
-             ("C-h v" . counsel-describe-variable)
-             ("C-h b" . counsel-descbinds)
-             ("C-x C-f" . counsel-find-file)
-             ("C-x r r" . counsel-rg))
+      :bind ((("M-x" . counsel-M-x)
+              ("M-y" . counsel-yank-pop)
+              ("M-SPC" . counsel-shell-history)
+              ("C-c b" . counsel-imenu)
+              ("C-h f" . counsel-describe-function)
+              ("C-h v" . counsel-describe-variable)
+              ("C-h b" . counsel-descbinds)
+              ("C-x C-f" . counsel-find-file)
+              ("C-x r r" . counsel-rg)))
       :config
       (setq counsel-find-file-at-point t))
 
 (leaf imenu-anywhere
-      :straight t)
+  :straight t)
 
 (provide 'config)
 ;;; config.el ends here

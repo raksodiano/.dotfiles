@@ -3,37 +3,41 @@
 ;;
 
 ;;; Code:
-(use-package web-beautify
-  :after (web-mode)
-  :config
-  (add-hook 'json-mode-hook
-            (lambda ()
-              (add-hook 'before-save-hook 'web-beautify-js-buffer t t)))
-  (add-hook 'html-mode-hook
-            (lambda ()
-              (add-hook 'before-save-hook 'web-beautify-html-buffer t t)))
-  (add-hook 'css-mode-hook
-            (lambda ()
-              (add-hook 'before-save-hook 'web-beautify-css-buffer t t))))
+(leaf web-beautify
+      :straight t
+      :after (web-mode)
+      :config
+      (add-hook 'json-mode-hook
+                (lambda ()
+                  (add-hook 'before-save-hook 'web-beautify-js-buffer t t)))
+      (add-hook 'html-mode-hook
+                (lambda ()
+                  (add-hook 'before-save-hook 'web-beautify-html-buffer t t)))
+      (add-hook 'css-mode-hook
+                (lambda ()
+                  (add-hook 'before-save-hook 'web-beautify-css-buffer t t))))
 
-(use-package emmet-mode
-  :config
-  (add-hook 'sgml-mode-hook 'emmet-mode)
-  (add-hook 'web-mode-hook 'emmet-mode))
+(leaf emmet-mode
+      :straight t
+      :config
+      (add-hook 'sgml-mode-hook 'emmet-mode)
+      (add-hook 'web-mode-hook 'emmet-mode))
 
-(use-package company-web
-  :after (web-mode)
-  :config
-  (add-hook 'web-mode-hook (lambda ()
-                             (add-to-list
-                              (make-local-variable 'company-backends)
-                              '(company-web-html :with company-yasnippet)))))
+(leaf company-web
+      :straight t
+      :after (web-mode)
+      :config
+      (add-hook 'web-mode-hook (lambda ()
+                                 (add-to-list
+                                  (make-local-variable 'company-backends)
+                                  '(company-web-html :with company-yasnippet)))))
 
-(use-package yaml-mode
-  :defer 10
-  :mode "\\.yml$")
+(leaf yaml-mode
+      :straight t
+      :leaf-defer 10
+      :mode "\\.yml$")
 
-(use-package web-mode
+(leaf web-mode
   :straight t
   :mode
   (("\\.phtml\\'" . web-mode)

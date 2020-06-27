@@ -3,19 +3,57 @@
 ;;
 
 ;;; Code:
-;; (use-package vterm
-;;   :straight t
-;;   :custom
-;;   (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
-;;   (vterm-always-compile-module t))
+(leaf vterm
+      :straight t
+      ;; :custom
+      ;; (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
+      ;; (vterm-always-compile-module t)
+      )
 
-(use-package eshell-toggle
-  :straight t
-  :custom
-  (eshell-toggle-init-function #'(lambda (dir)
-                                   (my/goto-term))))
+(leaf multi-vterm
+      :straight t
+      :bind (("C-c 4 v" . multi-vterm-dedicated-open)
+             ("C-c 5 v" . multi-vterm)
+             ("C-c t v" . multi-vterm-dedicated-toggle)
+             ("C-c 0 v" . multi-term-dedicated-close)))
 
-;; (use-package multi-term
+(leaf vterm-toggle
+      :straight t
+      :bind (("C-c t v" . vterm-toggle)
+             ;; vterm-mode-map (("C-M-n" . vterm-toggle-forward)
+             ;;                 ("C-M-p" . vterm-toggle-backward))
+             ))
+
+(leaf eshell-toggle
+      :straight t
+      ;; :custom
+      ;; (eshell-toggle-size-fraction 3)
+      ;; (eshell-toggle-use-projectile-root t)
+      ;; (eshell-toggle-run-command nil)
+      ;; (eshell-toggle-init-function #'eshell-toggle-init-eshell)
+      ;; (eshell-toggle-init-function #'(lambda (dir)
+      ;;                                  (my/goto-term)))
+      :bind ("C-c t e" . eshell-toggle))
+
+;; open up a mini-eshell
+(defun quarter-window-vertically ()
+  "create a new window a quarter size of the current window"
+  (split-window-vertically)
+  (other-window 1)
+  (split-window-vertically)
+  (other-window -1)
+  (delete-window))
+
+(defun open-mini-eshell ()
+  "open a mini-eshell in a small window at the bottom of the current window"
+  (interactive)
+  (quarter-window-vertically)
+  (other-window 1)
+  (eshell))
+
+(global-set-key (kbd "C-. m") 'open-mini-eshell)
+
+;; (leaf multi-term
 ;;   :ensure t
 ;;   :config
 ;;   (bind-keys :prefix-map rakso-multi-term

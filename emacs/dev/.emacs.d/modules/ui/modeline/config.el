@@ -36,13 +36,17 @@
 
 ;;   (telephone-line-mode 1))
 
-(use-package doom-modeline
-  :straight t
-  :defer t
-  :custom
-  (doom-modeline-modal-icon nil)
-  :hook (after-init . doom-modeline-mode)
-  :config (add-hook 'doom-modeline-mode-hook '(lambda () (display-battery-mode))))
+(leaf doom-modeline
+      :straight t
+      :leaf-defer t
+      :setq ((doom-modeline-buffer-modification-icon . t)
+             (doom-modeline-number-limit . 99)
+             (doom-modeline-persp-name . t))
+      :custom (doom-modeline-modal-icon . nil)
+      :hook (emacs-startup-hook . doom-modeline-mode)
+      :config
+      (add-hook 'doom-modeline-mode-hook '(lambda ()
+                                            (display-battery-mode))))
 
 (provide 'config)
 ;;; config.el ends here

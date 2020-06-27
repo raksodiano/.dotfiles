@@ -11,3 +11,4 @@ indium-chrome-profile/
 straight/build/
 straight/repos/
 straight/build-cache.el
+logview-cache.extmap

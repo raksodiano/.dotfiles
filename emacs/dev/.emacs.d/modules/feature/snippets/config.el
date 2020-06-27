@@ -5,13 +5,14 @@
 ;;; Code:
 (leaf yasnippet
       :straight t
-      ;; :defer 2
+      :leaf-defer 2
       :diminish yas-minor-mode
       :config
       (yas-global-mode)
       (setq yas-snippet-dirs '("~/.emacs.d/snippets")))
 
-(leaf yasnippet-snippets)
+(leaf yasnippet-snippets
+      :straight t)
 ;; :ensure t)
 
 (provide 'config)

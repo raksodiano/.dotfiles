@@ -3,7 +3,7 @@
 ;;
 
 ;;; Code:
-(use-package latex
+(leaf latex
   :straight auctex
   :init
   (setf TeX-auto-save t
@@ -18,56 +18,58 @@
   (add-hook 'LaTeX-mode-hook 'turn-on-auto-fill)
   (add-hook 'LaTeX-mode-hook 'yas-minor-mode-on))
 
-(use-package auctex
-  :straight t
-  :defer t)
+(leaf auctex
+      :straight t
+      :leaf-defer t)
 
 (bind-key "C-c c" 'TeX-clean)
 
 (load "preview-latex.el" nil t t)
 
-;; (use-package cdlatex
+;; (leaf cdlatex
 ;;   :ensure t)
 
 (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
 
-(use-package magic-latex-buffer
+(leaf magic-latex-buffer
   :straight t)
 
 (add-hook 'latex-mode-hook 'magic-latex-buffer)
 
-(use-package reftex
-  :commands turn-on-reftex
-  :init
-  (progn
-    (setq reftex-plug-into-AUCTeX t))
-  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
-  (add-hook 'latex-mode-hook 'turn-on-reftex))   ; with Emacs latex mode
+(leaf reftex
+      :straight t
+      :commands turn-on-reftex
+      :init
+      (progn
+        (setq reftex-plug-into-AUCTeX t))
+      (add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
+      (add-hook 'latex-mode-hook 'turn-on-reftex))   ; with Emacs latex mode
 
-(use-package bibtex
-  :init
-  (progn
-    (setq bibtex-align-at-equal-sign t)
-    (add-hook 'bibtex-mode-hook
-              (lambda ()
-                (set-fill-column 120)))))
+(leaf bibtex
+      :straight t
+      :init
+      (progn
+        (setq bibtex-align-at-equal-sign t)
+        (add-hook 'bibtex-mode-hook
+                  (lambda ()
+                    (set-fill-column 120)))))
 
-(use-package company-auctex
-  :straight t
-  :config
-  (defun cfg:TeX-mode-hook ()
-    (company-auctex-init))
-  (add-hook 'LaTeX-mode-hook 'cfg:TeX-mode-hook)
-  (add-hook 'TeX-mode-hook 'cfg:TeX-mode-hook))
+(leaf company-auctex
+      :straight t
+      :config
+      (defun cfg:TeX-mode-hook ()
+        (company-auctex-init))
+      (add-hook 'LaTeX-mode-hook 'cfg:TeX-mode-hook)
+      (add-hook 'TeX-mode-hook 'cfg:TeX-mode-hook))
 
-(use-package latex-preview-pane
-  :straight t
-  :commands (latex-preview-pane-mode))
+(leaf latex-preview-pane
+      :straight t
+      :commands (latex-preview-pane-mode))
 
-(use-package latex-math-preview
-  :straight t)
+(leaf latex-math-preview
+      :straight t)
 
-;; (use-package latex-extra
+;; (leaf latex-extra
 ;;   :ensure t)
 
 (provide 'config)

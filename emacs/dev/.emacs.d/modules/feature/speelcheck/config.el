@@ -4,9 +4,11 @@
 
 ;;; Code:
 (leaf flycheck-package
+      :straight t
       :after (flycheck))
 
 (leaf flyspell
+      :straight t
       :diminish ""
       :bind (flyspell-mode-map
              ("\M-\t" . nil)
@@ -37,13 +39,14 @@
       (defun turn-on-spell-check ()
         (flyspell-mode 1))
 
-      (use-package flyspell-correct
-        :straight t
-        :after flyspell
-        :bind (:map flyspell-mode-map
-                    ("C-c s" . flyspell-correct-word-generic))
-        :config
-        (setq flyspell-correct-interface 'flyspell-correct-popup))
+      (leaf flyspell-correct
+            :straight t
+            :straight t
+            :after flyspell
+            :bind (:map flyspell-mode-map
+                        ("C-c f" . flyspell-correct-word-generic))
+            :config
+            (setq flyspell-correct-interface 'flyspell-correct-popup))
 
       (defun flyspell-add-word-to-dict ()
         "Add the word at the current location to the private dictionary without question."

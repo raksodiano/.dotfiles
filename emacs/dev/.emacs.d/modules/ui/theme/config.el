@@ -8,11 +8,28 @@
 ;;   :config
 ;;   (load-theme 'afternoon t))
 
-(use-package dracula-theme
-  :straight t
-  :config
-  (load-theme 'dracula t)
-  (set-face-foreground 'font-lock-variable-name-face "gray"))
+;; (use-package dracula-theme
+;;   :straight t
+;;   :config
+;;   (load-theme 'dracula t)
+;;   (set-face-foreground 'font-lock-variable-name-face "gray"))
+
+(leaf kaolin-themes
+      :straight t
+      :setq ((kaolin-themes-bold . t)
+             (kaolin-themes-italic . t)
+             (kaolin-themes-italic-comments . t)
+             (kaolin-themes-underline . t)
+             (kaolin-themes-hl-line-colored . t)
+             (kaolin-themes-distinct-fringe . t)
+             (kaolin-themes-distinct-company-scrollbar . t)
+             (kaolin-themes-git-gutter-solid . t)
+             (kaolin-ocean-alt-bg . t))
+      :config
+      (load-theme 'kaolin-ocean t)
+      ;; (load-theme 'kaolin-aurora t)
+      ;; (load-theme 'kaolin-valley-dark t)
+      (kaolin-treemacs-theme))
 
 ;; (treemacs-create-theme "Atom"
 ;;   :config

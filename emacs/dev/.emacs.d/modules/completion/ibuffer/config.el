@@ -4,6 +4,7 @@
 
 ;;; Code:
 (leaf ibuffer
+      :straight t
       :bind ("C-x C-b" . ibuffer)
       :config
       (setq ibuffer-saved-filter-groups

@@ -3,20 +3,22 @@
 ;;
 
 ;;; Code:
-(use-package cask
-  :straight t)
+(leaf cask
+      :straight t)
 
-(use-package cask-mode)
+(leaf cask-mode
+      :straight t)
 
-(use-package flycheck-cask
-  :after (flycheck-mode))
+(leaf flycheck-cask
+      :straight t
+      :after (flycheck-mode))
 
-(use-package slime
-  :straight t
-  :init (slime-setup))
+(leaf slime
+      :straight t)
+;; :init (slime-setup))
 
-(use-package slime-company
-  :straight t)
+(leaf slime-company
+      :straight t)
 
 (setq inferior-lisp-program "sbcl")
 (setq slime-auto-connect 'ask)

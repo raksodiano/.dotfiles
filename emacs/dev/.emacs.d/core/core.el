@@ -77,7 +77,8 @@
       scroll-up-aggressively 0.02
       scroll-down-aggressively 0.02)
 
-(add-hook 'window-setup-hook 'toggle-frame-maximized t)
+(modify-all-frames-parameters '((fullscreen . maximized)))
+;; (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
 (setq-default indent-tabs-mode nil
               tab-width 2)
@@ -141,6 +142,9 @@
               pos-tip-border-width 1
               ring-bell-function #'ignore
               visible-bell nil)
+
+(setq display-time-24hr-format t)
+(setq display-time-format "%H:%M - %d %B %Y")
 
 ;;
 ;; Load files

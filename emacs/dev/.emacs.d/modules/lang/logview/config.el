@@ -3,9 +3,9 @@
 ;;
 
 ;;; Code:
-(use-package logview
-  :straight t
-  :config (add-hook 'logview-mode-hook 'auto-revert-mode))
+(leaf logview
+      :straight t
+      :config (add-hook 'logview-mode-hook 'auto-revert-mode))
 
 (provide 'config)
 ;;; config.el ends here

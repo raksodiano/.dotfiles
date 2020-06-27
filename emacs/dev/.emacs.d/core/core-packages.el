@@ -4,8 +4,7 @@
 
 ;;; Code:
 
-;; Install use-package using straight
-(straight-use-package 'use-package) ;;quitar luego
+;; Install leaf using straight
 (straight-use-package 'leaf)
 (straight-use-package 'leaf-keywords)
 (straight-use-package
@@ -54,31 +53,32 @@
       :leaf-defer nil
       :setq (async-bytecomp-package-mode . t))
 
-(leaf 'bind-key)
+(leaf bind-key
+      :straight t)
 
 (leaf validate
       :straight t)
 
 (leaf diminish
-      :straight t)
+  :straight t)
 
 (diminish 'undo-tree-mode)
 (diminish 'hs-minor-mode)
 (diminish 'auto-revert-mode)
 
 (leaf package-lint
-      :straight t)
+  :straight t)
 
 (leaf hydra
-      :straight t)
+  :straight t)
 
 (leaf speed-type
-      :straight t)
+  :straight t)
 
 (leaf vlf-setup
-      :straight vlf
-      :init
-      (setf vlf-application 'dont-ask))
+  :straight vlf
+  :init
+  (setf vlf-application 'dont-ask))
 
 (provide 'core-packages)
 ;;; core-packages.el ends here

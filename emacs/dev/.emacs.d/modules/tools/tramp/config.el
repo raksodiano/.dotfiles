@@ -3,24 +3,24 @@
 ;;
 
 ;;; Code:
-(use-package sudo-edit
-  :straight t)
+(leaf sudo-edit
+      :straight t)
 
-(use-package tramp
-  :config
-  (setq tramp-persistency-file-name (
-                                     concat tramp-dir "tramp")
-        tramp-auto-save-directory (
-                                   concat tramp-dir "tramp-autosave")
-        tramp-debug-buffer nil
-        tramp-verbose 10
-        tramp-shell-prompt-pattern "\\(?:^\\|\r\\)[^]#$%>\n]*#?[]#$%>] *\\(^[\\[[0-9;]*[a-zA-Z] *\\)*")
-  (tramp-set-completion-function "ssh" '((tramp-parse-sconfig "/etc/ssh_config")
-                                         (tramp-parse-sconfig "~/.ssh/config"))))
+(leaf tramp
+      :straight t
+      :config
+      (setq tramp-persistency-file-name (concat tramp-dir "tramp")
+            tramp-auto-save-directory (concat tramp-dir "tramp-autosave")
+            tramp-debug-buffer nil
+            tramp-verbose 10
+            tramp-shell-prompt-pattern "\\(?:^\\|\r\\)[^]#$%>\n]*#?[]#$%>] *\\(^[\\[[0-9;]*[a-zA-Z] *\\)*")
+      ;; (tramp-set-completion-function "ssh" '((tramp-parse-sconfig "/etc/ssh_config")
+      ;;                                        (tramp-parse-sconfig "~/.ssh/config")))
+      )
 
-(use-package counsel-tramp
+(leaf counsel-tramp
   :straight t
-  :bind ("C-c s" . counsel-tramp)
+  :bind ("C-c T" . counsel-tramp)
   :config
   (add-hook 'counsel-tramp-pre-command-hook '(lambda () (projectile-mode 0)
                                                (editorconfig-mode 0)))
