@@ -83,16 +83,17 @@
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
   ;; set default ellipsis
-  (setq org-bullets-bullet-list '("☣" "✡" "✽" "✲" "✱" "✻" "✽" "✾" "❁" "❂" "❃" "❄" "❅" "❆" "❇"))
+  ;; (setq org-bullets-bullet-list '("☣" "✡" "✽" "✲" "✱" "✻" "✽" "✾" "❁" "❂" "❃" "❄" "❅" "❆" "❇"))
+  (setq org-bullets-bullet-list '("⬢" "◆" "▲" "■"))
   (setq org-ellipsis " ⤵")
 
   ;; set default directories
   (setq org-id-locations-file (concat cache-dir "org-id.el")
         org-directory org-dir
-        org-default-notes-file (concat org-directory "/notes.org"))
+        org-default-notes-file (concat org-directory "notes.org"))
 
   ;; set the archive
-  (setq org-archive-location (concat org-directory "/archive.org::datetree/** Archived"))
+  (setq org-archive-location (concat org-directory "archive.org::datetree/** Archived"))
 
   ;; highlight code blocks syntax
   (setq org-src-fontify-natively  t
@@ -152,22 +153,54 @@
                                              ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
                                              ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
                                              ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
+
   ;; capture
-  (setq org-capture-templates
-        '(("w" "Work TODO" entry (file+olp "~/org/work.org" "Work" "Tasks")
-           "* TODO %? \nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n:PROPERTIES:\n:CATEGORY: TASKS\n:CREATED: %U\n:END:")
-          ("o" "Work Overtime" entry (file+olp  "~/org/work.org" "Work" "COMMENT Overtime")
-           "* %? \nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n:PROPERTIES:\n:CREATED: %U\n:END:")
-          ("m" "Work Meetings" entry (file+olp "~/org/work.org" "Work" "Meetings")
-           "* %? \nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n:PROPERTIES:\n:CATEGORY: MEETINGS\n:CREATED: %U\n:END:")
-          ("t" "Work Training's" entry (file+olp  "~/org/work.org" "Work" "Training's")
-           "* %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n:PROPERTIES:\n:CATEGORY: TRAINING'S\n:CREATED: %U\n:END:")
-          ("S" "Stuff TODO" entry (file+olp  "~/org/stuff.org" "Stuff" "Tasks")
-           "* TODO %? \n:PROPERTIES:\n:CATEGORY: TASKS\n:CREATED: %U\n:END:")
-          ("M" "Stuff Meetings" entry (file+olp  "~/org/stuff.org" "Stuff" "Meetings")
-           "* %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n:PROPERTIES:\n:CATEGORY: MEETINGS\n:CREATED: %U\n:END:")
-          ("T" "Stuff Training's" entry (file+olp  "~/org/stuff.org" "Stuff" "Training's")
-           "* %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n:PROPERTIES:\n:CATEGORY: TRAINING'S\n:CREATED: %U\n:END:")))
+  (setq org-reverse-note-order t)
+  (setq org-capture-templates '(("t" "Todo [Work]"
+                                 entry
+                                 (file "~/org/work.org")
+                                 "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n  %i\n")
+                                ("d" "Todo w/date [Work]"
+                                 entry
+                                 (file "~/org/work.org")
+                                 "* TODO %? %<%Y-%m-%d>\n:PROPERTIES:\n:CREATED: %U\n:END:\n  %i\n")
+                                ("l" "Link currently stored [Work]"
+                                 entry
+                                 (file "~/org/work.org")
+                                 "* TODO %i%?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\%A\n%i\n")
+                                ("m" "Meeting [Work]"
+                                 entry
+                                 (file "~/org/work.org")
+                                 "* Meeting %<%Y-%m-%d>: %^{prompt}\n:PROPERTIES:\n:CREATED: %U\n:END:\n- [ ] %?\n\n")))
+
+  ;; (setq org-capture-templates '(("w" "Work TODO"
+  ;;                                entry
+  ;;                                (file "~/org/work.org" "Work" "Tasks")
+  ;;                                "* TODO %? \nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n:PROPERTIES:\n:CATEGORY: TASKS\n:CREATED: %U\n:END:")
+  ;;                               ("o" "Work Overtime"
+  ;;                                entry
+  ;;                                (file (concat org-dir "work.org") "Work" "COMMENT Overtime")
+  ;;                                "* %? \nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n:PROPERTIES:\n:CREATED: %U\n:END:")
+  ;;                               ("m" "Work Meetings"
+  ;;                                entry
+  ;;                                (file (concat org-dir "work.org") "Work" "Meetings")
+  ;;                                "* %? \nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n:PROPERTIES:\n:CATEGORY: MEETINGS\n:CREATED: %U\n:END:")
+  ;;                               ("t" "Work Training's"
+  ;;                                entry
+  ;;                                (file (concat org-dir "work.org") "Work" "Training's")
+  ;;                                "* %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n:PROPERTIES:\n:CATEGORY: TRAINING'S\n:CREATED: %U\n:END:")
+  ;;                               ("S" "Stuff TODO"
+  ;;                                entry
+  ;;                                (file (concat org-dir "stuff.org") "Stuff" "Tasks")
+  ;;                                "* TODO %? \n:PROPERTIES:\n:CATEGORY: TASKS\n:CREATED: %U\n:END:")
+  ;;                               ("M" "Stuff Meetings"
+  ;;                                entry
+  ;;                                (file  (concat org-dir "stuff.org") "Stuff" "Meetings")
+  ;;                                "* %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n:PROPERTIES:\n:CATEGORY: MEETINGS\n:CREATED: %U\n:END:")
+  ;;                               ("T" "Stuff Training's"
+  ;;                                entry
+  ;;                                (file (concat org-dir "stuff.org") "Stuff" "Training's")
+  ;;                                "* %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n:PROPERTIES:\n:CATEGORY: TRAINING'S\n:CREATED: %U\n:END:")))
 
   ;; configure the external apps to open files
   (add-to-list (quote org-file-apps)
@@ -262,6 +295,61 @@
   :commands (org-babel-execute:plantuml))
 
 (use-package ob-async
+  :straight t)
+
+(use-package org-super-agenda
+  :straight t
+  :after org
+  :init (org-super-agenda-mode)
+  (setq org-deadline-warning-days 7)
+  (setq org-deadline-warning-days 7)
+  (setq org-agenda-skip-scheduled-if-done t)
+  (setq org-agenda-start-on-weekday nil)
+  :config
+  (let ((org-super-agenda-groups
+         '(;; Each group has an implicit boolean OR operator between its selectors.
+           (:name "Today"  ; Optionally specify section name
+                  :time-grid t  ; Items that appear on the time grid
+                  :todo "TODAY")  ; Items that have this TODO keyword
+           (:name "Important"
+                  ;; Single arguments given alone
+                  :tag "bills"
+                  :priority "A")
+           ;; Set order of multiple groups at once
+           (:order-multi (2 (:name "Shopping in town"
+                                   ;; Boolean AND group matches items that match all subgroups
+                                   :and (:tag "shopping" :tag "@town"))
+                            (:name "Food-related"
+                                   ;; Multiple args given in list with implicit OR
+                                   :tag ("food" "dinner"))
+                            (:name "Personal"
+                                   :habit t
+                                   :tag "personal")
+                            (:name "Space-related (non-moon-or-planet-related)"
+                                   ;; Regexps match case-insensitively on the entire entry
+                                   :and (:regexp ("space" "NASA")
+                                                 ;; Boolean NOT also has implicit OR between selectors
+                                                 :not (:regexp "moon" :tag "planet")))))
+           ;; Groups supply their own section names when none are given
+           (:todo "WAITING" :order 8)  ; Set order of this section
+           (:todo ("SOMEDAY" "TO-READ" "CHECK" "TO-WATCH" "WATCHING")
+                  ;; Show this group at the end of the agenda (since it has the
+                  ;; highest number). If you specified this group last, items
+                  ;; with these todo keywords that e.g. have priority A would be
+                  ;; displayed in that group instead, because items are grouped
+                  ;; out in the order the groups are listed.
+                  :order 9)
+           (:priority<= "B"
+                        ;; Show this section after "Today" and "Important", because
+                        ;; their order is unspecified, defaulting to 0. Sections
+                        ;; are displayed lowest-number-first.
+                        :order 1)
+           ;; After the last group, the agenda will display items that didn't
+           ;; match any of these groups, with the default order position of 99
+           )))
+    (org-agenda nil "a")))
+
+(use-package org-tree-slide
   :straight t)
 
 ;; (use-package org-tree-slide

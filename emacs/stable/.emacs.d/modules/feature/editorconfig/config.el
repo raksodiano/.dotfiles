@@ -28,6 +28,9 @@
 
 (add-hook 'prog-mode-hook 'rakso/setup-mode)
 
+(use-package anzu
+  :straight t)
+
 (use-package bug-hunter)
 ;; :ensure t)
 
