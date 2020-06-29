@@ -24,7 +24,7 @@
 
 (bind-key "C-c c" 'TeX-clean)
 
-(load "preview-latex.el" nil t t)
+;; (load "preview-latex.el" nil t t)
 
 ;; (use-package cdlatex
 ;;   :ensure t)

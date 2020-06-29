@@ -4,20 +4,25 @@
 
 ;;; Code:
 (leaf cask
+      :require t
       :straight t)
 
 (leaf cask-mode
+      :require t
       :straight t)
 
 (leaf flycheck-cask
+      :require t
       :straight t
       :after (flycheck-mode))
 
 (leaf slime
-      :straight t)
-;; :init (slime-setup))
+      :require t
+      :straight t
+      :init (slime-setup))
 
 (leaf slime-company
+      :require t
       :straight t)
 
 (setq inferior-lisp-program "sbcl")

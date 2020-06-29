@@ -5,8 +5,10 @@
 .cask
 .etc/
 .local/
+.extension/vscode
 elpa/
 elpy/
+emms/
 indium-chrome-profile/
 straight/build/
 straight/repos/

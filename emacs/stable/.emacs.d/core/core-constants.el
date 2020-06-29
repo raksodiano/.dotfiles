@@ -51,6 +51,9 @@
 (defvar bookmark-dir (concat local-dir "bookmark/")
   "Bookmark Save.")
 
+(defvar emms-dir (concat local-dir "emms/")
+  "Emms Save.")
+
 (defvar packages-dir (concat local-dir "packages/")
   "Paquetes instalados.")
 
@@ -75,6 +78,7 @@
            shared-game-score-dir
            url-dir
            bookmark-dir
+           emms-dir
            packages-dir
            projectile-dir))
 

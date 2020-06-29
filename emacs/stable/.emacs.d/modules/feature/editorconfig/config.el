@@ -22,7 +22,7 @@
 (bind-key "C--" 'text-scale-decrease)
 
 (defun rakso/setup-mode ()
-  (nlinum-mode 1)
+  ;;  (nlinum-mode 1)
   (set-fill-column 120)
   (column-number-mode 1))
 

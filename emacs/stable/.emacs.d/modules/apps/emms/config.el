@@ -7,7 +7,7 @@
   :straight t
   :defer t
   :init
-  (setq emms-directory (concat cache-dir "emms/"))
+  (setq emms-directory emms-dir)
   :config
   (require 'emms-setup)
   (require 'emms-player-mpd)

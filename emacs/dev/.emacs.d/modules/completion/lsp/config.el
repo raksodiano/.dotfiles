@@ -4,30 +4,31 @@
 
 ;;; Code:
 (leaf lsp-mode
-  :straight t
-  ;; :commands (lsp lsp-deferred)
-  :init
-  (setq lsp-prefer-capf t)
-  ;; 10Mb LSP consume large payloads so a higher value is required
-  (setq read-process-output-max (* 10 1024 1024))
-  ;; :require (lsp-mode lsp-clients)
-  ;; :config ((lsp-session-file . ,(concat cache-dir "lsp-session"))
-  ;;          (lsp-auto-guess-root . t)
-  ;;          (lsp-enable-folding . nil)
-  ;;          (lsp-enable-snippet . t)
-  ;;          (lsp-enable-symbol-highlighting . nil)
-  ;;          (lsp-idle-delay . 0.500)
-  ;;          (lsp-inhibit-message . t)
-  ;;          (lsp-message-project-root-warning . t)
-  ;;          (lsp-prefer-capf . t)
-  ;;          (lsp-prefer-flymake . t)
-  ;;          (lsp-print-io . nil)
-  ;;          (lsp-restart . 'interactive)
-  ;;          (lsp-signature-auto-activate . nil)
-  ;;          (lsp-eldoc-render-all . nil))
-  :hook ((python-mode . lsp)
-         (lsp-after-open-hook . lsp-enable-imenu))
-  :commands lsp)
+      :require t
+      :straight t
+      ;; :commands (lsp lsp-deferred)
+      :init
+      (setq lsp-prefer-capf t)
+      ;; 10Mb LSP consume large payloads so a higher value is required
+      (setq read-process-output-max (* 10 1024 1024))
+      ;; :require (lsp-mode lsp-clients)
+      ;; :config ((lsp-session-file . ,(concat cache-dir "lsp-session"))
+      ;;          (lsp-auto-guess-root . t)
+      ;;          (lsp-enable-folding . nil)
+      ;;          (lsp-enable-snippet . t)
+      ;;          (lsp-enable-symbol-highlighting . nil)
+      ;;          (lsp-idle-delay . 0.500)
+      ;;          (lsp-inhibit-message . t)
+      ;;          (lsp-message-project-root-warning . t)
+      ;;          (lsp-prefer-capf . t)
+      ;;          (lsp-prefer-flymake . t)
+      ;;          (lsp-print-io . nil)
+      ;;          (lsp-restart . 'interactive)
+      ;;          (lsp-signature-auto-activate . nil)
+      ;;          (lsp-eldoc-render-all . nil))
+      :hook ((python-mode . lsp)
+             (lsp-after-open-hook . lsp-enable-imenu))
+      :commands lsp)
 
 ;; ref: https://gitlab.com/shackra/emacs/commit/b0df30fe744e4483a08731e6a9f6482ab408124c
 (defvar-local conf:lsp-on-change-exist nil

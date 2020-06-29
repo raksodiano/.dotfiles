@@ -4,6 +4,7 @@
 
 ;;; Code:
 (leaf ibuffer
+      :require t
       :straight t
       :bind ("C-x C-b" . ibuffer)
       :config
@@ -40,6 +41,7 @@
 
 ;; Shackle
 (leaf shackle
+      :require t
       :straight t
       :init (shackle-mode)
       :config

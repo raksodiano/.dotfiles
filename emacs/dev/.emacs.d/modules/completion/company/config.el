@@ -21,6 +21,7 @@
         company-transformers '(company-sort-by-occurrence)))
 
 (leaf company-statistics
+  :straight t
   :after (company)
   :init
   (setf company-statistics-file (concat cache-dir "company-statistics-cache.el"))

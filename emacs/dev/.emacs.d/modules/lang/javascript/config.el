@@ -4,6 +4,7 @@
 
 ;;; Code:
 (leaf js2-mode
+      :require t
       :straight t
       :config
       (add-hook 'js-mode-hook 'tern-mode))
@@ -14,6 +15,7 @@
 (add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
 
 (leaf js-format
+      :require t
       :straight t
       :after js2-mode
       :config (add-hook 'js2-mode-hook
@@ -21,6 +23,7 @@
                           (js-format-setup "standard"))))
 
 (leaf tern
+      :require t
       :straight t
       :config
       ;; Force restart of tern in new projects
@@ -32,6 +35,7 @@
         (delete-process "Tern")))
 
 (leaf company-tern
+      :require t
       :straight t
       :init
       (defun cfg:js-mode-hook ()
@@ -40,10 +44,12 @@
       (add-hook 'js-mode-hook 'cfg:js-mode-hook))
 
 (leaf json-mode
+      :require t
       :mode "\\.json\\'"
       :straight t)
 
 (leaf typescript-mode
+      :require t
       :straight t
       :hook (typescript-mode .
                              (lambda ()
@@ -54,6 +60,7 @@
       :mode (rx ".ts" (? "x") string-end))
 
 (leaf vue-mode
+      :require t
       :straight t
       :init
       (setq mmm-submode-decoration-level 2))

@@ -4,10 +4,12 @@
 
 ;;; Code:
 (leaf flycheck-package
+      :require t
       :straight t
       :after (flycheck))
 
 (leaf flyspell
+      :require t
       :straight t
       :diminish ""
       :bind (flyspell-mode-map
@@ -40,11 +42,11 @@
         (flyspell-mode 1))
 
       (leaf flyspell-correct
-            :straight t
+            :require t
             :straight t
             :after flyspell
-            :bind (:map flyspell-mode-map
-                        ("C-c f" . flyspell-correct-word-generic))
+            :bind (flyspell-mode-map
+                   ("C-c f" . flyspell-correct-word-generic))
             :config
             (setq flyspell-correct-interface 'flyspell-correct-popup))
 

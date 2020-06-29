@@ -46,7 +46,7 @@
 
 (add-to-list 'slime-contribs 'slime-company)
 
-(slime-setup)
+;; (slime-setup)
 
 (provide 'config)
 ;;; config.el ends here

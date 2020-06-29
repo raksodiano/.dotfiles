@@ -4,12 +4,15 @@
 
 ;;; Code:
 (leaf flx
+      :require t
       :straight t)
 
 (leaf avy
+      :require t
       :straight t)
 
 (leaf ivy
+      :require t
       :straight t
       :diminish ivy-mode
       ;; :bind (("C-! r" . swiper)
@@ -29,6 +32,7 @@
             ivy-initial-inputs-alist nil))
 
 (leaf lsp-ivy
+      :require t
       :straight t)
 
 ;; (leaf ivy-rich
@@ -36,12 +40,14 @@
 ;;   :config (ivy-rich-mode 1))
 
 (leaf swiper
+      :require t
       :straight t)
 ;; :bind
 ;; (:map read-expression-map
 ;;       ("C-r" . counsel-expression-history)))
 
 (leaf counsel
+      :require t
       :straight t
       :bind ((("M-x" . counsel-M-x)
               ("M-y" . counsel-yank-pop)
@@ -56,7 +62,8 @@
       (setq counsel-find-file-at-point t))
 
 (leaf imenu-anywhere
-  :straight t)
+      :require t
+      :straight t)
 
 (provide 'config)
 ;;; config.el ends here
