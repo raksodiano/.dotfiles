@@ -117,7 +117,6 @@
   :config (move-text-default-bindings))
 
 (use-package subword
-  ;; :ensure nil
   :diminish subword-mode)
 
 (use-package hungry-delete
@@ -127,6 +126,7 @@
 
 (use-package lorem-ipsum
   :straight t
+  :diminish t
   :config
   (bind-keys :prefix-map rakso-lorem-ipsum
              :prefix "C-c l"

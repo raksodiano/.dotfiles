@@ -3,8 +3,8 @@
 ;;
 
 ;;; Code:
-
 (use-package org-projectile
+  :after (projectile)
   :straight t
   :config
   (setq org-projectile-projects-file (concat cache-dir "projectile-bookmarks.org")))

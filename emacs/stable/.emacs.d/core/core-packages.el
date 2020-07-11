@@ -6,11 +6,15 @@
 
 ;; Install use-package using straight
 (straight-use-package 'use-package)
+(setf straight-use-package-by-default t)
+
+(eval-when-compile
+  (require 'use-package))
 
 ;; setup zsh as a default shell when is available
-;; (let ((zsh-path (executable-find "zsh")))
-;;   (when zsh-path
-;;     (setq shell-file-name zsh-path)))
+(let ((zsh-path (executable-find "zsh")))
+  (when zsh-path
+    (setq shell-file-name zsh-path)))
 
 (setq package--init-file-ensured t
       package-user-dir (expand-file-name "elpa" packages-dir)
@@ -39,9 +43,8 @@
 (use-package diminish
   :straight t)
 
-(diminish 'undo-tree-mode)
-(diminish 'hs-minor-mode)
-(diminish 'auto-revert-mode)
+;; (diminish 'hs-minor-mode)
+;; (diminish 'auto-revert-mode)
 
 (use-package package-lint
   :straight t)
