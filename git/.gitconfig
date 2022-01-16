@@ -1,15 +1,15 @@
 [user]
-	name = Oskar E. Torres O.
-	email = oskar.torres.1234@gmail.com
+	name = 
+	email = 
 [alias]
 	co = checkout
 	br = branch
 	cm = commit
 	st = status
 [github]
-	user = raksodiano
+	user = 
 [gitlab]
-	user = raksodiano
+	user = 
 [push]
 	default = simple
 [magit]
