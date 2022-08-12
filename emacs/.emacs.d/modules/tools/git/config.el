@@ -128,21 +128,21 @@
                             (goto-line e)))
       (message "NO git-gutters!"))))
 
-(use-package gitconfig-mode
-  :straight t
-  :mode ("/\\.?git/?config$"
-         "/\\.gitmodules$")
-  :init (add-hook 'gitconfig-mode-hook 'flyspell-mode))
+;; (use-package gitconfig-mode
+;; :straight t
+;; :mode ("/\\.?git/?config$"
+;; "/\\.gitmodules$")
+;; :init (add-hook 'gitconfig-mode-hook 'flyspell-mode))
 
-(use-package gitignore-mode
-  :straight t
-  :mode ("/\\.gitignore$"
-         "/\\.git/info/exclude$"
-         "/git/ignore$"))
+;; (use-package gitignore-mode
+;; :straight t
+;; :mode ("/\\.gitignore$"
+;; :"/\\.git/info/exclude$"
+;; "/git/ignore$"))
 
-(use-package gitattributes-mode
-  :straight t
-  :defer t)
+;; (use-package gitattributes-mode
+  ;; :straight t
+  ;; :defer t)
 
 (use-package git-timemachine
   :straight t

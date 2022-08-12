@@ -39,7 +39,7 @@
 
 (use-package org
   :straight t
-  :straight org-plus-contrib
+  ;; :straight org-plus-contrib
   ;; :pin org
   :bind (("C-c a" . org-agenda-list)
          ("C-c c" . org-capture)
@@ -273,26 +273,26 @@
            (buffer-string))))
     (insert (format "#+BEGIN_SRC emacs-lisp :results output silent\n  (with-temp-file %S\n    (insert (base64-decode-string\n      %S)))\n#+END_SRC" filename base64-string))))
 
-(use-package ob-python
-  :defer t
-  :straight org-plus-contrib
+;; (use-package ob-python
+  ;; :defer t
+  ;; :straight org-plus-contrib
   ;; :ensure org-plus-contrib
-  :commands (org-babel-execute:python))
+  ;; :commands (org-babel-execute:python))
 
-(use-package ob-shell
-  :defer t
-  :straight org-plus-contrib
+;; (use-package ob-shell
+  ;; :defer t
+  ;; :straight org-plus-contrib
   ;; :ensure org-plus-contrib
-  :commands (org-babel-execute:sh
-             org-babel-expand-body:sh
-             org-babel-execute:bash
-             org-babel-expand-body:bash))
+  ;; :commands (org-babel-execute:sh
+             ;; org-babel-expand-body:sh
+             ;; org-babel-execute:bash
+             ;; org-babel-expand-body:bash))
 
-(use-package ob-plantuml
-  :defer t
-  :straight org-plus-contrib
+;; (use-package ob-plantuml
+  ;; :defer t
+  ;; :straight org-plus-contrib
   ;; :ensure org-plus-contrib
-  :commands (org-babel-execute:plantuml))
+  ;; :commands (org-babel-execute:plantuml))
 
 (use-package ob-async
   :straight t)

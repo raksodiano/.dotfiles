@@ -19,11 +19,13 @@
 (setq package--init-file-ensured t
       package-user-dir (expand-file-name "elpa" packages-dir)
       package-enable-at-startup nil
-      package-archives '(("gnu"   . "https://elpa.gnu.org/packages/")
+      package-archives '(("nongnu" . "https://elpa.nongnu.org/nongnu/")
+                         ("gnu"   . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")
                          ("org" . "https://orgmode.org/elpa/"))
 
-      package-archive-priorities '(("melpa" . 10)
+      package-archive-priorities '(("nongnu" . 10)
+                                   ("melpa" . 9)
                                    ("gnu" . 8)
                                    ("org" . 6)))
 
