@@ -5,8 +5,7 @@
 ;;; Code:
 (use-package page-break-lines
   :straight t
-  :diminish page-break-lines-mode
-  :config (turn-on-page-break-lines-mode))
+  :diminish page-break-lines-mode)
 
 (use-package dashboard
   :straight t
@@ -44,8 +43,8 @@
   (dashboard-setup-startup-hook)
   (setq dashboard-banner-logo-title
         (concat "GNU Emacs " emacs-version " kernel "
-                (car (split-string (shell-command-to-string "uname -r") "-")) " "
-                (car (split-string (shell-command-to-string "uname -m") "-")))
+                (car (split-string (shell-command-to-string "uname -rm") "-")))
+        ;;(car (split-string (shell-command-to-string "uname -m") "-")))
         dashboard-page-separator "\n\f\n")
 
   (setq dashboard-center-content t
