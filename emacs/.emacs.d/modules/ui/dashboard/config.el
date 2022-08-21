@@ -5,8 +5,8 @@
 ;;; Code:
 (use-package page-break-lines
   :straight t
-  :diminish page-break-lines-mode
-  :config (turn-on-page-break-lines-mode))
+  :diminish page-break-lines-mode)
+  ;; :config (turn-on-page-break-lines-mode))
 
 (use-package dashboard
   :straight t
