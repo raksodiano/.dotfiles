@@ -1,6 +1,5 @@
 <p align="center"><img src="assets/dotfiles-logo.svg" width=512></p>
 <p align="center">
-<a href="https://getfedora.org//"><img src="https://img.shields.io/badge/Fedora-32.svg?style=flat-square"/></a>
   <a href="https://www.gnu.org/software/stow/"><img src="https://img.shields.io/badge/GNU%20Stow-2.3.1-b48ead.svg?style=flat-square"/></a>
 </p>
 <p align="center">This repository contains all of my dotfiles configuration.</p>
@@ -31,7 +30,6 @@ few command lines.
  mpd             ➔ music player daemon
  systemd         ➔ systemd units
  tmux            ➔ terminal multiplexer
- xonsh           ➔ xonsh settings, aliases, and custom prompts
  zsh             ➔ zshell settings, aliases, and custom prompts
 ```
 
@@ -42,8 +40,8 @@ few command lines.
 No matter what your Linux distribution, `stow` can easily be installed according
 to your package manager:
 
-	sudo dnf install stow
 	sudo apt-get install stow
+	sudo dnf install stow
 
 Once the installation is complete, make a clone of the repository:
 
