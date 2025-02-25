@@ -46,6 +46,11 @@
       company-minimum-prefix-length 1
       company-idle-delay 0.1)
 
+;; Activar auto-completado y acciones de código
+(setq lsp-enable-suggest-server-download t  ; Descargar LSP si no está instalado
+      lsp-auto-execute-action t             ; Ejecutar acciones automáticamente (opcional)
+      lsp-completion-enable t)               ; Integrar con company-mode
+                                        ; 
 ;; Python (pyright)
 (setq python-shell-interpreter "python3"
       lsp-pyright-multi-root t)
@@ -131,3 +136,32 @@
                             "${title}\n\n")
          :unnarrowed t
          :mkdir t)))
+
+;; -------------------------------
+;; Configuración de Typescript (NestJS)
+;; -------------------------------
+
+(use-package! typescript-mode
+  :hook (typescript-mode . lsp-deferred)
+  :config
+  (setq lsp-clients-typescript-auto-install-server t  ; Instalar automáticamente
+        lsp-clients-typescript-log-verbosity "debug"  ; Logs detallados
+        lsp-completion-enable-auto-import t           ; Auto-imports
+        lsp-tsserver-plugins-path "~/node_modules"    ; Ruta de plugins de TS
+        ))
+
+(setq lsp-clients-typescript-init-opts '(:plugins ["@nestjs/swagger-plugin"]  
+                                         :compilerOptions {:experimentalDecorators t}))
+
+(setq prettier-js-args '("--trailing-comma" "all"
+                         "--single-quote" "true")
+      eslintd-fix-mode t)  ; Corregir errores al guardar
+
+;; -------------------------------
+;; Configuración Docker
+;; -------------------------------
+
+(setq lsp-dockerfile-language-server-path "docker-langserver")
+
+(add-to-list 'auto-mode-alist
+             '("docker-compose.*\\.yml\\'" . docker-compose-mode))
