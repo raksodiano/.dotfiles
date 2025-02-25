@@ -19,5 +19,8 @@ sudo zypper install clang-tools-extra  # OpenSUSE
 
 # Shell Script
 npm install -g bash-language-server
+```
+
+### 3. Carpetas para uso de notas
 
 ```
