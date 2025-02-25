@@ -23,4 +23,6 @@ npm install -g bash-language-server
 
 ### 3. Carpetas para uso de notas
 
+``` bash
+mkdir -p ~/Org/notes/{task,note,hugo,diario}
 ```
