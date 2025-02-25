@@ -7,6 +7,7 @@
 ;; Tema y fuentes
 (setq doom-theme 'doom-nord)                  ; Tema Nord (oscuro)
 (setq display-line-numbers-type 'relative)    ; Números de línea relativos
+(add-hook 'prog-mode-hook #'hl-line-mode)
 
 ;; Iniciar maximizado
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
@@ -19,7 +20,7 @@
 (centaur-tabs-mode t)
 
 ;; Treemacs (Árbol de directorios)
-(setq treemacs-width 30
+(setq treemacs-width 42
       treemacs-follow-mode t                 ; Sigue el archivo activo
       treemacs-indentation 2
       treemacs-git-mode 'extended
@@ -30,7 +31,6 @@
 (add-hook 'markdown-mode-hook #'outline-minor-mode)
 
 (setq hs-isearch-open t           ; Expandir folds al buscar
-      hs-show-hidden-shortcut " ⤵"  ; Texto para folds colapsados
       doom-modeline-icon t)       ; Mostrar íconos en la barra de estado
 
 ;; -------------------------------
@@ -128,6 +128,6 @@
 (setq org-roam-capture-templates
       '(("d" "Nota Default" plain "%?"
          :target (file+head "${slug}.org"
-                            "#+TITLE: ${title}\n#+DATE: %U\n#+CATEGORY: %^{Categoría}\n\n")
+                            "${title}\n\n")
          :unnarrowed t
          :mkdir t)))
