@@ -14,6 +14,12 @@ deactivate
 # JavaScript/TypeScript
 npm install -g typescript-language-server vscode-langservers-extracted
 
+# Docker
+npm install -g dockerfile-language-server-nodejs
+
+# Yml
+npm install -g yaml-language-server
+
 # C/C++ (clangd)
 sudo zypper install clang-tools-extra  # OpenSUSE
 
