@@ -6,8 +6,30 @@
 
 ;; Tema y fuentes
 (setq doom-theme 'doom-nord)                  ; Tema Nord (oscuro)
+(use-package! doom-nord-theme
+  :defer t
+  :custom
+  (doom-nord-brighter-modeline t)
+  (doom-nord-padded-modeline t)
+  (doom-nord-region-highlight 'frost))
+
 (setq display-line-numbers-type 'relative)    ; Números de línea relativos
 (add-hook 'prog-mode-hook #'hl-line-mode)
+
+;; Modo zen
+(after! writeroom-mode
+  (setq +zen-text-scale 1.25))
+
+(custom-set-faces!
+  '(mode-line :height 90 :inherit 'variable-pitch)
+  '(mode-line-inactive :height 80 :inherit 'variable-pitch))
+
+(after! all-the-icons
+  (setq all-the-icons-scale-factor 1.1))
+
+(after! doom-modeline
+  (setq doom-modeline-buffer-file-name-style 'truncate-with-project))
+
 
 ;; Iniciar maximizado
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
@@ -32,6 +54,37 @@
 
 (setq hs-isearch-open t           ; Expandir folds al buscar
       doom-modeline-icon t)       ; Mostrar íconos en la barra de estado
+
+(after! highlight-indent-guides
+  (setq highlight-indent-guides-method (if (display-graphic-p)
+                                           'bitmap
+                                         'character)
+        highlight-indent-guides-responsive 'top))
+
+(add-transient-hook! 'doom-first-input-hook
+  (let ((cell (assoc 'side
+                     (assoc "^\\*\\(?:Wo\\)?Man " display-buffer-alist))))
+    (setcdr cell 'right)))
+
+(use-package! doom-modeline
+  :defer t
+  :custom
+  (doom-modeline-modal-icon nil))
+
+(setq require-final-newline 'ask)
+
+(after! persp-mode
+  (defadvice! dan/persp-autosave--add-breakline (&rest _)
+    "Automatically add breakline for certain buffers before saving to file."
+    :before #'basic-save-buffer
+    (when (and
+           (/= (point-max) (point-min))
+           (/= (char-after (1- (point-max))) ?\n)
+           (string-equal (file-name-directory
+                          (or (buffer-file-name (current-buffer)) ""))
+                         persp-save-dir))
+      (goto-char (point-max))
+      (insert ?\n))))
 
 ;; -------------------------------
 ;; Configuración de LSP para todos los lenguajes
@@ -98,15 +151,45 @@
       '(python-mode js-mode typescript-mode dart-mode c-mode c++-mode sh-mode lua-mode))
 
 ;; -------------------------------
+;; Configuración de magit
+;; -------------------------------
+
+(use-package! magit-delta
+  :custom (magit-delta-default-dark-theme "Nord")
+  :hook   (magit-mode . magit-delta-mode))
+
+(after! magit-delta
+  (defcustom dan/magit-delta-point-max 50000
+    "Maximum length of diff buffer which `magit-delta' will tolerate."
+    :group 'magit-delta
+    :type  'natnum)
+  (defadvice! dan/magit-delta-colorize-maybe (fn &rest args)
+    "Disable mode if there are too many characters."
+    :around #'magit-delta-call-delta-and-convert-ansi-escape-sequences
+    (if (<= (point-max) dan/magit-delta-point-max)
+        (apply fn args)
+      (magit-delta-mode -1))))
+
+(after! magit
+  (add-hook! 'magit-post-refresh-hook
+    (when (and (not magit-delta-mode)
+               (<= (point-max) dan/magit-delta-point-max))
+      (magit-delta-mode +1))))
+
+;; -------------------------------
 ;; Configuración de org-mode
 ;; -------------------------------
 
 ;; Org-mode
 (setq org-directory "~/Org"                   ; Directorio de notas
-      org-agenda-files '("~/Org/agenda.org")
+      org-agenda-files '("~/Org/agenda")
       org-roam-directory "~/Org/notes"
       org-startup-indented t                  ; Indentación automática
       org-ellipsis " ⤵")                     ; Icono para folds
+
+(after! org
+  (setq-hook! org-mode
+    display-line-numbers nil))
 
 ;; Org-mode (Ajustar sangría)
 (setq org-edit-src-content-indentation 2)
@@ -137,6 +220,20 @@
          :unnarrowed t
          :mkdir t)))
 
+(after! org
+  (setq-hook! org-mode
+    display-line-numbers nil))
+
+(after! org
+  (custom-declare-face '+org-todo-wait  '((t (:inherit (bold mode-line-emphasis org-todo)))) "")
+  (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "PROJ(p)" "WAIT(w)" "IDEA(i)" "EVENT(e)" "|"
+                             "DONE(d)" "CANCELLED(c)"))
+        org-todo-keyword-faces '(("NEXT"      . +org-todo-active)
+                                 ("WAIT"      . +org-todo-wait)
+                                 ("EVENT"     . +org-todo-onhold)
+                                 ("PROJ"      . +org-todo-project)
+                                 ("CANCELLED" . +org-todo-cancel))))
+
 ;; -------------------------------
 ;; Configuración de Typescript (NestJS)
 ;; -------------------------------
@@ -165,3 +262,143 @@
 
 (add-to-list 'auto-mode-alist
              '("docker-compose.*\\.yml\\'" . docker-compose-mode))
+
+;; -------------------------------
+;; Configuración de dired 
+;; -------------------------------
+
+(add-hook! dired-mode #'dired-hide-details-mode)
+(use-package! dired-open
+  :after dired
+  :custom
+  (dired-open-functions (list #'dired-open-guess-shell-alist
+                              #'dired-open-by-extension
+                              #'dired-open-subdir))
+  (dired-guess-shell-alist-user '(("\\.\\(?:docx\\|djvu\\|eps\\)\\'" "xdg-open")
+                                  ("\\.\\(?:\\|gif\\|xpm\\)\\'" "xdg-open")
+                                  ("\\.\\(?:xcf\\)\\'" "xdg-open")
+                                  ("\\.csv\\'" "xdg-open")
+                                  ("\\.tex\\'" "xdg-open")
+                                  ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|rm\\|rmvb\\|ogv\\|mov\\)\\(?:\\.part\\)?\\'" "xdg-open")
+                                  ("\\.\\(?:mp3\\|flac\\)\\'" "xdg-open")
+                                  ("\\.html?\\'" "xdg-open")
+                                  ("\\.md\\'" "xdg-open"))))
+
+(use-package! dired-subtree
+  :after dired)
+
+(add-hook! dired-mode #'dired-async-mode)
+
+(after! dired
+  (map! :map dired-mode-map
+        :n "R" #'dired-async-do-rename
+        :n "C" #'dired-async-do-copy
+        :n "S" #'dired-async-do-symlink
+        :n "H" #'dired-async-do-hardlink))
+
+(after! dired
+  (setq dired-dwim-target #'dired-dwim-target-recent))
+
+(after! dirvish
+  (setq dirvish-default-layout '(0 0 0.4)
+        dirvish-layout-recipes '((1 0.11 0.55)
+                                 (0 0    0.40))))
+
+(after! dirvish
+  (pushnew! dirvish-attributes 'file-size))
+
+(map! :leader
+      :desc "Dired" "o -" #'dired-jump)
+
+;; -------------------------------
+;; Configuración Dotenv 
+;; -------------------------------
+
+(use-package! dotenv-mode
+  :mode ("\\.env\\.?.*\\'" . dotenv-mode))
+
+;; -------------------------------
+;; Configuración en pruebas 
+;; -------------------------------
+
+(use-package! alert
+  :defer t
+  :custom
+  (alert-default-style (if IS-LINUX 'libnotify 'osx-notifier)))
+
+(use-package! annotate
+  :commands (annotate-load-annotation-data))
+
+(add-hook! find-file
+  (let ((file-name (buffer-file-name))
+        (annotation-files (mapcar #'car (annotate-load-annotation-data t))))
+    (when (and file-name
+               (member file-name annotation-files))
+      (annotate-mode +1))))
+
+(after! annotate
+  (setq annotate-file (expand-file-name "annotate" doom-cache-dir)))
+
+(setq annotate-blacklist-major-mode '(org-mode))
+
+(after! annotate
+  (setq annotate-mode-map (make-sparse-keymap))
+  (map! :map annotate-mode-map
+        :leader
+        :prefix ("b a" . "annotate")
+        "a" #'annotate-annotate
+        "d" #'annotate-delete-annotation
+        "s" #'annotate-show-annotation-summary
+        "]" #'annotate-goto-next-annotation
+        "[" #'annotate-goto-previous-annotation))
+
+(use-package! cape
+  :init
+  (after! term
+    (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
+    (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
+  :defer t)
+
+(after! company
+  (setq company-minimum-prefix-length 2
+        company-idle-delay 0.05))
+
+(use-package! consult-company
+  :commands consult-company)
+
+(after! (company consult)
+  (map! :map company-active-map
+        "C-S-s" #'consult-company))
+
+(after! consult-dir
+  (defun consult-dir--fasd-dirs ()
+    "Return list of fasd dirs."
+    (split-string (shell-command-to-string "fasd -ld") "\n" t))
+
+  (defvar consult-dir--source-fasd
+    `(:name     "Fasd dirs"
+      :narrow   ?f
+      :category file
+      :face     consult-file
+      :history  file-name-history
+      :enabled  ,(lambda () (executable-find "fasd"))
+      :items    ,#'consult-dir--fasd-dirs)
+    "Fasd directory source for `consult-dir'.")
+
+  (add-to-list 'consult-dir-sources 'consult-dir--source-fasd t))
+
+(use-package! consult-projectile
+  :defer t
+  :init
+  (map! :leader
+        :desc "Project find" "SPC" #'consult-projectile))
+
+(after! consult-projectile
+  (setq consult-projectile-use-projectile-switch-project t))
+
+(use-package! cus-edit
+  :defer t
+  :custom
+  (custom-unlispify-menu-entries nil)
+  (custom-unlispify-tag-names nil)
+  (custom-unlispify-remove-prefixes nil))
