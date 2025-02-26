@@ -86,6 +86,12 @@
       (goto-char (point-max))
       (insert ?\n))))
 
+;; Mejoramos el manual
+(add-transient-hook! 'doom-first-input-hook
+  (let ((cell (assoc 'side
+                     (assoc "^\\*\\(?:Wo\\)?Man " display-buffer-alist))))
+    (setcdr cell 'right)))
+
 ;; -------------------------------
 ;; Configuración de LSP para todos los lenguajes
 ;; -------------------------------
@@ -402,3 +408,64 @@
   (custom-unlispify-menu-entries nil)
   (custom-unlispify-tag-names nil)
   (custom-unlispify-remove-prefixes nil))
+
+(use-package! proced
+  :defer t
+  :custom
+  (proced-auto-update-flag t)
+  (proced-auto-update-interval 1))
+
+(setq uniquify-buffer-name-style 'forward)
+
+;; -------------------------------
+;; Configuración de detached
+;; -------------------------------
+
+(use-package! detached
+  :after-call (compile dired dired-rsync embark-act eshell org-mode projectile-mode shell vterm)
+  :config
+  (setq detached-notification-function (if IS-LINUX
+                                           #'detached-state-transition-notifications-message
+                                         #'detached-extra-alert-notification)
+        detached-db-directory doom-cache-dir
+        detached-init-block-list   '(dired-rsync dired)
+        detached-session-directory (temporary-file-directory)))
+
+(map! :g "M-&" #'detached-shell-command)
+
+(use-package! detached-consult
+  :defer t
+  :init
+  (map! :leader
+        :desc "Detached Sessions" :g "o s" #'detached-consult-session))
+
+(use-package! detached-compile
+  :defer t
+  :init
+  (map! :leader
+        :desc "Compile" :g  "c c" #'detached-compile
+        :desc "Recompile" :g "c C" #'detached-compile-recompile))
+
+(use-package! detached-list
+  :defer t
+  :init
+  (map! :leader
+        :desc "Detached Manage Sessions" :g "o S" #'detached-list-sessions)
+  :config
+  (evil-set-initial-state 'detached-list-mode 'emacs))
+
+(after! detached
+  (detached-init))
+
+(use-package! vlf
+  :defer-incrementally t
+  :custom
+  (vlf-batch-size-remote read-process-output-max)
+  :config
+  (require 'vlf-setup)
+  (add-hook! 'vlf-mode-hook #'so-long-mode))
+
+(after! so-long
+  (add-to-list 'so-long-mode-preserved-variables 'vlf-mode))
+
+(add-hook! 'doom-first-buffer-hook #'+global-word-wrap-mode)
