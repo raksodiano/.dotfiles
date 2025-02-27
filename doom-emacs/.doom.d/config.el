@@ -109,7 +109,7 @@
 (setq lsp-enable-suggest-server-download t  ; Descargar LSP si no está instalado
       lsp-auto-execute-action t             ; Ejecutar acciones automáticamente (opcional)
       lsp-completion-enable t)               ; Integrar con company-mode
-                                        ; 
+                                        ;
 ;; Python (pyright)
 (setq python-shell-interpreter "python3"
       lsp-pyright-multi-root t)
@@ -250,8 +250,8 @@
   (setq lsp-clients-typescript-auto-install-server t  ; Instalar automáticamente
         lsp-clients-typescript-log-verbosity "debug"  ; Logs detallados
         lsp-completion-enable-auto-import t           ; Auto-imports
-        lsp-tsserver-plugins-path "~/node_modules"    ; Ruta de plugins de TS
-        ))
+        lsp-tsserver-plugins-path "~/node_modules"))    ; Ruta de plugins de TS
+
 
 (setq lsp-clients-typescript-init-opts '(:plugins ["@nestjs/swagger-plugin"]  
                                          :compilerOptions {:experimentalDecorators t}))
