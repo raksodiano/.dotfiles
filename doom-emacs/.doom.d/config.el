@@ -227,8 +227,10 @@
          :mkdir t)))
 
 (after! org
-  (setq-hook! org-mode
-    display-line-numbers nil))
+  (setq-default fill-column 120)
+  (setq visual-fill-column-width 120
+        visual-fill-column-center-text t)
+  (add-hook 'org-mode-hook #'visual-fill-column-mode))
 
 (after! org
   (custom-declare-face '+org-todo-wait  '((t (:inherit (bold mode-line-emphasis org-todo)))) "")
