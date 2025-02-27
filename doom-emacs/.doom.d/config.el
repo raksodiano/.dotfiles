@@ -186,7 +186,6 @@
 ;; Configuración de org-mode
 ;; -------------------------------
 
-;; Org-mode
 (setq org-directory "~/Org"                   ; Directorio de notas
       org-agenda-files '("~/Org/agenda")
       org-roam-directory "~/Org/notes"
@@ -408,6 +407,34 @@
   (proced-auto-update-interval 1))
 
 (setq uniquify-buffer-name-style 'forward)
+
+(defun install-lsp-servers ()
+  "Instala todos los servidores LSP requeridos"
+  (interactive)
+  
+  ;; Python LSP
+  (unless (file-exists-p "~/.emacs-lsp-venv/bin/pylsp")
+    (shell-command "python3 -m venv ~/.emacs-lsp-venv")
+    (shell-command "~/.emacs-lsp-venv/bin/pip install python-lsp-server pyright pylint black"))
+
+  ;; JavaScript/TypeScript
+  (unless (executable-find "typescript-language-server")
+    (shell-command "npm install -g typescript-language-server vscode-langservers-extracted"))
+
+  ;; Docker
+  (unless (executable-find "docker-langserver")
+    (shell-command "npm install -g dockerfile-language-server-nodejs"))
+
+  ;; YAML
+  (unless (executable-find "yaml-language-server")
+    (shell-command "npm install -g yaml-language-server"))
+
+  ;; Shell Script
+  (unless (executable-find "bash-language-server")
+    (shell-command "npm install -g bash-language-server")))
+
+;; Ejecutar después de cargar Doom
+(add-hook 'doom-after-init-hook #'install-lsp-servers)
 
 ;; -------------------------------
 ;; Configuración de detached
