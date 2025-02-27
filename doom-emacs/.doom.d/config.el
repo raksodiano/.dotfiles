@@ -274,21 +274,6 @@
 ;; -------------------------------
 
 (add-hook! dired-mode #'dired-hide-details-mode)
-(use-package! dired-open
-  :after dired
-  :custom
-  (dired-open-functions (list #'dired-open-guess-shell-alist
-                              #'dired-open-by-extension
-                              #'dired-open-subdir))
-  (dired-guess-shell-alist-user '(("\\.\\(?:docx\\|djvu\\|eps\\)\\'" "xdg-open")
-                                  ("\\.\\(?:\\|gif\\|xpm\\)\\'" "xdg-open")
-                                  ("\\.\\(?:xcf\\)\\'" "xdg-open")
-                                  ("\\.csv\\'" "xdg-open")
-                                  ("\\.tex\\'" "xdg-open")
-                                  ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|rm\\|rmvb\\|ogv\\|mov\\)\\(?:\\.part\\)?\\'" "xdg-open")
-                                  ("\\.\\(?:mp3\\|flac\\)\\'" "xdg-open")
-                                  ("\\.html?\\'" "xdg-open")
-                                  ("\\.md\\'" "xdg-open"))))
 
 (use-package! dired-subtree
   :after dired)
@@ -315,6 +300,11 @@
 
 (map! :leader
       :desc "Dired" "o -" #'dired-jump)
+
+(use-package! markdown-mode
+  :mode ("\\.md\\'" . markdown-mode)
+  :config
+  (setq markdown-command "pandoc"))  
 
 ;; -------------------------------
 ;; Configuración Dotenv 
