@@ -1,0 +1,163 @@
+##+TITLE: Raksodiano's DOOM Emacs configuration
+#+OPTIONS: tags:nil todo:nil
+#+LANGUAGE: en
+#+PROPERTY: header-args+ :mkdirp yes
+
+The truth is that I'm very lazy when it comes to making configurations and being a hoper distro, one day I'm with =ArchLinux=, another with =FreeBSD=, in others I'm with =OpenBSD= as in others I'm with =openSUSE= and only for *Emacs* versions I had to reconfigure something or packages failed, that made me a little tired and so I decided to leave aside the holy mode and go to the dark side XD
+
+That's why this emacs configuration was born using *Doom Emacs* as a base, to get rid of some headaches.
+
+* Installation
+
+** Prerequisites
+
+- Git 2.23+
+- Emacs 27.x+
+- Stow 2.x+
+- Python 3.3+
+- NodeJS 16+
+
+** Steps
+
+- First, we clone Doom Emacs and install it, personally I prefer to install it in the ~/.emacs.d folder, as it has always been a habit for me.
+
+  #+begin_quote
+  git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.emacs.d
+   #+end_quote
+
+- Second, with the dotfiles cloned, you just need to use stow.
+
+  #+begin_quote
+  cd ~/.dotfiles
+  stow -vt ~ doom-emacs
+  #+end_quote
+
+- Third, we install doom emacs with the configurations I have already made.
+
+  #+begin_quote
+  ~/.emacs.d/bin/doom install
+  #+end_quote
+
+  Then, just follow the instructions for installing [[https://github.com/hlissner/doom-emacs#install][doom emacs]]. Run ~doom env~, then ~doom tangle~ and finally ~doom install~.
+
+* Memory of goldfish
+
+As I am very forgetful, here are some shortcuts that may be useful to me.
+
+** Company Mode
+
+  By default, completion starts after a short idle period or with the C-SPC key. While the popup is visible, the following keys are available:
+
+| Keybind   | Description                              |
+|-----------+------------------------------------------|
+| =C-n=     | Go to next candidate                     |
+| =C-p=     | Go to previous candidate                 |
+| =C-j=     | (evil) Go to next candidate              |
+| =C-k=     | (evil) Go to previous candidate          |
+| =C-h=     | Display documentation (if available)     |
+| =C-u=     | Move to previous page of candidates      |
+| =C-d=     | Move to next page of candidates          |
+| =C-s=     | Filter candidates                        |
+| =C-S-s=   | Search candidates with helm/ivy          |
+| =C-SPC=   | Complete common                          |
+| =TAB=     | Complete common or select next candidate |
+| =S-TAB=   | Select previous candidate                |
+| =C-x C-]= | Complete etags                           |
+| =C-x C-f= | Complete file path                       |
+| =C-x C-k= | Complete from dictionary/keyword         |
+| =C-x C-l= | Complete full line                       |
+| =C-x C-o= | Invoke complete-at-point function        |
+| =C-x C-n= | Complete next symbol at point            |
+| =C-x C-p= | Complete previous symbol at point        |
+| =C-x C-s= | Complete snippet                         |
+| =C-x s=   | Complete spelling suggestions            |
+|           |                                          |
+
+** hl-todo
+
+| keybind   | description                      |
+|-----------+----------------------------------|
+| =]t=      | go to next TODO item             |
+| =[t=      | go to previous TODO item         |
+| =SPC p t= | show all TODO items in a project |
+| =SPC s p= | search project for a string      |
+| =SPC s b= | search buffer for string         |
+
+** zen
+
+| keybind   | description           |
+|-----------+-----------------------|
+| =SPC t z= | Zen Mode              |
+| =SPC t Z= | Zen Mode (Fullscreen) |
+
+** fold
+
+| Keybind | Description               |
+|---------+---------------------------|
+| =z f=   | Fold region               |
+| =z o=   | Unfold region             |
+| =z a=   | Toogle fold               |
+| =z d=   | Delete folded region      |
+| =z m=   | Refold all regions        |
+| =z r=   | Unfold all regions        |
+| =z E=   | Delete all folded regions |
+| =z j=   | Jump to next fold         |
+| =z k=   | Jump to previous fold     |
+
+** multiple-cursors
+
+*** evil-multiedit
+
+| Keybinding | command                              |
+|------------+--------------------------------------|
+| =M-d=      | evil-multiedit-match-symbol-and-next |
+| =M-D=      | evil-multiedit-match-symbol-and-prev |
+| =R=        | evil-multiedit-match-all (visual)    |
+| =C-M-d=    | evil-multiedit-restore               |
+
+*** Region active bidings:
+
+| Keybinding | Effect                                                      |
+|------------+-------------------------------------------------------------|
+| =D=        | Clear region                                                |
+| =M-D=      | Clear to end-of-region and go to insert mode                |
+| =A=        | Go into insert mode at end-of-region                        |
+| =I=        | Go into insert mode at start-of-region                      |
+| =V=        | Select the region                                           |
+| =P=        | Replace the iedit region with the contents of the clipboard |
+| =$=        | Go to end-of-region                                         |
+| =0= / ~^~  | Go to start-of-region                                       |
+| =gg= / =G= | Go to the first/last region                                 |
+
+*** evil-mc
+
+| Keybinding | command                                              |
+|------------+------------------------------------------------------|
+| =gzd=        | evil-mc-make-and-goto-next-match                     |
+| =gzD=        | evil-mc-make-and-goto-prev-match                     |
+| =gzj=        | evil-mc-make-cursor-move-next-line                   |
+| =gzk=        | evil-mc-make-cursor-move-prev-line                   |
+| =gzm=        | evil-mc-make-all-cursors                             |
+| =gzn=        | evil-mc-make-and-goto-next-cursor                    |
+| =gzN=        | evil-mc-make-and-goto-last-cursor                    |
+| =gzp=        | evil-mc-make-and-goto-prev-cursor                    |
+| =gzP=        | evil-mc-make-and-goto-first-cursor                   |
+| =gzq=        | evil-mc-undo-all-cursors                             |
+| =gzs=        | evil-mc-skip-and-goto-next-match                     |
+| =gzS=        | evil-mc-skip-and-goto-prev-match                     |
+| =gzc=        | evil-mc-skip-and-goto-next-cursor                    |
+| =gzC=        | evil-mc-skip-and-goto-prev-cursor                    |
+| =gzt=        | +multiple-cursors/evil-mc-toggle-cursors             |
+| =gzu=        | +multiple-cursors/evil-mc-undo-cursor                |
+| =gzz=        | +multiple-cursors/evil-mc-toggle-cursor-here         |
+| =gzI=        | evil-mc-make-cursor-in-visual-selection-beg (visual) |
+| =gzA=        | evil-mc-make-cursor-in-visual-selection-end (visual) |
+
+** Dired
+
+| Keybind   | Description                  |
+|-----------+------------------------------|
+| =SPC f d= | Find directory with dired    |
+| =q=       | Exit dired buffer            |
+| =C-c C-r= | Run =dired-rsync=            |
+| =C-c C-e= | Rename entries with =wdired= |
