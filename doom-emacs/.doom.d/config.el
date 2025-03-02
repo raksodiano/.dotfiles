@@ -41,13 +41,6 @@
 
 (centaur-tabs-mode t)
 
-;; Treemacs (Árbol de directorios)
-(setq treemacs-width 42
-      treemacs-follow-mode t                 ; Sigue el archivo activo
-      treemacs-indentation 2
-      treemacs-git-mode 'extended
-      treemacs-use-icons-file-mode t)
-
 ;; Folding para lenguajes sin soporte nativo
 (add-hook 'sh-mode-hook #'outline-minor-mode) ; Para Shell Script
 (add-hook 'markdown-mode-hook #'outline-minor-mode)
@@ -488,3 +481,56 @@
   (add-to-list 'so-long-mode-preserved-variables 'vlf-mode))
 
 (add-hook! 'doom-first-buffer-hook #'+global-word-wrap-mode)
+
+;; -------------------------------
+;; Configuración de RSS
+;; -------------------------------
+
+(defvar my/rss-base-dir "~/Org/rss/"
+  "Directorio raíz para gestión de feeds y contenido relacionado")
+(make-directory my/rss-base-dir t)  ; Crea recursivamente si no existe
+
+(after! elfeed
+  (setq elfeed-db-directory (concat my/rss-base-dir "db/")
+        elfeed-enclosure-default-dir (concat my/rss-base-dir "media/")
+        elfeed-show-entry-switch #'evil-window-vsplit
+        elfeed-search-filter "@7-days-ago +unread" )
+
+  (setq elfeed-feeds (list (expand-file-name "feeds.org" "~/Org/rss/")))
+  
+  (setq elfeed-org-allow-http-feeds t) 
+  
+  (defun my/elfeed-load-org-feeds ()
+    "Carga garantizada desde feeds.org"
+    (interactive)
+    (elfeed-org-load)
+    (elfeed-db-save)
+    (elfeed-update)))
+
+(after! elfeed-org
+  (setq rmh-elfeed-org-files (list (concat my/rss-base-dir "feeds.org")))
+  ;; Crear estructura inicial si no existe
+  (unless (file-exists-p (concat my/rss-base-dir "feeds.org"))
+    (with-temp-file (concat my/rss-base-dir "feeds.org")
+      (insert "#+TITLE: Gestión de Feeds\n\n")
+      (insert "* Inbox\n"))))
+
+(run-at-time nil 3600 (lambda ()
+                        (elfeed-update)
+                        (elfeed-db-save)))
+
+;; Lectura de los feeds
+(after! elfeed
+  (setq elfeed-show-entry-switch #'elfeed-display-buffer-below)
+
+  (defun elfeed-display-buffer-below (buffer)
+    "Muestra el buffer en ventana derecha"
+    (let ((window (split-window-right (round (* (window-height) 0.5)))))
+      (set-window-buffer window buffer)
+      (select-window window))))
+
+(add-hook! 'elfeed-show-mode-hook
+  (lambda ()
+    (setq visual-fill-column-center-text t
+          visual-fill-column-width 120
+          visual-fill-column-mode t)))
