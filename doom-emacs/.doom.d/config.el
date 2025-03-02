@@ -490,30 +490,22 @@
   "Directorio raíz para gestión de feeds y contenido relacionado")
 (make-directory my/rss-base-dir t)  ; Crea recursivamente si no existe
 
-(after! elfeed
-  (setq elfeed-db-directory (concat my/rss-base-dir "db/")
-        elfeed-enclosure-default-dir (concat my/rss-base-dir "media/")
-        elfeed-show-entry-switch #'evil-window-vsplit
-        elfeed-search-filter "@7-days-ago +unread" )
+(setq rmh-elfeed-org-files (list "~/Org/rss/elfeeds.org"))
+(add-hook! 'elfeed-search-mode-hook #'elfeed-update)
 
-  (setq elfeed-feeds (list (expand-file-name "feeds.org" "~/Org/rss/")))
-  
+(after! elfeed
+  (setq elfeed-show-entry-switch #'evil-window-vsplit
+        elfeed-search-filter "@7-days-ago +unread")
+
   (setq elfeed-org-allow-http-feeds t) 
-  
-  (defun my/elfeed-load-org-feeds ()
-    "Carga garantizada desde feeds.org"
-    (interactive)
-    (elfeed-org-load)
-    (elfeed-db-save)
-    (elfeed-update)))
+  )
 
 (after! elfeed-org
-  (setq rmh-elfeed-org-files (list (concat my/rss-base-dir "feeds.org")))
   ;; Crear estructura inicial si no existe
-  (unless (file-exists-p (concat my/rss-base-dir "feeds.org"))
-    (with-temp-file (concat my/rss-base-dir "feeds.org")
+  (unless (file-exists-p (concat my/rss-base-dir "elfeeds.org"))
+    (with-temp-file (concat my/rss-base-dir "elfeeds.org")
       (insert "#+TITLE: Gestión de Feeds\n\n")
-      (insert "* Inbox\n"))))
+      (insert "* root :elfeed:\n"))))
 
 (run-at-time nil 3600 (lambda ()
                         (elfeed-update)
