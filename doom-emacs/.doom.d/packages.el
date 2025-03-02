@@ -6,9 +6,10 @@
 (package! dotenv-mode)
 (package! magit-delta)
 (package! vlf)
+(package! jabber)
+(package! alert)
 
 (package! detached)
-(package! alert)
 (package! annotate)
 (package! cape)
 (package! consult-company)
