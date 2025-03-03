@@ -16,6 +16,7 @@ That's why this emacs configuration was born using *Doom Emacs* as a base, to ge
 - Stow 2.x+
 - Python 3.3+
 - NodeJS 16+
+- MPV
 
 ** Steps
 
