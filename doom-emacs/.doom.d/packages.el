@@ -8,6 +8,7 @@
 (package! vlf)
 (package! jabber)
 (package! alert)
+(package! eradio)
 
 (package! detached)
 (package! annotate)
