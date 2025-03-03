@@ -59,11 +59,6 @@
                      (assoc "^\\*\\(?:Wo\\)?Man " display-buffer-alist))))
     (setcdr cell 'right)))
 
-(use-package! doom-modeline
-  :defer t
-  :custom
-  (doom-modeline-modal-icon nil))
-
 (setq require-final-newline 'ask)
 
 (after! persp-mode
@@ -490,39 +485,22 @@
   "Directorio raíz para gestión de feeds y contenido relacionado")
 (make-directory my/rss-base-dir t)  ; Crea recursivamente si no existe
 
-(setq rmh-elfeed-org-files (list "~/Org/rss/elfeeds.org"))
 (add-hook! 'elfeed-search-mode-hook #'elfeed-update)
 
 (after! elfeed
-  (setq elfeed-show-entry-switch #'evil-window-vsplit
-        elfeed-search-filter "@7-days-ago +unread")
-
-  (setq elfeed-org-allow-http-feeds t) 
-  )
+  (setq elfeed-search-filter "@7-days-ago +unread")
+  (setq elfeed-org-allow-http-feeds t))
 
 (after! elfeed-org
+  (setq rmh-elfeed-org-files (list "~/Org/rss/elfeeds.org"))
   ;; Crear estructura inicial si no existe
   (unless (file-exists-p (concat my/rss-base-dir "elfeeds.org"))
     (with-temp-file (concat my/rss-base-dir "elfeeds.org")
       (insert "#+TITLE: Gestión de Feeds\n\n")
       (insert "* root :elfeed:\n"))))
 
-(run-at-time nil 3600 (lambda ()
-                        (elfeed-update)
-                        (elfeed-db-save)))
-
 ;; Lectura de los feeds
-(after! elfeed
-  (setq elfeed-show-entry-switch #'elfeed-display-buffer-below)
-
-  (defun elfeed-display-buffer-below (buffer)
-    "Muestra el buffer en ventana derecha"
-    (let ((window (split-window-right (round (* (window-height) 0.5)))))
-      (set-window-buffer window buffer)
-      (select-window window))))
-
-(add-hook! 'elfeed-show-mode-hook
-  (lambda ()
-    (setq visual-fill-column-center-text t
-          visual-fill-column-width 120
-          visual-fill-column-mode t)))
+(setq-default fill-column 120)
+(setq visual-fill-column-width 120
+      visual-fill-column-center-text t)
+(add-hook 'elfeed-show-mode-hook #'visual-fill-column-mode)
