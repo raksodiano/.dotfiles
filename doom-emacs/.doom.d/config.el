@@ -505,14 +505,9 @@
       visual-fill-column-center-text t)
 (add-hook 'elfeed-show-mode-hook #'visual-fill-column-mode)
 
-(use-package! eradio
-  :init
-  (setq eradio-player '("mpv" "--no-video" "--no-terminal")))
-
-(setq eradio-channels '(("def con - soma fm" . "https://somafm.com/defcon256.pls")          ;; electronica with defcon-speaker bumpers
-                        ("metal - soma fm"   . "https://somafm.com/metal130.pls")           ;; \m/
-                        ("cyberia - lainon"  . "https://lainon.life/radio/cyberia.ogg.m3u") ;; cyberpunk-esque electronica
-                        ("cafe - lainon"     . "https://lainon.life/radio/cafe.ogg.m3u")))  ;; boring ambient, but with lain
+;; -------------------------------
+;; Configuración de pdfs
+;; -------------------------------
 
 (use-package! pdf-tools
   :defer t
@@ -529,3 +524,32 @@
 (add-hook 'pdf-view-mode-hook #'(lambda () (interactive) (display-line-numbers-mode -1)
                                   (blink-cursor-mode -1)
                                   (doom-modeline-mode -1)))
+
+;; -------------------------------
+;; Configuración de Emms
+;; -------------------------------
+
+;; Directorio por defecto
+(use-package! emms
+  :config
+  (setq emms-player-list '(emms-player-mpv)))
+
+(require 'emms-setup)
+(emms-all)
+(emms-default-players)
+
+(require 'emms-browser)
+(setq emms-browser-default-directory "~/Música/")  ; Ruta a tu biblioteca musical
+(setq emms-browser-depth nil)  ; Sin límite de profundidad
+(setq emms-browser-recursive t) 
+
+(map! :leader
+      :prefix ("m" . "música")
+      "b" #'emms-smart-browser
+      "p" #'emms-playlist-mode-go
+      "SPC" #'emms-pause
+      "n" #'emms-next
+      "s" #'emms-stop
+      "f" #'emms-play-find
+      "r" #'emms-random)
+
