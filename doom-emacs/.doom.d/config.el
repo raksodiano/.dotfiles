@@ -258,10 +258,15 @@
 ;; Configuración Docker
 ;; -------------------------------
 
+(add-to-list 'auto-mode-alist
+             '("docker-compose[.-]?\\(yml\\|yaml\\)\\'" . yaml-mode))
+
 (setq lsp-dockerfile-language-server-path "docker-langserver")
 
-(add-to-list 'auto-mode-alist
-             '("docker-compose.*\\.yml\\'" . docker-compose-mode))
+;; (use-package! docker-compose-mode
+;;   :mode ("docker-compose.yml\\'" . docker-compose-mode)
+;;   :config
+;;   (setq docker-compose-command "docker-compose"))
 
 ;; -------------------------------
 ;; Configuración de dired 
@@ -544,7 +549,7 @@
 (emms-default-players)
 
 (require 'emms-browser)
-(setq emms-browser-default-directory "~/Music/")  ; Ruta a tu biblioteca musical
+(setq emms-browser-default-directory "~/Music/")  
 (setq emms-browser-depth nil)  ; Sin límite de profundidad
 (setq emms-browser-recursive t) 
 
@@ -558,4 +563,19 @@
       "f" #'emms-play-find
       "r" #'emms-random)
 
+;; -------------------------------
+;; Configuración de Workspaces
+;; -------------------------------
+
+(defun my/new-frame-with-workspace ()
+  "Crea un nuevo frame y un nuevo workspace vinculado a él."
+  (interactive)
+  (let ((new-frame (make-frame)))
+    (select-frame-set-input-focus new-frame)
+    (doom/workspace-new nil t) ; Crea un workspace nuevo
+    (message "Nuevo frame + workspace creado!")))
+
+(map! :leader
+      :prefix "TAB"
+      :desc "Nuevo frame + workspace" "N" #'my/new-frame-with-workspace)
 

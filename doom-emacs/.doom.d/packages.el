@@ -8,7 +8,7 @@
 (package! vlf)
 (package! alert)
 (package! ement)
-
+(package! docker-compose-mode)
 
 (package! detached)
 (package! annotate)
