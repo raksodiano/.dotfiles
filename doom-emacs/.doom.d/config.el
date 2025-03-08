@@ -152,6 +152,7 @@
 ;;   :custom (magit-delta-default-dark-theme "Nord")
 ;;   :hook   (magit-mode . magit-delta-mode))
 
+(add-hook 'magit-post-push-hook 'magit-refresh)
 (setq magit-blame-heading-format "%-20a %C %s\n") ; Formato de autor/fecha
 (custom-set-faces
  '(magit-blame-hash ((t (:foreground "#7F7F7F"))))) ; Color del hash
