@@ -539,12 +539,12 @@
 (emms-default-players)
 
 (require 'emms-browser)
-(setq emms-browser-default-directory "~/Música/")  ; Ruta a tu biblioteca musical
+(setq emms-browser-default-directory "~/Music/")  ; Ruta a tu biblioteca musical
 (setq emms-browser-depth nil)  ; Sin límite de profundidad
 (setq emms-browser-recursive t) 
 
 (map! :leader
-      :prefix ("m" . "música")
+      :prefix ("m" . "Music")
       "b" #'emms-smart-browser
       "p" #'emms-playlist-mode-go
       "SPC" #'emms-pause
@@ -552,4 +552,5 @@
       "s" #'emms-stop
       "f" #'emms-play-find
       "r" #'emms-random)
+
 

@@ -6,9 +6,9 @@
 (package! dotenv-mode)
 (package! magit-delta)
 (package! vlf)
-(package! jabber)
 (package! alert)
-(package! eradio)
+(package! ement)
+
 
 (package! detached)
 (package! annotate)
