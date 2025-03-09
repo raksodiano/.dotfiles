@@ -579,3 +579,16 @@
       :prefix "TAB"
       :desc "Nuevo frame + workspace" "N" #'my/new-frame-with-workspace)
 
+;; -------------------------------
+;; Configuración de Workspaces
+;; -------------------------------
+
+;; Configurar directorio de notas
+(setq deft-directory "~/Org/")  ; Ruta donde se guardan las notas
+
+;; Usar extensión .org por defecto
+(setq deft-extensions '("org" "md" "txt"))  ; Formatos permitidos
+(setq deft-default-extension "org")         ; Extensión predeterminada
+
+;; Ignorar ciertos archivos (ej: archivos temporales de Org)
+(setq deft-ignore-file-regexp "\\.#\\|~$")
