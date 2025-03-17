@@ -22,7 +22,7 @@
 
        :completion
        (company +childframe)  ; the ultimate code completion backend
-       (corfu +orderless +icons)     ; complete with cap(f), cape and a flying feather!
+       ;; (corfu +orderless +icons)     ; complete with cap(f), cape and a flying feather!
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;;(ivy +fuzzy +prescient)               ; a search engine for love and life
