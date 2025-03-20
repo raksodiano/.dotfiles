@@ -24,6 +24,9 @@ few command lines.
 
 ```
  htop            ➔ interactive process viewer
+ emacs           ➔ Extensible, powerfull, editor
+ zsh             ➔ Customizable shell
+ fish            ➔ User-friendly, modern shell
 ```
 
 --------------------
@@ -32,6 +35,11 @@ few command lines.
 
 No matter what your Linux distribution, `stow` can easily be installed according
 to your package manager:
+
+- Arch Linux
+```bash
+  sudo pacman -S stow
+```
 
 - OpenSUSE
   ```bash

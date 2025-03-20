@@ -1,0 +1,78 @@
+#+BEGIN_CENTER
+[[file:assets/dotfiles-logo.svg][image]]
+#+END_CENTER
+
+#+BEGIN_CENTER
+[[https://www.gnu.org/software/stow/][[[https://img.shields.io/badge/GNU%20Stow-2.4.1-b48ead.svg?style=flat-square]]]]
+#+END_CENTER
+
+This repository contains all of my dotfiles configuration.
+
+---
+
+* Dotfiles Manager
+
+I'm using [[https://www.gnu.org/software/stow/][GNU Stow]] a free, lightweight
+dotfiles manager written in Perl to manage my dotfiles.
+
+What differentiates it from other dotfiles managers is that it does
+not require various Python, Ruby, or Perl dependencies like most dotfiles
+managers.
+
+With that, it is easy to share files among multiple users or computers with a
+few command lines.
+
+---
+
+* List of configurations:
+
+- htop ➔ interactive process viewer
+- emacs ➔ Extensible, powerful, editor
+- zsh ➔ Customizable shell
+- fish ➔ User-friendly, modern shell
+
+---
+
+* Getting Started
+
+No matter what your Linux distribution, `stow` can easily be installed according
+to your package manager:
+
+**Arch Linux**
+  #+BEGIN_SRC bash
+  sudo pacman -S stow
+  #+END_SRC
+
+**OpenSUSE**
+  #+BEGIN_SRC bash
+  sudo zypper in stow
+  #+END_SRC
+
+**Fedora**
+  #+BEGIN_SRC bash
+  sudo dnf install stow
+  #+END_SRC
+
+**Debian**
+  #+BEGIN_SRC bash
+  sudo apt-get install stow
+  #+END_SRC
+
+Once the installation is complete, make a clone of the repository:
+
+  #+BEGIN_SRC bash
+  git clone https://github.com/raksodiano/.dotfiles.git
+  #+END_SRC
+
+You can now install any configurations you wish to copy using GNU Stow:
+
+  #+BEGIN_SRC bash
+  # Make sure you are in the right directory
+  cd .dotfiles
+
+  # Example to install the htop config
+  stow htop
+
+  # Uninstall the htop config
+  stow -D htop
+  #+END_SRC
