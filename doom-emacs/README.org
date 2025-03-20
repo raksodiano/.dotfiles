@@ -23,20 +23,20 @@ That's why this emacs configuration was born using *Doom Emacs* as a base, to ge
 - First, we clone Doom Emacs and install it, personally I prefer to install it in the ~/.emacs.d folder, as it has always been a habit for me.
 
   #+begin_quote
-  git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.emacs.d
+  git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
    #+end_quote
 
 - Second, with the dotfiles cloned, you just need to use stow.
 
   #+begin_quote
   cd ~/.dotfiles
-  stow -vt ~ doom-emacs
+  stow doom-emacs
   #+end_quote
 
 - Third, we install doom emacs with the configurations I have already made.
 
   #+begin_quote
-  ~/.emacs.d/bin/doom install
+  ~/.config/emacs/bin/doom install
   #+end_quote
 
   Then, just follow the instructions for installing [[https://github.com/hlissner/doom-emacs#install][doom emacs]]. Run ~doom env~, then ~doom tangle~ and finally ~doom install~.
