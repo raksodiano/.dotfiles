@@ -249,7 +249,7 @@
         lsp-tsserver-plugins-path "~/node_modules"))    ; Ruta de plugins de TS
 
 
-(setq lsp-clients-typescript-init-opts '(:plugins ["@nestjs/swagger-plugin"]  
+(setq lsp-clients-typescript-init-opts '(:plugins ["@nestjs/swagger-plugin"]
                                          :compilerOptions {:experimentalDecorators t}))
 
 (setq prettier-js-args '("--trailing-comma" "all"
@@ -271,7 +271,7 @@
 ;;   (setq docker-compose-command "docker-compose"))
 
 ;; -------------------------------
-;; Configuración de dired 
+;; Configuración de dired
 ;; -------------------------------
 
 (add-hook! dired-mode #'dired-hide-details-mode)
@@ -305,17 +305,17 @@
 (use-package! markdown-mode
   :mode ("\\.md\\'" . markdown-mode)
   :config
-  (setq markdown-command "pandoc"))  
+  (setq markdown-command "pandoc"))
 
 ;; -------------------------------
-;; Configuración Dotenv 
+;; Configuración Dotenv
 ;; -------------------------------
 
 (use-package! dotenv-mode
   :mode ("\\.env\\.?.*\\'" . dotenv-mode))
 
 ;; -------------------------------
-;; Configuración en pruebas 
+;; Configuración en pruebas
 ;; -------------------------------
 
 (use-package! alert
@@ -411,7 +411,7 @@
 (defun install-lsp-servers ()
   "Instala todos los servidores LSP requeridos"
   (interactive)
-  
+
   ;; Python LSP
   (unless (file-exists-p "~/.emacs-lsp-venv/bin/pylsp")
     (shell-command "python3 -m venv ~/.emacs-lsp-venv")
@@ -551,9 +551,9 @@
 (emms-default-players)
 
 (require 'emms-browser)
-(setq emms-browser-default-directory "~/Music/")  
+(setq emms-browser-default-directory "~/Music/")
 (setq emms-browser-depth nil)  ; Sin límite de profundidad
-(setq emms-browser-recursive t) 
+(setq emms-browser-recursive t)
 
 (map! :leader
       :prefix ("m" . "Music")
@@ -594,3 +594,28 @@
 
 ;; Ignorar ciertos archivos (ej: archivos temporales de Org)
 (setq deft-ignore-file-regexp "\\.#\\|~$")
+
+
+;; -------------------------------
+;; Configuración de Jabber (cliente xmpp)
+;; -------------------------------
+(use-package! jabber
+  :commands (jabber-connect-all
+             jabber-connect)
+  :init
+  (add-hook 'jabber-post-connect-hooks 'spacemacs/jabber-connect-hook)
+  :config
+
+  (setq jabber-account-list '(("raksodiano@disroot.org"
+                               (:network-server . "disroot.org")
+                               (:connection-type . starttls))))
+  ;; (jabber-connect-all)
+  ;; (jabber-keepalive-start)
+  (evil-set-initial-state 'jabber-chat-mode 'insert))
+
+;;;; disable warnings
+(after! warnings
+  (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
+  (add-to-list 'warning-suppress-types
+               ;;   '(undo discard-info)
+               '(undo)))
