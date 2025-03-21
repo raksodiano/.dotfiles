@@ -6,8 +6,6 @@
 
 This repository contains all of my dotfiles configuration.
 
----
-
 * Dotfiles Manager
 
 I'm using [[https://www.gnu.org/software/stow/][GNU Stow]] a free, lightweight
@@ -20,8 +18,6 @@ managers.
 With that, it is easy to share files among multiple users or computers with a
 few command lines.
 
----
-
 * List of configurations:
 
 - htop ➔ interactive process viewer
@@ -29,29 +25,27 @@ few command lines.
 - zsh ➔ Customizable shell
 - fish ➔ User-friendly, modern shell
 
----
-
 * Getting Started
 
 No matter what your Linux distribution, `stow` can easily be installed according
 to your package manager:
 
-**Arch Linux**
+*Arch Linux*
   #+BEGIN_SRC bash
   sudo pacman -S stow
   #+END_SRC
 
-**OpenSUSE**
+*OpenSUSE*
   #+BEGIN_SRC bash
   sudo zypper in stow
   #+END_SRC
 
-**Fedora**
+*Fedora*
   #+BEGIN_SRC bash
   sudo dnf install stow
   #+END_SRC
 
-**Debian**
+*Debian*
   #+BEGIN_SRC bash
   sudo apt-get install stow
   #+END_SRC
