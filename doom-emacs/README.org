@@ -20,7 +20,7 @@ That's why this emacs configuration was born using *Doom Emacs* as a base, to ge
 
 ** Steps
 
-- First, we clone Doom Emacs and install it, personally I prefer to install it in the ~/.emacs.d folder, as it has always been a habit for me.
+- First, we clone Doom Emacs and install it.
 
   #+begin_quote
   git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
