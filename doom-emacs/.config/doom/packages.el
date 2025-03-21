@@ -15,3 +15,8 @@
 (package! cape)
 (package! consult-company)
 (package! consult-projectile)
+
+;; jabber
+(package! jabber)
+(package! srv) ;; jabber dependency
+(package! fsm) ;; jabber dependency
