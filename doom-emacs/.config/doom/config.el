@@ -238,6 +238,8 @@
 ;; Configuración de Typescript (NestJS)
 ;; -------------------------------
 
+(add-to-list 'exec-path "~/.volta/bin")
+
 (use-package! typescript-mode
   :hook (typescript-mode . lsp-deferred)
   :config
