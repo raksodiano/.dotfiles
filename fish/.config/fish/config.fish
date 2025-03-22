@@ -3,8 +3,14 @@ if status is-interactive
 end
 
 # Start ssh-agent
-if not set -q SSH_AGENT_PID
+set -q SSH_AGENT_PID; or begin
+    # Iniciar el ssh-agent
     eval (ssh-agent -c)
+end
+
+# add all ssh key ~/.ssh/
+for key in (ls ~/.ssh/id_* 2>/dev/null)
+    ssh-add $key
 end
 
 alias ls 'lsd'
