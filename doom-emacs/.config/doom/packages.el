@@ -29,3 +29,6 @@
 (package! jabber)
 (package! srv) ;; jabber dependency
 (package! fsm) ;; jabber dependency
+
+;; latex
+(package! latexdiff)
