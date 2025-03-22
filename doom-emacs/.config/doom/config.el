@@ -6,15 +6,18 @@
 
 ;; Tema y fuentes
 (setq doom-theme 'doom-nord)                  ; Tema Nord (oscuro)
+(setq display-line-numbers-type 'relative)    ; Números de línea relativos
+(add-hook 'prog-mode-hook #'hl-line-mode)
+
+;; Iniciar maximizado
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+
 (use-package! doom-nord-theme
   :defer t
   :custom
   (doom-nord-brighter-modeline t)
   (doom-nord-padded-modeline t)
   (doom-nord-region-highlight 'frost))
-
-(setq display-line-numbers-type 'relative)    ; Números de línea relativos
-(add-hook 'prog-mode-hook #'hl-line-mode)
 
 ;; Modo zen
 (after! writeroom-mode
@@ -29,10 +32,6 @@
 
 (after! doom-modeline
   (setq doom-modeline-buffer-file-name-style 'truncate-with-project))
-
-
-;; Iniciar maximizado
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 ;; Tabs estilo IDE (Centaur Tabs)
 (setq centaur-tabs-style "alternate"
@@ -80,11 +79,14 @@
                      (assoc "^\\*\\(?:Wo\\)?Man " display-buffer-alist))))
     (setcdr cell 'right)))
 
+(use-package! dotenv-mode
+  :mode ("\\.env\\.?.*\\'" . dotenv-mode))
+
+(setq comment-tabs t)  ; Alinea comentarios con tabs o espacios
+
 ;; -------------------------------
 ;; Configuración de LSP para todos los lenguajes
 ;; -------------------------------
-
-(setq comment-tabs t)  ; Alinea comentarios con tabs o espacios
 
 ;; LSP general
 (setq lsp-ui-sideline-enable t                ; Información en barra lateral
@@ -109,12 +111,11 @@
 
 ;; C/C++ (clangd)
 (setq lsp-clients-clangd-executable "/usr/bin/clangd")
-
-;; Lua (lua-language-server)
-(setq lsp-lua-language-server-install-dir "~/.local/bin/lua-language-server")
+;; C/C++ (clang-format)
+(setq clang-format-style "Google")  ; Estilo: Google, LLVM, WebKit, etc.
 
 ;; Shell Script (bashls)
-(setq lsp-bash-language-server-path "~/.npm/bin/bash-language-server")
+(setq lsp-bash-language-server-path "~/.volta/bin/npm/bin/bash-language-server")
 
 ;; Usar el entorno virtual para Python
 (setq lsp-pyright-venv-path "~/.emacs-lsp-venv")
@@ -127,15 +128,9 @@
 (setq prettier-js-args '("--trailing-comma" "all"
                          "--single-quote" "true"))
 
-;; C/C++ (clang-format)
-(setq clang-format-style "Google")  ; Estilo: Google, LLVM, WebKit, etc.
-
 ;; Shell (shfmt)
 (setq shfmt-arguments "-i=2"  ; Sangría de 2 espacios
       shfmt-path "~/.go/bin/shfmt")
-
-;; Lua (stylua)
-(setq format-all-formatters '(("Lua" stylua)))
 
 ;; Lisp (indentación estándar de Emacs)
 (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)  ; Soporte de documentación
@@ -144,18 +139,46 @@
 (setq +format-on-save-enabled-modes
       '(python-mode js-mode typescript-mode dart-mode c-mode c++-mode sh-mode lua-mode))
 
+(defun install-lsp-servers ()
+  "Instala todos los servidores LSP requeridos"
+  (interactive)
+
+  ;; Python LSP
+  (unless (file-exists-p "~/.emacs-lsp-venv/bin/pylsp")
+    (shell-command "python3 -m venv ~/.emacs-lsp-venv")
+    (shell-command "~/.emacs-lsp-venv/bin/pip install python-lsp-server pyright pylint black"))
+
+  ;; JavaScript/TypeScript
+  (unless (executable-find "typescript-language-server")
+    (shell-command "npm install -g typescript-language-server vscode-langservers-extracted"))
+
+  ;; Docker
+  (unless (executable-find "docker-langserver")
+    (shell-command "npm install -g dockerfile-language-server-nodejs"))
+
+  ;; YAML
+  (unless (executable-find "yaml-language-server")
+    (shell-command "npm install -g yaml-language-server"))
+
+  ;; Shell Script
+  (unless (executable-find "bash-language-server")
+    (shell-command "npm install -g bash-language-server")))
+
+;; Ejecutar después de cargar Doom
+(add-hook 'doom-after-init-hook #'install-lsp-servers)
+
 ;; -------------------------------
 ;; Configuración de magit
 ;; -------------------------------
-
-;; (use-package! magit-delta
-;;   :custom (magit-delta-default-dark-theme "Nord")
-;;   :hook   (magit-mode . magit-delta-mode))
 
 (add-hook 'magit-post-push-hook 'magit-refresh)
 (setq magit-blame-heading-format "%-20a %C %s\n") ; Formato de autor/fecha
 (custom-set-faces
  '(magit-blame-hash ((t (:foreground "#7F7F7F"))))) ; Color del hash
+
+;; (use-package! magit-delta
+;;   :custom (magit-delta-default-dark-theme "Nord")
+;;   :hook   (magit-mode . magit-delta-mode))
 
 ;; (after! magit-delta
 ;;   (defcustom dan/magit-delta-point-max 50000
@@ -185,12 +208,28 @@
       org-startup-indented t                  ; Indentación automática
       org-ellipsis " ⤵")                     ; Icono para folds
 
+;; Ajustar sangría
+(setq org-edit-src-content-indentation 2)
+
+(after! org
+  (setq-default fill-column 120)
+  (setq visual-fill-column-width 120
+        visual-fill-column-center-text t)
+  (add-hook 'org-mode-hook #'visual-fill-column-mode))
+
 (after! org
   (setq-hook! org-mode
     display-line-numbers nil))
 
-;; Org-mode (Ajustar sangría)
-(setq org-edit-src-content-indentation 2)
+(after! org
+  (custom-declare-face '+org-todo-wait  '((t (:inherit (bold mode-line-emphasis org-todo)))) "")
+  (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "PROJ(p)" "WAIT(w)" "IDEA(i)" "EVENT(e)" "|"
+                             "DONE(d)" "CANCELLED(c)"))
+        org-todo-keyword-faces '(("NEXT"      . +org-todo-active)
+                                 ("WAIT"      . +org-todo-wait)
+                                 ("EVENT"     . +org-todo-onhold)
+                                 ("PROJ"      . +org-todo-project)
+                                 ("CANCELLED" . +org-todo-cancel))))
 
 ;; Plantillas de captura con categorías
 (setq org-capture-templates
@@ -210,29 +249,13 @@
          "* %?\nFecha: %T\n%i\n%a"
          :mkdir t)))
 
-;; Configuración adicional para Org-roam (opcional)
+;; Configuración adicional para Org-roam
 (setq org-roam-capture-templates
       '(("d" "Nota Default" plain "%?"
          :target (file+head "${slug}.org"
                             "${title}\n\n")
          :unnarrowed t
          :mkdir t)))
-
-(after! org
-  (setq-default fill-column 120)
-  (setq visual-fill-column-width 120
-        visual-fill-column-center-text t)
-  (add-hook 'org-mode-hook #'visual-fill-column-mode))
-
-(after! org
-  (custom-declare-face '+org-todo-wait  '((t (:inherit (bold mode-line-emphasis org-todo)))) "")
-  (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "PROJ(p)" "WAIT(w)" "IDEA(i)" "EVENT(e)" "|"
-                             "DONE(d)" "CANCELLED(c)"))
-        org-todo-keyword-faces '(("NEXT"      . +org-todo-active)
-                                 ("WAIT"      . +org-todo-wait)
-                                 ("EVENT"     . +org-todo-onhold)
-                                 ("PROJ"      . +org-todo-project)
-                                 ("CANCELLED" . +org-todo-cancel))))
 
 ;; -------------------------------
 ;; Configuración de Typescript (NestJS)
@@ -263,7 +286,7 @@
 (add-to-list 'auto-mode-alist
              '("docker-compose[.-]?\\(yml\\|yaml\\)\\'" . yaml-mode))
 
-(setq lsp-dockerfile-language-server-path "docker-langserver")
+;; (setq lsp-dockerfile-language-server-path "docker-langserver")
 
 ;; (use-package! docker-compose-mode
 ;;   :mode ("docker-compose.yml\\'" . docker-compose-mode)
@@ -275,11 +298,10 @@
 ;; -------------------------------
 
 (add-hook! dired-mode #'dired-hide-details-mode)
+(add-hook! dired-mode #'dired-async-mode)
 
 (use-package! dired-subtree
   :after dired)
-
-(add-hook! dired-mode #'dired-async-mode)
 
 (after! dired
   (map! :map dired-mode-map
@@ -302,20 +324,17 @@
 (map! :leader
       :desc "Dired" "o -" #'dired-jump)
 
+;; -------------------------------
+;; Configuración de markdown
+;; -------------------------------
+
 (use-package! markdown-mode
   :mode ("\\.md\\'" . markdown-mode)
   :config
   (setq markdown-command "pandoc"))
 
 ;; -------------------------------
-;; Configuración Dotenv
-;; -------------------------------
-
-(use-package! dotenv-mode
-  :mode ("\\.env\\.?.*\\'" . dotenv-mode))
-
-;; -------------------------------
-;; Configuración en pruebas
+;; Configuración de notificaciones
 ;; -------------------------------
 
 (use-package! alert
@@ -323,31 +342,9 @@
   :custom
   (alert-default-style (if IS-LINUX 'libnotify 'osx-notifier)))
 
-(use-package! annotate
-  :commands (annotate-load-annotation-data))
-
-(add-hook! find-file
-  (let ((file-name (buffer-file-name))
-        (annotation-files (mapcar #'car (annotate-load-annotation-data t))))
-    (when (and file-name
-               (member file-name annotation-files))
-      (annotate-mode +1))))
-
-(after! annotate
-  (setq annotate-file (expand-file-name "annotate" doom-cache-dir)))
-
-(setq annotate-blacklist-major-mode '(org-mode))
-
-(after! annotate
-  (setq annotate-mode-map (make-sparse-keymap))
-  (map! :map annotate-mode-map
-        :leader
-        :prefix ("b a" . "annotate")
-        "a" #'annotate-annotate
-        "d" #'annotate-delete-annotation
-        "s" #'annotate-show-annotation-summary
-        "]" #'annotate-goto-next-annotation
-        "[" #'annotate-goto-previous-annotation))
+;; -------------------------------
+;; Configuración de company
+;; -------------------------------
 
 (use-package! cape
   :init
@@ -393,6 +390,10 @@
 (after! consult-projectile
   (setq consult-projectile-use-projectile-switch-project t))
 
+;; -------------------------------
+;; Configuración de buffers
+;; -------------------------------
+
 (use-package! cus-edit
   :defer t
   :custom
@@ -400,41 +401,17 @@
   (custom-unlispify-tag-names nil)
   (custom-unlispify-remove-prefixes nil))
 
+(setq uniquify-buffer-name-style 'forward)
+
+;; -------------------------------
+;; Configuración de control del sistema
+;; -------------------------------
+
 (use-package! proced
   :defer t
   :custom
   (proced-auto-update-flag t)
   (proced-auto-update-interval 1))
-
-(setq uniquify-buffer-name-style 'forward)
-
-(defun install-lsp-servers ()
-  "Instala todos los servidores LSP requeridos"
-  (interactive)
-
-  ;; Python LSP
-  (unless (file-exists-p "~/.emacs-lsp-venv/bin/pylsp")
-    (shell-command "python3 -m venv ~/.emacs-lsp-venv")
-    (shell-command "~/.emacs-lsp-venv/bin/pip install python-lsp-server pyright pylint black"))
-
-  ;; JavaScript/TypeScript
-  (unless (executable-find "typescript-language-server")
-    (shell-command "npm install -g typescript-language-server vscode-langservers-extracted"))
-
-  ;; Docker
-  (unless (executable-find "docker-langserver")
-    (shell-command "npm install -g dockerfile-language-server-nodejs"))
-
-  ;; YAML
-  (unless (executable-find "yaml-language-server")
-    (shell-command "npm install -g yaml-language-server"))
-
-  ;; Shell Script
-  (unless (executable-find "bash-language-server")
-    (shell-command "npm install -g bash-language-server")))
-
-;; Ejecutar después de cargar Doom
-(add-hook 'doom-after-init-hook #'install-lsp-servers)
 
 ;; -------------------------------
 ;; Configuración de detached
@@ -541,7 +518,6 @@
 ;; Configuración de Emms
 ;; -------------------------------
 
-;; Directorio por defecto
 (use-package! emms
   :config
   (setq emms-player-list '(emms-player-mpv)))
@@ -582,7 +558,7 @@
       :desc "Nuevo frame + workspace" "N" #'my/new-frame-with-workspace)
 
 ;; -------------------------------
-;; Configuración de Workspaces
+;; Configuración de deft
 ;; -------------------------------
 
 ;; Configurar directorio de notas
@@ -595,25 +571,24 @@
 ;; Ignorar ciertos archivos (ej: archivos temporales de Org)
 (setq deft-ignore-file-regexp "\\.#\\|~$")
 
-
 ;; -------------------------------
 ;; Configuración de Jabber (cliente xmpp)
 ;; -------------------------------
+
 (use-package! jabber
   :commands (jabber-connect-all
              jabber-connect)
   :init
   (add-hook 'jabber-post-connect-hooks 'spacemacs/jabber-connect-hook)
   :config
-
   (setq jabber-account-list '(("raksodiano@disroot.org"
                                (:network-server . "disroot.org")
-                               (:connection-type . starttls))))
+                               (:connection-type . gnutls))))
   ;; (jabber-connect-all)
   ;; (jabber-keepalive-start)
   (evil-set-initial-state 'jabber-chat-mode 'insert))
 
-;;;; disable warnings
+;; disable warnings
 (after! warnings
   (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
   (add-to-list 'warning-suppress-types
