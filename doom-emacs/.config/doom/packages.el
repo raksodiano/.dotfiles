@@ -1,18 +1,27 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 
+;; editor
+(package! dotenv-mode)
+(package! vlf)
+
+;; dired
 (package! dired-open)
 (package! dired-subtree)
-(package! dotenv-mode)
+
+;; magit
 (package! magit-delta)
-(package! vlf)
+
+;; notification
 (package! alert)
-(package! ement)
+
+;; docker
 (package! docker-compose-mode)
 
+;; detached
 (package! detached)
-(package! annotate)
-(package! cape)
+
+;; consult
 (package! consult-company)
 (package! consult-projectile)
 
