@@ -578,8 +578,6 @@
 (use-package! jabber
   :commands (jabber-connect-all
              jabber-connect)
-  :init
-  (add-hook 'jabber-post-connect-hooks 'spacemacs/jabber-connect-hook)
   :config
   (setq jabber-account-list '(("raksodiano@disroot.org"
                                (:network-server . "disroot.org")
@@ -594,3 +592,19 @@
   (add-to-list 'warning-suppress-types
                ;;   '(undo discard-info)
                '(undo)))
+
+;; -------------------------------
+;; Configuración de escritura
+;; -------------------------------
+
+(use-package! lorem-ipsum
+  :commands (lorem-ipsum-insert-paragraphs
+             lorem-ipsum-insert-sentences
+             lorem-ipsum-insert-list))
+
+;; -------------------------------
+;; Configuración de mastodon
+;; -------------------------------
+
+(setq mastodon-instance-url "https://fosstodon.org"
+      mastodon-active-user "root655")
