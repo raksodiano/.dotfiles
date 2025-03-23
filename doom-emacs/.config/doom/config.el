@@ -85,6 +85,27 @@
 (setq comment-tabs t)  ; Alinea comentarios con tabs o espacios
 
 ;; -------------------------------
+;; Configuración de notificaciones
+;; -------------------------------
+
+(use-package! alert
+  :defer t
+  :custom
+  (alert-default-style (if IS-LINUX 'libnotify 'osx-notifier)))
+
+;; -------------------------------
+;; Configuración de escritura
+;; -------------------------------
+
+(use-package! lorem-ipsum
+  :commands (lorem-ipsum-insert-paragraphs
+             lorem-ipsum-insert-sentences
+             lorem-ipsum-insert-list))
+
+(after! flyspell
+  (setq flyspell-lazy-idle-seconds 1.5))
+
+;; -------------------------------
 ;; Configuración de LSP para todos los lenguajes
 ;; -------------------------------
 
@@ -334,15 +355,6 @@
   (setq markdown-command "pandoc"))
 
 ;; -------------------------------
-;; Configuración de notificaciones
-;; -------------------------------
-
-(use-package! alert
-  :defer t
-  :custom
-  (alert-default-style (if IS-LINUX 'libnotify 'osx-notifier)))
-
-;; -------------------------------
 ;; Configuración de company
 ;; -------------------------------
 
@@ -581,10 +593,10 @@
   :config
   (setq jabber-account-list '(("raksodiano@disroot.org"
                                (:network-server . "disroot.org")
-                               (:connection-type . gnutls))))
-  ;; (jabber-connect-all)
-  ;; (jabber-keepalive-start)
-  (evil-set-initial-state 'jabber-chat-mode 'insert))
+                               (:connection-type . starttls)))))
+
+(setq jabber-omemo t)
+(setq jabber-roster-show-all t)
 
 ;; disable warnings
 (after! warnings
@@ -593,14 +605,21 @@
                ;;   '(undo discard-info)
                '(undo)))
 
-;; -------------------------------
-;; Configuración de escritura
-;; -------------------------------
+(add-hook 'jabber-post-connect-hooks
+          (lambda ()
+            (ding)
+            (alert "Jabber connection successfully established.")))
 
-(use-package! lorem-ipsum
-  :commands (lorem-ipsum-insert-paragraphs
-             lorem-ipsum-insert-sentences
-             lorem-ipsum-insert-list))
+(add-hook 'jabber-post-disconnect-hook
+          (lambda ()
+            (ding)
+            (alert "Disconnected from Jabber!" :severity 'high)))
+
+(add-hook 'jabber-roster-activity-change-hook
+          (lambda (activity)
+            (alert (format "New message form %s!" (jabber-jid-displayname (jabber-roster-find activity)))
+                   :title "Jabber"
+                   :category 'jabber)))
 
 ;; -------------------------------
 ;; Configuración de mastodon

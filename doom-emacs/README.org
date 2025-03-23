@@ -3,9 +3,9 @@
 #+LANGUAGE: en
 #+PROPERTY: header-args+ :mkdirp yes
 
-The truth is that I'm very lazy when it comes to making configurations and being a hoper distro, one day I'm with =ArchLinux=, another with =FreeBSD=, in others I'm with =OpenBSD= as in others I'm with =openSUSE= and only for *Emacs* versions I had to reconfigure something or packages failed, that made me a little tired and so I decided to leave aside the holy mode and go to the dark side XD
+The truth is that I'm very lazy when it comes to making configurations and being a hopper distro, one day I'm with =ArchLinux=, another with =FreeBSD=, in others I'm with =OpenBSD= as in others I'm with =openSUSE= and only for *Emacs* versions I had to reconfigure something or packages failed, that made me a little tired and so I decided to leave aside the holy mode and go to the dark side XD
 
-That's why this emacs configuration was born using *Doom Emacs* as a base, to get rid of some headaches.
+That's why this Emacs configuration was born using *Doom Emacs* as a base, to get rid of some headaches.
 
 * Installation
 
@@ -17,6 +17,8 @@ That's why this emacs configuration was born using *Doom Emacs* as a base, to ge
 - Python 3.3+
 - NodeJS 16+
 - MPV
+- Enchant
+- Hunspell
 
 ** Steps
 
@@ -162,3 +164,5 @@ As I am very forgetful, here are some shortcuts that may be useful to me.
 | =q=       | Exit dired buffer            |
 | =C-c C-r= | Run =dired-rsync=            |
 | =C-c C-e= | Rename entries with =wdired= |
+
+# End:
