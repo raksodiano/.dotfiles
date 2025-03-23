@@ -81,8 +81,8 @@
        ;;vterm             ; the best terminal emulation in Emacs
 
        :checkers
-       (syntax +childframe)              ; tasing you for every semicolon you forget
-       (spell +aspell +everywhere)      ; tasing you for misspelling mispelling
+       (syntax +flyspell +childframe)              ; tasing you for every semicolon you forget
+       (spell +hunspell +flyspell +everywhere)      ; tasing you for misspelling mispelling
        grammar                          ; tasing grammar mistake every you make
 
        :tools
@@ -103,7 +103,7 @@
        pdf                                    ; pdf enhancements
        prodigy            ; FIXME managing external services & code builders
        terraform          ; infrastructure as code
-       ;;tmux              ; an API for interacting with tmux
+       tmux              ; an API for interacting with tmux
        tree-sitter                    ; syntax and parsing, sitting in a tree...
        upload                         ; map local to remote projects via ssh/ftp
 
