@@ -32,3 +32,9 @@
 
 ;; latex
 (package! latexdiff)
+
+;; miselaneos
+(package! lorem-ipsum)
+
+;; social networks
+(package! mastodon)
