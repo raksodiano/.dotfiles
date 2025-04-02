@@ -13,6 +13,7 @@ for key in (ls ~/.ssh/id_* 2>/dev/null)
     ssh-add $key > /dev/null 2>&1
 end
 
+set -U fish_user_paths ~/.volta/bin $fish_user_paths
 set -g fish_greeting ""
 
 alias ls 'lsd'

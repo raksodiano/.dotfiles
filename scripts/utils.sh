@@ -1,5 +1,11 @@
 #!/bin/bash
 
+RED="\033[31m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+BLUE="\033[34m"
+RESET="\033[0m"
+
 # Function to update the system
 update_system() {
     echo "Updating the system..."
