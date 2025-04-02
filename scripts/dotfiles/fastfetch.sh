@@ -2,7 +2,7 @@
 
 source ../utils.sh
 
-# Function to install stow
+# Function to install fastfetch
 fastfetch_main() {
     if is_package_installed "fastfetch"; then
         echo "fastfetch is already installed."

@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# This script automates the installation of applications and the configuration
+# of personal dotfiles. It is focused on my daily workflow and usage, allowing
+# for quick installation of dependencies and programs I use, in controlled environments,
+# or simply adding configurations across my different workstations.
+
 source ./scripts/utils.sh
 
 # Function to install yay (AUR helper)
@@ -50,15 +55,15 @@ install_dotfiles() {
 show_menu() {
     clear
     echo "--------------------------------------"
-    echo "      Arch Linux Setup Menu          "
+    echo -e "      ${BLUE}ArchLinux${RESET} Setup Menu          "
     echo "--------------------------------------"
-    echo "1. Update System"
-    echo "2. Install yay"
-    echo "3. Install stow"
-    echo "4. Install volta (with yay, package volta-bin)"
-    echo "5. Install dotfiles"
-    echo "6. Install aur packages (with yay)"
-    echo "0. Exit"
+    echo -e "1. ${BLUE}Update${RESET} System"
+    echo -e "2. Install yay"
+    echo -e "3. Install stow"
+    echo -e "4. Install volta (with yay, package volta-bin)"
+    echo -e "5. Install ${GREEN}dotfiles${RESET}"
+    echo -e "6. Install aur packages (with yay)"
+    echo -e "0. Exit"
     echo "--------------------------------------"
     echo -n "Please choose an option [0-6]: "
 }

@@ -2,8 +2,9 @@
 
 source ../utils.sh
 
+# Function to install emacs
 install_emacs() {
-    if is_package_installed "emacs"; then
+	if is_package_installed "emacs"; then
         echo "emacs is already installed."
     else
         echo "Installing emacs..."
@@ -24,6 +25,7 @@ install_emacs() {
     echo "Doom Emacs installation completed successfully!"
 }
 
+# Function to install fastfetch
 install_fastfetch() {
     if is_package_installed "fastfetch"; then
         echo "fastfetch is already installed."
@@ -38,6 +40,7 @@ install_fastfetch() {
     echo "Fastfetch configurations successfully linked."
 }
 
+# Function to install fish
 install_fish() {
     if is_package_installed "fish"; then
         echo "fish is already installed."
@@ -46,8 +49,13 @@ install_fish() {
         sudo pacman -S --noconfirm fish
     fi
 
+    echo "Installing fish dependencies..."
+    sudo pacman -S --noconfirm lsd bat
+
     echo "Changing the default shell to Fish..."
     chsh -s /usr/bin/fish
+
+    curl -L https://github.com/oh-my-fish/oh-my-fish/raw/master/bin/install | fish
 
     echo "Linking fish configurations using stow..."
     stow fish
@@ -55,6 +63,7 @@ install_fish() {
     echo "fish configurations successfully linked."
 }
 
+# Function to install htop
 install_htop() {
     if is_package_installed "htop"; then
         echo "htop is already installed."
@@ -71,6 +80,7 @@ install_htop() {
     echo "htop configurations successfully linked."
 }
 
+# Function to install all
 install_all() {
     install_htop
     install_fish

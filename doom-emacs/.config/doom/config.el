@@ -12,6 +12,23 @@
 ;; Iniciar maximizado
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
+;; Configuración global para usar 2 espacios en la tabulación y la sangría
+(setq-default tab-width 2)                ;; Configura el tamaño de la tabulación a 2 espacios
+(setq-default indent-tabs-mode t)
+(setq-default sh-basic-offset 2)          ;; Configura la sangría para scripts shell (sh, bash) a 2 espacios
+(setq-default fish-indent-offset 2)       ;; Configura la sangría para Fish shell a 2 espacios
+(setq-default conf-basic-offset 2)        ;; Configura la sangría para archivos de configuración a 2 espacios
+
+(after! sh-script
+  (setq sh-basic-offset 2)
+  (setq tab-width 2)
+  (setq indent-tabs-mode t))
+
+(after! fish-mode
+  (setq fish-indent-offset 2)
+  (setq tab-width 2)
+  (setq indent-tabs-mode t))
+
 (use-package! doom-nord-theme
   :defer t
   :custom
@@ -135,8 +152,8 @@
 ;; C/C++ (clang-format)
 (setq clang-format-style "Google")  ; Estilo: Google, LLVM, WebKit, etc.
 
-;; Shell Script (bashls)
-(setq lsp-bash-language-server-path "~/.volta/bin/npm/bin/bash-language-server")
+;; Shell Script
+(setq lsp-bash-language-server-path "~/.volta/bin/bash-language-server")
 
 ;; Usar el entorno virtual para Python
 (setq lsp-pyright-venv-path "~/.emacs-lsp-venv")
