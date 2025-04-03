@@ -16,6 +16,7 @@
 (setq-default tab-width 2)                ;; Configura el tamaño de la tabulación a 2 espacios
 (setq-default indent-tabs-mode t)
 (setq-default sh-basic-offset 2)          ;; Configura la sangría para scripts shell (sh, bash) a 2 espacios
+(setq-default sh-indentation 2)
 (setq-default fish-indent-offset 2)       ;; Configura la sangría para Fish shell a 2 espacios
 (setq-default conf-basic-offset 2)        ;; Configura la sangría para archivos de configuración a 2 espacios
 
