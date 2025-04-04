@@ -37,6 +37,29 @@ install_volta() {
   fi
 }
 
+# Function to install fonts
+install_fonts() {
+  local packages=(
+    "ttf-3270-nerd"
+    "ttf-nerd-fonts-symbols"
+    "ttf-nerd-fonts-symbols-common"
+    "ttf-iosevka-nerd"
+    "ttf-iosevkaterm-nerd"
+    "ttf-hack-nerd"
+    "ttf-hack"
+    "ttf-font-awesome"
+    "noto-fonts"
+  )
+
+  for package in "${packages[@]}"; do
+    if ! is_package_installed "$package"; then
+      install_package_if_missing "$package"
+    fi
+  done
+
+  fc-cache -fv
+}
+
 # Function to install dotfiles
 install_dotfiles() {
   source ./scripts/dotfiles/main.sh
@@ -46,16 +69,17 @@ install_dotfiles() {
 show_menu() {
   clear
   echo -e "--------------------------------------"
-  echo -e "      ${BLUE}ArchLinux${RESET} Setup Menu          "
+  echo -e "      ${Blue}ArchLinux${RESET} Setup Menu          "
   echo -e "--------------------------------------"
   echo -e "1. ${BLUE}Update${RESET} System"
   echo -e "2. Install yay"
   echo -e "3. Install stow"
   echo -e "4. Install volta (with yay, package volta-bin)"
-  echo -e "5. Install ${GREEN}dotfiles${RESET}"
+  echo -e "5. Install fonts 󰣇  "
+  echo -e "6. Install ${GREEN}dotfiles${RESET}"
   echo -e "0. Exit"
   echo -e "--------------------------------------"
-  echo -n "Please choose an option [0-5]: "
+  echo -n "Please choose an option [0-6]: "
 }
 
 while true; do
@@ -67,22 +91,30 @@ while true; do
       exit 0
       ;;
     1)
+      clear
       update_system
       ;;
     2)
+      clear
       install_yay
       ;;
     3)
+      clear
       install_stow
       ;;
     4)
+      clear
       install_volta
       ;;
     5)
+      clear
+      install_fonts
+      ;;
+    6)
       install_dotfiles
       ;;
     *)
-      echo "Invalid option, please choose a valid option [0-5]."
+      echo "Invalid option, please choose a valid option [0-6]."
       ;;
   esac
   echo -n "Press [Enter] to continue..."

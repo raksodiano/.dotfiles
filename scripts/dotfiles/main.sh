@@ -79,7 +79,7 @@ show_menu_dotfiles() {
   echo -e "--------------------------------------"
   echo -e "      ${BLUE}ArchLinux${RESET} Setup Menu          "
   echo -e "--------------------------------------"
-  echo -e "1. Install all"
+  echo -e "1. Install all ${GREEN}dotfiles${RESET}"
   echo -e "2. Install emacs and doom emacs"
   echo -e "3. Install fastfetch"
   echo -e "4. Install fish (by default)"
@@ -98,18 +98,23 @@ while true; do
       exit 0
       ;;
     1)
+      clear
       install_all
       ;;
     2)
+      clear
       install_emacs
       ;;
     3)
+      clear
       install_fastfetch
       ;;
     4)
+      clear
       install_fish
       ;;
     5)
+      clear
       install_htop
       ;;
     *)
