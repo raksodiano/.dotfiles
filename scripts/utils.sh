@@ -33,6 +33,14 @@ install_package_if_missing() {
   fi
 }
 
+install_from_array() {
+  local packages=("$@")
+
+  for package in "${packages[@]}"; do
+    install_package_if_missing "$package"
+  done
+}
+
 message_dependencies() {
   local name=$1
   echo -e "Installing ${YELLOW}${name}${RESET} dependencies..."

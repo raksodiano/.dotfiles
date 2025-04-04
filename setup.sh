@@ -25,9 +25,7 @@ install_yay() {
 
 # Function to install stow
 install_stow() {
-   if ! is_package_installed "stow"; then
-    install_package_if_missing "stow"
-  fi
+  install_package_if_missing "stow"
 }
 
 # Function to install volta
@@ -51,11 +49,7 @@ install_fonts() {
     "noto-fonts"
   )
 
-  for package in "${packages[@]}"; do
-    if ! is_package_installed "$package"; then
-      install_package_if_missing "$package"
-    fi
-  done
+  install_from_array "${packages[@]}"
 
   fc-cache -fv
 }
