@@ -8,11 +8,15 @@ install_emacs() {
 
   message_dependencies "Doom Emacs"
 
-  install_package_if_missing "mpv"
-  install_package_if_missing "enchant"
-  install_package_if_missing "hunspell"
-  install_package_if_missing "hunspell-en_us"
-  install_package_if_missing "hunspell-es_any"
+  local packages=(
+    "mpv"
+    "enchant"
+    "hunspell"
+    "hunspell-en_us"
+    "hunspell-es_any"
+  )
+
+  install_from_array "${packages[@]}"
 
   git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
 
@@ -40,8 +44,12 @@ install_fish() {
 
   message_dependencies "fish"
 
-  install_package_if_missing "lsd"
-  install_package_if_missing "bat"
+  local packages=(
+    "lsd"
+    "bat"
+  )
+
+  install_from_array "${packages[@]}"
 
   echo "Changing the default shell to Fish..."
   chsh -s /usr/bin/fish
