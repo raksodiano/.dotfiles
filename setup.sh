@@ -31,7 +31,7 @@ install_stow() {
 # Function to install volta
 install_volta() {
   if ! is_package_installed "volta-bin"; then
-    yay -Sua --noconfirm volta-bin
+    yay --noconfirm volta-bin
   fi
 }
 
@@ -59,6 +59,16 @@ install_dotfiles() {
   source ./scripts/dotfiles/main.sh
 }
 
+# Function to install apps
+install_apps() {
+  source ./scripts/apps/main.sh
+}
+
+# Function to install aur apps
+install_aur_packages() {
+  source ./scripts/aur_packages/main.sh
+}
+
 # Menu function
 show_menu() {
   clear
@@ -71,9 +81,11 @@ show_menu() {
   echo -e "4. Install volta (with yay, package volta-bin)"
   echo -e "5. Install fonts 󰣇  "
   echo -e "6. Install ${GREEN}dotfiles${RESET}"
+  echo -e "7. Install ${GREEN}apps${RESET}"
+  echo -e "8. Install ${GREEN}aur packages${RESET} (depends on yay)"
   echo -e "0. Exit"
   echo -e "--------------------------------------"
-  echo -n "Please choose an option [0-6]: "
+  echo -n "Please choose an option [0-8]: "
 }
 
 while true; do
@@ -107,8 +119,14 @@ while true; do
     6)
       install_dotfiles
       ;;
+    7)
+      install_apps
+      ;;
+    8)
+      install_aur_packages
+      ;;
     *)
-      echo "Invalid option, please choose a valid option [0-6]."
+      echo "Invalid option, please choose a valid option [0-8]."
       ;;
   esac
   echo -n "Press [Enter] to continue..."
