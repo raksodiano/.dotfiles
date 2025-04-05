@@ -6,8 +6,9 @@ source ./scripts/utils.sh
 install_ufw() {
   install_package_if_missing "ufw"
 
-	sudo systemctl enable ufw
+  sudo systemctl enable ufw
   sudo systemctl start ufw
+  sudo ufw enable
 
   echo -e "Firewall ${GREEN}ufw${RESET} installation completed successfully!"
 }
