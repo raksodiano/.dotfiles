@@ -25,16 +25,8 @@
 (package! consult-company)
 (package! consult-projectile)
 
-;; jabber
-(package! jabber)
-(package! srv) ;; jabber dependency
-(package! fsm) ;; jabber dependency
-
 ;; latex
 (package! latexdiff)
 
 ;; miselaneos
 (package! lorem-ipsum)
-
-;; social networks
-(package! mastodon)
