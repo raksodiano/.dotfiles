@@ -21,12 +21,12 @@
 (setq-default conf-basic-offset 2)        ;; Configura la sangría para archivos de configuración a 2 espacios
 
 (after! sh-script
-  (setq sh-basic-offset 2)
+    (setq sh-basic-offset 2)
   (setq tab-width 2)
   (setq indent-tabs-mode t))
 
 (after! fish-mode
-  (setq fish-indent-offset 2)
+    (setq fish-indent-offset 2)
   (setq tab-width 2)
   (setq indent-tabs-mode t))
 
@@ -39,17 +39,17 @@
 
 ;; Modo zen
 (after! writeroom-mode
-  (setq +zen-text-scale 1.25))
+    (setq +zen-text-scale 1.25))
 
 (custom-set-faces!
-  '(mode-line :height 90 :inherit 'variable-pitch)
-  '(mode-line-inactive :height 80 :inherit 'variable-pitch))
+    '(mode-line :height 90 :inherit 'variable-pitch)
+    '(mode-line-inactive :height 80 :inherit 'variable-pitch))
 
 (after! all-the-icons
-  (setq all-the-icons-scale-factor 1.1))
+    (setq all-the-icons-scale-factor 1.1))
 
 (after! doom-modeline
-  (setq doom-modeline-buffer-file-name-style 'truncate-with-project))
+    (setq doom-modeline-buffer-file-name-style 'truncate-with-project))
 
 ;; Tabs estilo IDE (Centaur Tabs)
 (setq centaur-tabs-style "alternate"
@@ -66,10 +66,10 @@
       doom-modeline-icon t)       ; Mostrar íconos en la barra de estado
 
 (after! highlight-indent-guides
-  (setq highlight-indent-guides-method (if (display-graphic-p)
-                                           'bitmap
-                                         'character)
-        highlight-indent-guides-responsive 'top))
+    (setq highlight-indent-guides-method (if (display-graphic-p)
+                                             'bitmap
+                                           'character)
+     highlight-indent-guides-responsive 'top))
 
 (add-transient-hook! 'doom-first-input-hook
   (let ((cell (assoc 'side
@@ -79,17 +79,17 @@
 (setq require-final-newline 'ask)
 
 (after! persp-mode
-  (defadvice! dan/persp-autosave--add-breakline (&rest _)
-    "Automatically add breakline for certain buffers before saving to file."
-    :before #'basic-save-buffer
-    (when (and
-           (/= (point-max) (point-min))
-           (/= (char-after (1- (point-max))) ?\n)
-           (string-equal (file-name-directory
-                          (or (buffer-file-name (current-buffer)) ""))
-                         persp-save-dir))
-      (goto-char (point-max))
-      (insert ?\n))))
+    (defadvice! dan/persp-autosave--add-breakline (&rest _)
+      "Automatically add breakline for certain buffers before saving to file."
+      :before #'basic-save-buffer
+      (when (and
+             (/= (point-max) (point-min))
+             (/= (char-after (1- (point-max))) ?\n)
+             (string-equal (file-name-directory
+                            (or (buffer-file-name (current-buffer)) ""))
+                           persp-save-dir))
+        (goto-char (point-max))
+        (insert ?\n))))
 
 ;; Mejoramos el manual
 (add-transient-hook! 'doom-first-input-hook
@@ -101,6 +101,41 @@
   :mode ("\\.env\\.?.*\\'" . dotenv-mode))
 
 (setq comment-tabs t)  ; Alinea comentarios con tabs o espacios
+
+;; -------------------------------
+;; Configuración de directorios
+;; -------------------------------
+
+(setq my/directories '("~/Org"
+                       "~/Org/rss"
+                       "~/Org/agenda"
+                       "~/Org/notes"
+                       "~/Org/notes-work"
+                       "~/Workspace"
+                       "~/Workspace/books"
+                       "~/Workspace/blog"
+                       "~/Workspace/games"))
+
+(dolist (directory my/directories)
+  (unless (file-directory-p directory)
+    (make-directory directory t)))
+
+;; -------------------------------
+;; Configuración de lisp
+;; -------------------------------
+
+(setq inferior-lisp-program "sbcl")
+
+(after! sly
+    (setq sly-lisp-implementations
+     '((sbcl ("sbcl")))))
+
+(after! elisp-mode
+    (setq-hook! 'emacs-lisp-mode-hook
+      indent-tabs-mode nil
+      lisp-indent-function #'common-lisp-indent-function))
+
+(setq lisp-indent-function 'common-lisp-indent-function)
 
 ;; -------------------------------
 ;; Configuración de notificaciones
@@ -121,7 +156,7 @@
              lorem-ipsum-insert-list))
 
 (after! flyspell
-  (setq flyspell-lazy-idle-seconds 1.5))
+    (setq flyspell-lazy-idle-seconds 1.5))
 
 ;; -------------------------------
 ;; Configuración de LSP para todos los lenguajes
@@ -251,17 +286,17 @@
 (setq org-edit-src-content-indentation 2)
 
 (after! org
-  (setq-default fill-column 120)
+    (setq-default fill-column 120)
   (setq visual-fill-column-width 120
         visual-fill-column-center-text t)
   (add-hook 'org-mode-hook #'visual-fill-column-mode))
 
 (after! org
-  (setq-hook! org-mode
-    display-line-numbers nil))
+    (setq-hook! org-mode
+      display-line-numbers nil))
 
 (after! org
-  (custom-declare-face '+org-todo-wait  '((t (:inherit (bold mode-line-emphasis org-todo)))) "")
+    (custom-declare-face '+org-todo-wait  '((t (:inherit (bold mode-line-emphasis org-todo)))) "")
   (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "PROJ(p)" "WAIT(w)" "IDEA(i)" "EVENT(e)" "|"
                              "DONE(d)" "CANCELLED(c)"))
         org-todo-keyword-faces '(("NEXT"      . +org-todo-active)
@@ -292,7 +327,7 @@
 (setq org-roam-capture-templates
       '(("d" "Nota Default" plain "%?"
          :target (file+head "${slug}.org"
-                            "${title}\n\n")
+                  "${title}\n\n")
          :unnarrowed t
          :mkdir t)))
 
@@ -343,22 +378,22 @@
   :after dired)
 
 (after! dired
-  (map! :map dired-mode-map
-        :n "R" #'dired-async-do-rename
-        :n "C" #'dired-async-do-copy
-        :n "S" #'dired-async-do-symlink
-        :n "H" #'dired-async-do-hardlink))
+    (map! :map dired-mode-map
+     :n "R" #'dired-async-do-rename
+     :n "C" #'dired-async-do-copy
+     :n "S" #'dired-async-do-symlink
+     :n "H" #'dired-async-do-hardlink))
 
 (after! dired
-  (setq dired-dwim-target #'dired-dwim-target-recent))
+    (setq dired-dwim-target #'dired-dwim-target-recent))
 
 (after! dirvish
-  (setq dirvish-default-layout '(0 0 0.4)
-        dirvish-layout-recipes '((1 0.11 0.55)
-                                 (0 0    0.40))))
+    (setq dirvish-default-layout '(0 0 0.4)
+     dirvish-layout-recipes '((1 0.11 0.55)
+                              (0 0    0.40))))
 
 (after! dirvish
-  (pushnew! dirvish-attributes 'file-size))
+    (pushnew! dirvish-attributes 'file-size))
 
 (map! :leader
       :desc "Dired" "o -" #'dired-jump)
@@ -379,25 +414,25 @@
 (use-package! cape
   :init
   (after! term
-    (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
+      (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
     (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
   :defer t)
 
 (after! company
-  (setq company-minimum-prefix-length 2
-        company-idle-delay 0.05))
+    (setq company-minimum-prefix-length 2
+     company-idle-delay 0.05))
 
 (use-package! consult-company
   :commands consult-company)
 
 (after! (company consult)
-  (map! :map company-active-map
-        "C-S-s" #'consult-company))
+    (map! :map company-active-map
+     "C-S-s" #'consult-company))
 
 (after! consult-dir
-  (defun consult-dir--fasd-dirs ()
-    "Return list of fasd dirs."
-    (split-string (shell-command-to-string "fasd -ld") "\n" t))
+    (defun consult-dir--fasd-dirs ()
+      "Return list of fasd dirs."
+      (split-string (shell-command-to-string "fasd -ld") "\n" t))
 
   (defvar consult-dir--source-fasd
     `(:name     "Fasd dirs"
@@ -418,7 +453,7 @@
         :desc "Project find" "SPC" #'consult-projectile))
 
 (after! consult-projectile
-  (setq consult-projectile-use-projectile-switch-project t))
+    (setq consult-projectile-use-projectile-switch-project t))
 
 ;; -------------------------------
 ;; Configuración de buffers
@@ -481,7 +516,7 @@
   (evil-set-initial-state 'detached-list-mode 'emacs))
 
 (after! detached
-  (detached-init))
+    (detached-init))
 
 (use-package! vlf
   :defer-incrementally t
@@ -492,7 +527,7 @@
   (add-hook! 'vlf-mode-hook #'so-long-mode))
 
 (after! so-long
-  (add-to-list 'so-long-mode-preserved-variables 'vlf-mode))
+    (add-to-list 'so-long-mode-preserved-variables 'vlf-mode))
 
 (add-hook! 'doom-first-buffer-hook #'+global-word-wrap-mode)
 
@@ -500,18 +535,14 @@
 ;; Configuración de RSS
 ;; -------------------------------
 
-(defvar my/rss-base-dir "~/Org/rss/"
-  "Directorio raíz para gestión de feeds y contenido relacionado")
-(make-directory my/rss-base-dir t)  ; Crea recursivamente si no existe
-
 (add-hook! 'elfeed-search-mode-hook #'elfeed-update)
 
 (after! elfeed
-  (setq elfeed-search-filter "@7-days-ago +unread")
+    (setq elfeed-search-filter "@7-days-ago +unread")
   (setq elfeed-org-allow-http-feeds t))
 
 (after! elfeed-org
-  (setq rmh-elfeed-org-files (list "~/Org/rss/elfeeds.org"))
+    (setq rmh-elfeed-org-files (list "~/Org/rss/elfeeds.org"))
   ;; Crear estructura inicial si no existe
   (unless (file-exists-p (concat my/rss-base-dir "elfeeds.org"))
     (with-temp-file (concat my/rss-base-dir "elfeeds.org")
@@ -541,8 +572,8 @@
   :config (add-to-list 'revert-without-query ".pdf"))
 
 (add-hook 'pdf-view-mode-hook #'(lambda () (interactive) (display-line-numbers-mode -1)
-                                  (blink-cursor-mode -1)
-                                  (doom-modeline-mode -1)))
+                                        (blink-cursor-mode -1)
+                                        (doom-modeline-mode -1)))
 
 ;; -------------------------------
 ;; Configuración de Emms
@@ -600,48 +631,3 @@
 
 ;; Ignorar ciertos archivos (ej: archivos temporales de Org)
 (setq deft-ignore-file-regexp "\\.#\\|~$")
-
-;; -------------------------------
-;; Configuración de Jabber (cliente xmpp)
-;; -------------------------------
-
-(use-package! jabber
-  :commands (jabber-connect-all
-             jabber-connect)
-  :config
-  (setq jabber-account-list '(("raksodiano@disroot.org"
-                               (:network-server . "disroot.org")
-                               (:connection-type . starttls)))))
-
-(setq jabber-omemo t)
-(setq jabber-roster-show-all t)
-
-;; disable warnings
-(after! warnings
-  (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
-  (add-to-list 'warning-suppress-types
-               ;;   '(undo discard-info)
-               '(undo)))
-
-(add-hook 'jabber-post-connect-hooks
-          (lambda ()
-            (ding)
-            (alert "Jabber connection successfully established.")))
-
-(add-hook 'jabber-post-disconnect-hook
-          (lambda ()
-            (ding)
-            (alert "Disconnected from Jabber!" :severity 'high)))
-
-(add-hook 'jabber-roster-activity-change-hook
-          (lambda (activity)
-            (alert (format "New message form %s!" (jabber-jid-displayname (jabber-roster-find activity)))
-                   :title "Jabber"
-                   :category 'jabber)))
-
-;; -------------------------------
-;; Configuración de mastodon
-;; -------------------------------
-
-(setq mastodon-instance-url "https://fosstodon.org"
-      mastodon-active-user "root655")
