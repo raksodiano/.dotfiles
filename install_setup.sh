@@ -34,6 +34,7 @@ source ./scripts/logos.sh
 source ./scripts/utils.sh
 source ./scripts/packages.conf
 source ./scripts/services.conf
+source ./scripts/dotfiles/main.sh
 
 # Hide native cursor
 hide_cursor
@@ -79,6 +80,9 @@ install_packages "${OFFICE[@]}"
 animate "Installing media packages..."
 install_packages "${MEDIA[@]}"
 
+animate "Installing codecs packages..."
+install_packages "${CODES[@]}"
+
 # Enable services
 animate "Configuring services..."
 for service in "${SERVICES[@]}"; do
@@ -90,4 +94,13 @@ for service in "${SERVICES[@]}"; do
   fi
 done
 
+echo
+
 # Enable dotfiles
+animate "Configuring dotfiles..."
+install_htop
+install_fastfetch
+install_emacs
+
+show_cursor
+install_fish
