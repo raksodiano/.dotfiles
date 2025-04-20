@@ -94,6 +94,8 @@ for service in "${SERVICES[@]}"; do
   fi
 done
 
+systemctl --user enable --now podman.socket
+
 echo
 
 # Enable dotfiles

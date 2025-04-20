@@ -381,11 +381,13 @@
       eslintd-fix-mode t)  ; Corregir errores al guardar
 
 ;; -------------------------------
-;; Configuración Docker
+;; Configuración Contenedores
 ;; -------------------------------
 
 (add-to-list 'auto-mode-alist
              '("docker-compose[.-]?\\(yml\\|yaml\\)\\'" . yaml-mode))
+
+(setenv "DOCKER_HOST" (concat "unix://" (getenv "XDG_RUNTIME_DIR") "/podman/podman.sock"))
 
 ;; (setq lsp-dockerfile-language-server-path "docker-langserver")
 
