@@ -22,7 +22,7 @@
 
        :completion
        (company +childframe)  ; the ultimate code completion backend
-       ;; (corfu +orderless +icons)     ; complete with cap(f), cape and a flying feather!
+       ;;(corfu +orderless +icons)     ; complete with cap(f), cape and a flying feather!
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;;(ivy +fuzzy +prescient)               ; a search engine for love and life
@@ -90,8 +90,8 @@
        ;;biblio            ; Writes a PhD for you (citation needed)
        collab                ; buffers with friends
        debugger              ; FIXME stepping through code, to help you add bugs
-       ;; direnv
-       ;; (docker +lsp)
+       ;;direnv
+       (docker +lsp)
        editorconfig                ; let someone else argue about tabs vs spaces
        ein                         ; tame Jupyter notebooks with emacs
        (eval +overlay)             ; run code, run (also, repls)
@@ -102,7 +102,7 @@
        pass                                   ; password manager for nerds
        pdf                                    ; pdf enhancements
        prodigy            ; FIXME managing external services & code builders
-       ;; terraform          ; infrastructure as code
+       ;;terraform          ; infrastructure as code
        tmux              ; an API for interacting with tmux
        tree-sitter                    ; syntax and parsing, sitting in a tree...
        upload                         ; map local to remote projects via ssh/ftp
@@ -133,9 +133,9 @@
        ;;fortran           ; in FORTRAN, GOD is REAL (unless declared INTEGER)
        ;;fsharp            ; ML stands for Microsoft's Language
        ;;fstar             ; (dependent) types and (monadic) effects and Z3
-       ;; (gdscript +lsp)         ; the language you waited for
-       ;; (go +lsp)        ; the hipster dialect
-       ;; (graphql +lsp)   ; Give queries a REST
+       ;;(gdscript +lsp)         ; the language you waited for
+       ;;(go +lsp)        ; the hipster dialect
+       ;;(graphql +lsp)   ; Give queries a REST
        ;;(haskell +lsp)    ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ; a language you can depend on
@@ -147,7 +147,7 @@
        (latex +lsp)      ; writing papers in Emacs has never been so fun
        ;;lean              ; for folks with too much to prove
        ;;ledger            ; be audit you can be
-       ;; lua               ; one-based indices? one-based indices
+       ;;lua               ; one-based indices? one-based indices
        markdown ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
@@ -161,7 +161,7 @@
             +present
             +pandoc
             +gnuplot) ; organize your plain life in plain text
-       ;; (php +hack +lsp) ; perl's insecure younger brother
+       ;;(php +hack +lsp) ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;graphviz          ; diagrams for confusing yourself even more
        ;;purescript        ; javascript, but functional
@@ -175,7 +175,7 @@
        (rest +jq)                       ; Emacs as a REST client
        ;;rst               ; ReST in peace
        ;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
-       ;; (rust +lsp)       ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+       ;;(rust +lsp)       ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        ;;scala             ; java, but good
        ;;(scheme +guile)   ; a fully conniving family of lisps
        (sh +tree-sitter +lsp)        ; she sells {ba,z,fi}sh shells on the C xor
@@ -194,11 +194,11 @@
        ;;(wanderlust +gmail)
 
        :app
-       ;; calendar
+       ;;calendar
        emms
        everywhere                 ; *leave* Emacs!? You must be joking
        ;;irc               ; how neckbeards socialize
-       ;; (rss +org)                       ; emacs as an RSS reader
+       ;;(rss +org)                       ; emacs as an RSS reader
 
        :config
        ;;literate
