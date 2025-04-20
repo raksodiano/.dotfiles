@@ -337,7 +337,6 @@
 
 (setq org-publish-project-alist
       `(
-        ;; Entradas del blog
         ("blog-posts"
          :base-directory "~/Workspace/blog/posts/"
          :base-extension "org"
@@ -351,7 +350,6 @@
                             (insert-file-contents "~/Workspace/blog/footer.org")
                             (buffer-string)))
 
-        ;; Archivos estáticos del blog (CSS, imágenes, etc.)
         ("blog-assets"
          :base-directory "~/Workspace/blog/assets/"
          :base-extension "css\\|js\\|png\\|jpg\\|gif\\|svg\\|woff\\|woff2"
@@ -359,33 +357,7 @@
          :recursive t
          :publishing-function org-publish-attachment)
 
-        ;; Proyecto complete (components)
         ("blog" :components ("blog-posts" "blog-assets"))))
-
-;; (setq org-publish-project-alist
-;;       '(("blog-posts"
-;;          :base-directory "~/Workspace/blog/posts/"
-;;          :base-extension "org"
-;;          :publishing-directory "~/Workspace/blog/exports/"
-;;          :recursive t
-;;          :publishing-function org-html-publish-to-html
-;;          :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"../assets/css/style.css\" />"
-;;          :html-preamble t
-;;          :html-postamble t
-;;          :html-preamble ,(with-temp-buffer
-;;                            (insert-file-contents "~/Workspace/blog/header.org")
-;;                            (buffer-string))
-;;          :html-postamble ,(with-temp-buffer
-;;                             (insert-file-contents "~/Workspace/blog/footer.org")
-;;                             (buffer-string))))
-;;       ("blog-assets"
-;;        :base-directory "~/Workspace/blog/assets/"
-;;        :base-extension "css\\|js\\|png\\|jpg\\|gif"
-;;        :publishing-directory "~/Workspace/blog/exports/assets/"
-;;        :recursive t
-;;        :publishing-function org-publish-attachment)
-
-;;       ("blog" :components ("blog-posts" "blog-assets")))
 
 ;; -------------------------------
 ;; Configuración de Typescript (NestJS)
@@ -400,7 +372,6 @@
         lsp-clients-typescript-log-verbosity "debug"  ; Logs detallados
         lsp-completion-enable-auto-import t           ; Auto-imports
         lsp-tsserver-plugins-path "~/node_modules"))    ; Ruta de plugins de TS
-
 
 (setq lsp-clients-typescript-init-opts '(:plugins ["@nestjs/swagger-plugin"]
                                          :compilerOptions {:experimentalDecorators t}))

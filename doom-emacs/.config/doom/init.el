@@ -77,8 +77,8 @@
        :term
        ;;eshell            ; the elisp shell that works everywhere
        ;;shell             ; simple shell REPL for Emacs
-       term           ; basic terminal emulator for Emacs
-       ;;vterm             ; the best terminal emulation in Emacs
+       ;;term           ; basic terminal emulator for Emacs
+       vterm             ; the best terminal emulation in Emacs
 
        :checkers
        (syntax +flyspell +childframe)              ; tasing you for every semicolon you forget
@@ -135,7 +135,7 @@
        ;;fstar             ; (dependent) types and (monadic) effects and Z3
        ;; (gdscript +lsp)         ; the language you waited for
        ;; (go +lsp)        ; the hipster dialect
-       (graphql +lsp)   ; Give queries a REST
+       ;; (graphql +lsp)   ; Give queries a REST
        ;;(haskell +lsp)    ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ; a language you can depend on
@@ -194,11 +194,11 @@
        ;;(wanderlust +gmail)
 
        :app
-       calendar
+       ;; calendar
        emms
        everywhere                 ; *leave* Emacs!? You must be joking
        ;;irc               ; how neckbeards socialize
-       (rss +org)                       ; emacs as an RSS reader
+       ;; (rss +org)                       ; emacs as an RSS reader
 
        :config
        ;;literate
