@@ -6,6 +6,17 @@ source ./scripts/utils.sh
 install_emacs() {
   local packages=(
     "emacs"
+    "sbcl"
+    "nodejs"
+    "npm"
+    "graphviz"
+    "imagemagick"
+    "pandoc"
+    "texlive-core"
+    "texlive-latexextra"
+    "texlive-fontsextra"
+    "texlive-pictures"
+    "texlive-science"
     "mpv"
     "enchant"
     "hunspell"

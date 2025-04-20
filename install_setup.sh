@@ -86,7 +86,7 @@ install_packages "${CODES[@]}"
 # Enable services
 animate "Configuring services..."
 for service in "${SERVICES[@]}"; do
-  if ! systemctl is-enabled "$service" &> /dev/null; then
+  if ! systemctl is-enabled "$service" &>/dev/null; then
     animate "Enabling $service..."
     sudo systemctl enable "$service"
   else
@@ -103,4 +103,3 @@ install_fastfetch
 install_emacs
 
 show_cursor
-install_fish
