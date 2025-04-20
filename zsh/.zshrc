@@ -8,8 +8,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# ZSH_THEME="gnzh"
-ZSH_THEME="xiong-chiamiov-plus"
+ZSH_THEME="gnzh"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -76,12 +75,7 @@ plugins=(
 	git-prompt
 	gitignore
 	gnu-utils
-	man
-	node
-	npm
 	sudo
-	systemd
-	vscode
 	zsh-autosuggestions
 	zsh-navigation-tools
 	zsh-history-substring-search
@@ -126,6 +120,6 @@ alias la='ls -a'
 alias lla='ls -la'
 alias lt='ls --tree'
 
-alias docker='podman'
+alias doom='~/.config/emacs/bin/doom'
 
-# eval "$(starship init zsh)"
+eval "$(starship init zsh)"
