@@ -103,6 +103,22 @@
 (setq comment-tabs t)  ; Alinea comentarios con tabs o espacios
 
 ;; -------------------------------
+;; Configuración de diccionarios
+;; -------------------------------
+
+;; Función para cambiar el diccionario de Flyspell
+(defun my/change-ispell-dictionary (lang)
+  "Cambia el diccionario de Flyspell a LANG."
+  (interactive "sIdioma (por ejemplo, es_ES o en_US): ")
+  (setq ispell-dictionary lang)
+  (ispell-change-dictionary lang)
+  (message "Diccionario cambiado a %s" lang))
+
+;; Añadir un atajo de teclado para cambiar de diccionario fácilmente
+(map! :leader
+      :desc "Cambiar diccionario Flyspell" "l d" #'my/change-ispell-dictionary)
+
+;; -------------------------------
 ;; Configuración de directorios
 ;; -------------------------------
 
@@ -331,9 +347,20 @@
          :unnarrowed t
          :mkdir t)))
 
+(defun my/org-mode-set-language ()
+  "Configura el idioma de Hunspell basado en la etiqueta #+LANGUAGE."
+  (let ((lang (org-entry-get (point) "LANGUAGE")))
+    (when lang
+      (setq ispell-dictionary lang))))
+
+(add-hook 'org-mode-hook 'my/org-mode-set-language)
+
 ;; -------------------------------
 ;; Configuración de publish (para blogging)
 ;; -------------------------------
+
+(after! org
+    (setq org-hugo-base-dir "~/Workspace/blog-hugo"))
 
 (setq org-publish-project-alist
       `(
