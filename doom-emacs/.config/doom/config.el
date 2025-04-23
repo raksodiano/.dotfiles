@@ -359,32 +359,47 @@
 ;; Configuración de publish (para blogging)
 ;; -------------------------------
 
-(after! org
-    (setq org-hugo-base-dir "~/Workspace/blog-hugo"))
+;; Configuración específica de ox-hugo
+(with-eval-after-load 'ox-hugo
+  (setq org-hugo-base-dir "~/Workspace/blog-hugo") ; Ruta a tu proyecto Hugo
+  (setq org-hugo-section "posts")
+  (setq org-hugo-default-section-directory "posts")
+  (setq org-hugo-preserve-filing 'force)
+  (setq org-hugo-auto-set-lastmod t)
+  (setq org-hugo-export-with-toc nil)
+  (setq org-hugo-allow-spaces-in-tags t)
+  (setq org-hugo-paired-shortcodes "note,warning,tip,details"))
 
-(setq org-publish-project-alist
-      `(
-        ("blog-posts"
-         :base-directory "~/Workspace/blog/posts/"
-         :base-extension "org"
-         :publishing-directory "~/Workspace/blog/exports/"
-         :recursive t
-         :publishing-function org-html-publish-to-html
-         :html-preamble ,(with-temp-buffer
-                           (insert-file-contents "~/Workspace/blog/header.org")
-                           (buffer-string))
-         :html-postamble ,(with-temp-buffer
-                            (insert-file-contents "~/Workspace/blog/footer.org")
-                            (buffer-string)))
+;; Configuración de directorios por idioma
+(setq org-hugo-content-directory "content-org")
+(setq org-hugo-languages '(("es" . "Spanish") ("en" . "English")))
 
-        ("blog-assets"
-         :base-directory "~/Workspace/blog/assets/"
-         :base-extension "css\\|js\\|png\\|jpg\\|gif\\|svg\\|woff\\|woff2"
-         :publishing-directory "~/Workspace/blog/exports/assets/"
-         :recursive t
-         :publishing-function org-publish-attachment)
+(setq org-hugo-static-file-extensions
+      '("png" "jpg" "jpeg" "gif" "svg" "pdf" "css" "js" "woff" "woff2" "ttf"))
 
-        ("blog" :components ("blog-posts" "blog-assets"))))
+;; (setq org-publish-project-alist
+;;       `(
+;;         ("blog-posts"
+;;          :base-directory "~/Workspace/blog/posts/"
+;;          :base-extension "org"
+;;          :publishing-directory "~/Workspace/blog/exports/"
+;;          :recursive t
+;;          :publishing-function org-html-publish-to-html
+;;          :html-preamble ,(with-temp-buffer
+;;                            (insert-file-contents "~/Workspace/blog/header.org")
+;;                            (buffer-string))
+;;          :html-postamble ,(with-temp-buffer
+;;                             (insert-file-contents "~/Workspace/blog/footer.org")
+;;                             (buffer-string)))
+
+;;         ("blog-assets"
+;;          :base-directory "~/Workspace/blog/assets/"
+;;          :base-extension "css\\|js\\|png\\|jpg\\|gif\\|svg\\|woff\\|woff2"
+;;          :publishing-directory "~/Workspace/blog/exports/assets/"
+;;          :recursive t
+;;          :publishing-function org-publish-attachment)
+
+;;         ("blog" :components ("blog-posts" "blog-assets"))))
 
 ;; -------------------------------
 ;; Configuración de Typescript (NestJS)
