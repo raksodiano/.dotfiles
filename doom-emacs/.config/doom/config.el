@@ -370,6 +370,9 @@
   (setq org-hugo-allow-spaces-in-tags t)
   (setq org-hugo-paired-shortcodes "note,warning,tip,details"))
 
+(setq org-hugo-taxonomy-tags "tags")
+(setq org-hugo-taxonomy-categories "categories")
+
 ;; Configuración de directorios por idioma
 (setq org-hugo-content-directory "content-org")
 (setq org-hugo-languages '(("es" . "Spanish") ("en" . "English")))
