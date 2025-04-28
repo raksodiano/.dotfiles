@@ -4,32 +4,10 @@
 ;; Configuración visual y comportamiento
 ;; -------------------------------
 
-;; Tema y fuentes
-(setq doom-theme 'doom-nord)                  ; Tema Nord (oscuro)
-(setq display-line-numbers-type 'relative)    ; Números de línea relativos
-(add-hook 'prog-mode-hook #'hl-line-mode)
-
 ;; Iniciar maximizado
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-;; Configuración global para usar 2 espacios en la tabulación y la sangría
-(setq-default tab-width 2)                ;; Configura el tamaño de la tabulación a 2 espacios
-(setq-default indent-tabs-mode t)
-(setq-default sh-basic-offset 2)          ;; Configura la sangría para scripts shell (sh, bash) a 2 espacios
-(setq-default sh-indentation 2)
-(setq-default fish-indent-offset 2)       ;; Configura la sangría para Fish shell a 2 espacios
-(setq-default conf-basic-offset 2)        ;; Configura la sangría para archivos de configuración a 2 espacios
-
-(after! sh-script
-    (setq sh-basic-offset 2)
-  (setq tab-width 2)
-  (setq indent-tabs-mode t))
-
-(after! fish-mode
-    (setq fish-indent-offset 2)
-  (setq tab-width 2)
-  (setq indent-tabs-mode t))
-
+;; Tema y fuentes
 (use-package! doom-nord-theme
   :defer t
   :custom
@@ -37,9 +15,9 @@
   (doom-nord-padded-modeline t)
   (doom-nord-region-highlight 'frost))
 
-;; Modo zen
-(after! writeroom-mode
-    (setq +zen-text-scale 1.25))
+(setq doom-theme 'doom-nord)                  ; Tema Nord (oscuro)
+(setq display-line-numbers-type 'relative)    ; Números de línea relativos
+(add-hook 'prog-mode-hook #'hl-line-mode)
 
 (custom-set-faces!
     '(mode-line :height 90 :inherit 'variable-pitch)
@@ -50,6 +28,21 @@
 
 (after! doom-modeline
     (setq doom-modeline-buffer-file-name-style 'truncate-with-project))
+
+;; Configuración global de indentación
+(setq-default tab-width 2               ; Tamaño del tabulador en espacios
+              indent-tabs-mode t        ; Usar tabuladores reales para indentación
+              sh-basic-offset 2         ; Indentación para shell scripts (sh/bash)
+              sh-indentation 2          ; Alineación para bloques en shell
+              fish-indent-offset 2      ; Indentación para Fish shell
+              conf-basic-offset 2)      ; Indentación para archivos de configuración
+
+;; Configuración específica para modos Shell
+(after! sh-script
+    (setq
+     sh-basic-offset 2
+     tab-width 2
+     indent-tabs-mode t))
 
 ;; Tabs estilo IDE (Centaur Tabs)
 (setq centaur-tabs-style "alternate"
@@ -129,6 +122,8 @@
                        "~/Org/notes-work"
                        "~/Workspace"
                        "~/Workspace/books"
+                       "~/Workspace/books/latex"
+                       "~/Workspace/books/org"
                        "~/Workspace/blog"
                        "~/Workspace/games"))
 
@@ -172,7 +167,7 @@
              lorem-ipsum-insert-list))
 
 (after! flyspell
-    (setq flyspell-lazy-idle-seconds 1.5))
+    (setq flyspell-lazy-idle-seconds 0.3))
 
 ;; -------------------------------
 ;; Configuración de LSP para todos los lenguajes
@@ -227,7 +222,7 @@
 
 ;; Activar formateo automático al guardar
 (setq +format-on-save-enabled-modes
-      '(python-mode js-mode typescript-mode dart-mode c-mode c++-mode sh-mode lua-mode))
+      '(python-mode js-mode typescript-mode c-mode c++-mode sh-mode lua-mode))
 
 (defun install-lsp-servers ()
   "Instala todos los servidores LSP requeridos"
@@ -308,10 +303,6 @@
   (add-hook 'org-mode-hook #'visual-fill-column-mode))
 
 (after! org
-    (setq-hook! org-mode
-      display-line-numbers nil))
-
-(after! org
     (custom-declare-face '+org-todo-wait  '((t (:inherit (bold mode-line-emphasis org-todo)))) "")
   (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "PROJ(p)" "WAIT(w)" "IDEA(i)" "EVENT(e)" "|"
                              "DONE(d)" "CANCELLED(c)"))
@@ -331,6 +322,11 @@
 
         ("n" "Nota General" entry
          (file+headline "~/Org/notes/note/notas.org" "Notas")
+         "* %?\nFecha: %T\n%i\n%a"
+         :mkdir t)
+
+        ("w" "Notas del trabajo" entry
+         (file+headline "~/Org/notes-work/notas.org" "Notas")
          "* %?\nFecha: %T\n%i\n%a"
          :mkdir t)
 
@@ -356,12 +352,12 @@
 (add-hook 'org-mode-hook 'my/org-mode-set-language)
 
 ;; -------------------------------
-;; Configuración de publish (para blogging)
+;; Configuración de blogging
 ;; -------------------------------
 
 ;; Configuración específica de ox-hugo
 (with-eval-after-load 'ox-hugo
-  (setq org-hugo-base-dir "~/Workspace/blog-hugo") ; Ruta a tu proyecto Hugo
+  (setq org-hugo-base-dir "~/Workspace/blog-hugo")
   (setq org-hugo-section "posts")
   (setq org-hugo-default-section-directory "posts")
   (setq org-hugo-preserve-filing 'force)
