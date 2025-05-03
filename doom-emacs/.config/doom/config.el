@@ -401,6 +401,13 @@
 ;;         ("blog" :components ("blog-posts" "blog-assets"))))
 
 ;; -------------------------------
+;; Configuración de LaTeX
+;; -------------------------------
+
+(setq TeX-command-extra-options "-shell-escape")
+(add-hook 'TeX-after-TeX-file-run-hook #'TeX-clean)
+
+;; -------------------------------
 ;; Configuración de Typescript (NestJS)
 ;; -------------------------------
 
