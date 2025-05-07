@@ -404,8 +404,9 @@
 ;; Configuración de LaTeX
 ;; -------------------------------
 
-(setq TeX-command-extra-options "-shell-escape")
-(add-hook 'TeX-after-TeX-file-run-hook #'TeX-clean)
+(setq TeX-PDF-mode t) ; Fuerza la generación de PDF en lugar de DVI
+;; (setq TeX-command-extra-options "-shell-escape")
+;; (add-hook 'TeX-after-TeX-file-run-hook #'TeX-clean)
 
 ;; -------------------------------
 ;; Configuración de Typescript (NestJS)
