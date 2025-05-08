@@ -24,7 +24,7 @@
     '(mode-line-inactive :height 80 :inherit 'variable-pitch))
 
 (after! all-the-icons
-    (setq all-the-icons-scale-factor 1.1))
+    (setq all-the-icons-scale-factor 1.5))
 
 (after! doom-modeline
     (setq doom-modeline-buffer-file-name-style 'truncate-with-project))
@@ -256,10 +256,23 @@
 ;; Configuración de magit
 ;; -------------------------------
 
-(add-hook 'magit-post-push-hook 'magit-refresh)
 (setq magit-blame-heading-format "%-20a %C %s\n") ; Formato de autor/fecha
 (custom-set-faces
  '(magit-blame-hash ((t (:foreground "#7F7F7F"))))) ; Color del hash
+
+(add-hook 'magit-post-push-hook 'magit-refresh-all)
+(add-hook 'magit-post-commit-hook 'magit-refresh-all)
+(add-hook 'magit-post-merge-hook 'magit-refresh-all)
+(add-hook 'magit-post-checkout-hook 'magit-refresh-all)
+(add-hook 'magit-post-fetch-hook 'magit-refresh-all)
+
+;; (use-package! magit
+;;   :config
+;;   (setq magit-refresh-status-buffer t))
+
+;; (add-hook 'magit-post-fetch-hook 'magit-refresh)  ; Actualiza después un fetch
+;; (add-hook 'magit-post-commit-hook 'magit-refresh) ; Actualiza después de un commit
+;; (add-hook 'magit-post-push-hook 'magit-refresh)   ; Actualiza después de un push
 
 ;; (use-package! magit-delta
 ;;   :custom (magit-delta-default-dark-theme "Nord")
@@ -375,30 +388,6 @@
 
 (setq org-hugo-static-file-extensions
       '("png" "jpg" "jpeg" "gif" "svg" "pdf" "css" "js" "woff" "woff2" "ttf"))
-
-;; (setq org-publish-project-alist
-;;       `(
-;;         ("blog-posts"
-;;          :base-directory "~/Workspace/blog/posts/"
-;;          :base-extension "org"
-;;          :publishing-directory "~/Workspace/blog/exports/"
-;;          :recursive t
-;;          :publishing-function org-html-publish-to-html
-;;          :html-preamble ,(with-temp-buffer
-;;                            (insert-file-contents "~/Workspace/blog/header.org")
-;;                            (buffer-string))
-;;          :html-postamble ,(with-temp-buffer
-;;                             (insert-file-contents "~/Workspace/blog/footer.org")
-;;                             (buffer-string)))
-
-;;         ("blog-assets"
-;;          :base-directory "~/Workspace/blog/assets/"
-;;          :base-extension "css\\|js\\|png\\|jpg\\|gif\\|svg\\|woff\\|woff2"
-;;          :publishing-directory "~/Workspace/blog/exports/assets/"
-;;          :recursive t
-;;          :publishing-function org-publish-attachment)
-
-;;         ("blog" :components ("blog-posts" "blog-assets"))))
 
 ;; -------------------------------
 ;; Configuración de LaTeX
