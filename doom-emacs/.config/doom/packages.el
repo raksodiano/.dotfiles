@@ -1,32 +1,46 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 
-;; editor
+;; -----------------------------------
+;; Paquetes para edición y utilidades
+;; -----------------------------------
 (package! dotenv-mode)
 (package! vlf)
+(package! lorem-ipsum)
 
-;; dired
+;; -----------------------------------
+;; Paquetes para Dired
+;; -----------------------------------
 (package! dired-open)
 (package! dired-subtree)
 
-;; magit
+;; -----------------------------------
+;; Paquetes para Magit
+;; -----------------------------------
 (package! magit-delta)
 
-;; notification
+;; -----------------------------------
+;; Notificaciones
+;; -----------------------------------
 (package! alert)
 
-;; docker
+;; -----------------------------------
+;; Docker
+;; -----------------------------------
 (package! docker-compose-mode)
 
-;; detached
+;; -----------------------------------
+;; Proceso en segundo plano
+;; -----------------------------------
 (package! detached)
 
-;; consult
+;; -----------------------------------
+;; Consult y complementos
+;; -----------------------------------
 (package! consult-company)
 (package! consult-projectile)
 
-;; latex
+;; -----------------------------------
+;; LaTeX
+;; -----------------------------------
 (package! latexdiff)
-
-;; miselaneos
-(package! lorem-ipsum)
