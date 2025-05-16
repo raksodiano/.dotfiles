@@ -446,7 +446,7 @@
   ;; Limpiar archivos auxiliares después de compilar
   (add-hook 'TeX-after-TeX-file-run-hook #'TeX-clean)
 
-  ;; Usar `latexmk` como comando por defecto (opcional pero recomendado)
+  ;; Usar `latexmk` como comando por defecto
   (setq TeX-command-default "LatexMk")
 
   ;; Activar modo visual-line y flyspell cuando estés en LaTeX
@@ -779,3 +779,13 @@
 (add-hook 'emacs-startup-hook
           (lambda ()
             (alert "Welcome, Master" :title "Doom Emacs Awaits")))
+
+(defun my/org-export-pdf-alert (&rest _args)
+  (alert "Exportación de Org a PDF completada" :title "Org Export" :severity 'normal))
+
+(advice-add 'org-latex-export-to-pdf :after #'my/org-export-pdf-alert)
+
+(defun my/latex-compilation-alert (filename)
+  (alert "Compilación de LaTeX a PDF completada" :title "Latex Compile" :severity 'normal))
+
+(add-hook 'TeX-after-compilation-finished-functions #'my/latex-compilation-alert)
