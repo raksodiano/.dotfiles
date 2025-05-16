@@ -457,30 +457,37 @@
 ;; Configuración de dired
 ;; -------------------------------
 
-(add-hook! dired-mode #'dired-hide-details-mode)
-(add-hook! dired-mode #'dired-async-mode)
+;; Activar modos ocultos y asincrónicos en dired
+(add-hook! dired-mode
+  (dired-hide-details-mode)
+  (dired-async-mode))
 
+;; Configurar dired-subtree
 (use-package! dired-subtree
   :after dired)
 
+;; Configurar dired cuando esté cargado
 (after! dired
-    (map! :map dired-mode-map
-     :n "R" #'dired-async-do-rename
-     :n "C" #'dired-async-do-copy
-     :n "S" #'dired-async-do-symlink
-     :n "H" #'dired-async-do-hardlink))
+  ;; Atajos personalizados para operaciones asincrónicas
+  (map! :map dired-mode-map
+        :n "N" #'dired-create-empty-file
+        :n "R" #'dired-async-do-rename
+        :n "C" #'dired-async-do-copy
+        :n "S" #'dired-async-do-symlink
+        :n "H" #'dired-async-do-hardlink)
 
-(after! dired
-    (setq dired-dwim-target #'dired-dwim-target-recent))
+  ;; Activar destino inteligente basado en archivos recientes
+  (setq dired-dwim-target #'dired-dwim-target-recent))
 
+;; Configurar dirvish
 (after! dirvish
-    (setq dirvish-default-layout '(0 0 0.4)
-     dirvish-layout-recipes '((1 0.11 0.55)
-                              (0 0    0.40))))
+  (setq dirvish-default-layout '(0 0 0.4)
+        dirvish-layout-recipes '((1 0.11 0.55)
+                                 (0 0    0.40)))
+  ;; Asegurar que 'file-size esté en los atributos
+  (pushnew! dirvish-attributes 'file-size))
 
-(after! dirvish
-    (pushnew! dirvish-attributes 'file-size))
-
+;; Atajo para abrir Dired desde el líder
 (map! :leader
       :desc "Dired" "o -" #'dired-jump)
 
@@ -560,39 +567,52 @@
 
 (use-package! detached
   :after-call (compile dired dired-rsync embark-act eshell org-mode projectile-mode shell vterm)
+  :init
+  ;; Inicializar Detached al cargar
+  (add-hook! 'doom-first-buffer-hook #'detached-init)
+  :custom
+  ;; Notificaciones adaptadas a OS
+  (detached-notification-function
+   (if IS-LINUX
+       #'detached-state-transition-notifications-message
+     #'detached-extra-alert-notification))
+  ;; Directorios base
+  (detached-db-directory doom-cache-dir)
+  (detached-session-directory (temporary-file-directory))
+  ;; Bloquear auto-init para algunos modos
+  (detached-init-block-list '(dired-rsync dired))
   :config
-  (setq detached-notification-function (if IS-LINUX
-                                           #'detached-state-transition-notifications-message
-                                         #'detached-extra-alert-notification)
-        detached-db-directory doom-cache-dir
-        detached-init-block-list   '(dired-rsync dired)
-        detached-session-directory (temporary-file-directory)))
+  ;; Atajo directo para ejecutar comandos desacoplados
+  (map! :g "M-&" #'detached-shell-command))
 
-(map! :g "M-&" #'detached-shell-command)
-
+;; Consult UI para Detached
 (use-package! detached-consult
   :defer t
   :init
   (map! :leader
         :desc "Detached Sessions" :g "o s" #'detached-consult-session))
 
+;; Compilaciones desacopladas
 (use-package! detached-compile
   :defer t
   :init
   (map! :leader
-        :desc "Compile" :g  "c c" #'detached-compile
-        :desc "Recompile" :g "c C" #'detached-compile-recompile))
+        :desc "Compile (Detached)"   :g "c c" #'detached-compile
+        :desc "Recompile (Detached)" :g "c C" #'detached-compile-recompile))
 
+;; Lista de sesiones activas
 (use-package! detached-list
   :defer t
   :init
   (map! :leader
         :desc "Detached Manage Sessions" :g "o S" #'detached-list-sessions)
   :config
+  ;; Emacs state para lista de sesiones (evitar modo Evil)
   (evil-set-initial-state 'detached-list-mode 'emacs))
 
-(after! detached
-    (detached-init))
+;; -----------------------------------
+;; Configuración archivos grandes
+;; -----------------------------------
 
 (use-package! vlf
   :defer-incrementally t
@@ -603,8 +623,9 @@
   (add-hook! 'vlf-mode-hook #'so-long-mode))
 
 (after! so-long
-    (add-to-list 'so-long-mode-preserved-variables 'vlf-mode))
+  (add-to-list 'so-long-mode-preserved-variables 'vlf-mode))
 
+;; Activar word wrap global
 (add-hook! 'doom-first-buffer-hook #'+global-word-wrap-mode)
 
 ;; -------------------------------
