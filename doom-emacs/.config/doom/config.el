@@ -4,21 +4,18 @@
 ;; Configuración visual y comportamiento
 ;; -------------------------------
 
-;; Iniciar maximizado
+;; Iniciar Emacs maximizado
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-;; Tema y fuentes
-(use-package! doom-nord-theme
-  :defer t
-  :custom
-  (doom-nord-brighter-modeline t)
-  (doom-nord-padded-modeline t)
-  (doom-nord-region-highlight 'frost))
+;; Tema
+;; (setq doom-theme 'doom-nord)
+(setq doom-theme 'doom-gruvbox)
 
-(setq doom-theme 'doom-nord)                  ; Tema Nord (oscuro)
-(setq display-line-numbers-type 'relative)    ; Números de línea relativos
+;; Números de línea relativos
+(setq display-line-numbers-type 'relative)
 (add-hook 'prog-mode-hook #'hl-line-mode)
 
+;; Modelo de línea y fuentes
 (custom-set-faces!
     '(mode-line :height 90 :inherit 'variable-pitch)
     '(mode-line-inactive :height 80 :inherit 'variable-pitch))
@@ -28,21 +25,6 @@
 
 (after! doom-modeline
     (setq doom-modeline-buffer-file-name-style 'truncate-with-project))
-
-;; Configuración global de indentación
-(setq-default tab-width 2               ; Tamaño del tabulador en espacios
-              indent-tabs-mode t        ; Usar tabuladores reales para indentación
-              sh-basic-offset 2         ; Indentación para shell scripts (sh/bash)
-              sh-indentation 2          ; Alineación para bloques en shell
-              fish-indent-offset 2      ; Indentación para Fish shell
-              conf-basic-offset 2)      ; Indentación para archivos de configuración
-
-;; Configuración específica para modos Shell
-(after! sh-script
-    (setq
-     sh-basic-offset 2
-     tab-width 2
-     indent-tabs-mode t))
 
 ;; Tabs estilo IDE (Centaur Tabs)
 (setq centaur-tabs-style "alternate"
@@ -94,6 +76,13 @@
   :mode ("\\.env\\.?.*\\'" . dotenv-mode))
 
 (setq comment-tabs t)  ; Alinea comentarios con tabs o espacios
+
+;; -------------------------------
+;; Indentación y formato de código
+;; -------------------------------
+
+(setq-default tab-width 2)               ; Tamaño del tabulador: 2 espacios
+(setq-default indent-tabs-mode nil)      ; Usar espacios en lugar de tabs
 
 ;; -------------------------------
 ;; Configuración de diccionarios
@@ -165,6 +154,12 @@
   :commands (lorem-ipsum-insert-paragraphs
              lorem-ipsum-insert-sentences
              lorem-ipsum-insert-list))
+
+(map! :leader
+      :prefix ("i l" . "lorem ipsum")
+      :desc "Insert paragraphs"  "p" #'lorem-ipsum-insert-paragraphs
+      :desc "Insert sentences"  "s" #'lorem-ipsum-insert-sentences
+      :desc "Insert list items" "l" #'lorem-ipsum-insert-list)
 
 (after! flyspell
     (setq flyspell-lazy-idle-seconds 0.3))
@@ -257,6 +252,7 @@
 ;; -------------------------------
 
 (setq magit-blame-heading-format "%-20a %C %s\n") ; Formato de autor/fecha
+
 (custom-set-faces
  '(magit-blame-hash ((t (:foreground "#7F7F7F"))))) ; Color del hash
 
@@ -269,10 +265,6 @@
 ;; (use-package! magit
 ;;   :config
 ;;   (setq magit-refresh-status-buffer t))
-
-;; (add-hook 'magit-post-fetch-hook 'magit-refresh)  ; Actualiza después un fetch
-;; (add-hook 'magit-post-commit-hook 'magit-refresh) ; Actualiza después de un commit
-;; (add-hook 'magit-post-push-hook 'magit-refresh)   ; Actualiza después de un push
 
 ;; (use-package! magit-delta
 ;;   :custom (magit-delta-default-dark-theme "Nord")
@@ -309,6 +301,7 @@
 ;; Ajustar sangría
 (setq org-edit-src-content-indentation 2)
 
+;; Presentamos siempre el contenido en el centro con un máximo de 120 caracteres
 (after! org
     (setq-default fill-column 120)
   (setq visual-fill-column-width 120
@@ -316,86 +309,116 @@
   (add-hook 'org-mode-hook #'visual-fill-column-mode))
 
 (after! org
-    (custom-declare-face '+org-todo-wait  '((t (:inherit (bold mode-line-emphasis org-todo)))) "")
-  (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "PROJ(p)" "WAIT(w)" "IDEA(i)" "EVENT(e)" "|"
-                             "DONE(d)" "CANCELLED(c)"))
-        org-todo-keyword-faces '(("NEXT"      . +org-todo-active)
-                                 ("WAIT"      . +org-todo-wait)
-                                 ("EVENT"     . +org-todo-onhold)
-                                 ("PROJ"      . +org-todo-project)
-                                 ("CANCELLED" . +org-todo-cancel))))
+    ;; Definir caras personalizadas
+    (defface +org-todo-wait
+        '((t (:inherit (bold warning org-todo))))
+      "Face for WAIT tasks.")
+  (defface +org-todo-active
+      '((t (:inherit (bold org-todo))))
+    "Face for NEXT tasks.")
+  (defface +org-todo-onhold
+      '((t (:inherit (italic org-todo))))
+    "Face for EVENT tasks.")
+  (defface +org-todo-project
+      '((t (:inherit (bold font-lock-doc-face org-todo))))
+    "Face for PROJ tasks.")
+  (defface +org-todo-cancel
+      '((t (:inherit (shadow org-done))))
+    "Face for CANCELLED tasks.")
 
-;; Plantillas de captura con categorías
-(setq org-capture-templates
-      '(("t" "Tarea" entry
-         (file+datetree "~/Org/notes/task/tareas.org" "Tareas Pendientes")
-         "* TODO %?\nFecha: %T\n%i\n%a"
-         :mkdir t  ; Crea la carpeta si no existe
-         :empty-lines 1)
+  ;; Definir keywords y asociarles las caras
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "NEXT(n)" "PROJ(p)" "WAIT(w)" "IDEA(i)" "EVENT(e)" "|"
+           "DONE(d)" "CANCELLED(c)")))
 
-        ("n" "Nota General" entry
-         (file+headline "~/Org/notes/note/notas.org" "Notas")
-         "* %?\nFecha: %T\n%i\n%a"
-         :mkdir t)
+  (setq org-todo-keyword-faces
+        '(("NEXT"      . +org-todo-active)
+          ("WAIT"      . +org-todo-wait)
+          ("EVENT"     . +org-todo-onhold)
+          ("PROJ"      . +org-todo-project)
+          ("CANCELLED" . +org-todo-cancel)))
 
-        ("w" "Notas del trabajo" entry
-         (file+headline "~/Org/notes-work/notas.org" "Notas")
-         "* %?\nFecha: %T\n%i\n%a"
-         :mkdir t)
-
-        ("h" "Nota Hugo (Blog)" entry
-         (file+olp "~/Org/notes/hugo/posts.org" "Borradores")
-         "* %?\nFecha: %T\n%i\n%a"
-         :mkdir t)))
-
-;; Configuración adicional para Org-roam
-(setq org-roam-capture-templates
-      '(("d" "Nota Default" plain "%?"
-         :target (file+head "${slug}.org"
-                  "${title}\n\n")
-         :unnarrowed t
-         :mkdir t)))
+  ;; Plantillas de captura
+  (setq org-capture-templates
+        '(("t" "Tarea" entry
+           (file+datetree "~/Org/notes/task/tareas.org" "Tareas Pendientes")
+           "* TODO %?\nFecha: %T\n%i\n%a"
+           :mkdir t :empty-lines 1)
+          ("n" "Nota General" entry
+           (file+headline "~/Org/notes/note/notas.org" "Notas")
+           "* %?\nFecha: %T\n%i\n%a"
+           :mkdir t)
+          ("w" "Notas del trabajo" entry
+           (file+headline "~/Org/notes-work/notas.org" "Notas")
+           "* %?\nFecha: %T\n%i\n%a"
+           :mkdir t)
+          ("h" "Nota Hugo (Blog)" entry
+           (file+olp "~/Org/notes/hugo/posts.org" "Borradores")
+           "* %?\nFecha: %T\n%i\n%a"
+           :mkdir t))))
 
 (defun my/org-mode-set-language ()
-  "Configura el idioma de Hunspell basado en la etiqueta #+LANGUAGE."
-  (let ((lang (org-entry-get (point) "LANGUAGE")))
-    (when lang
-      (setq ispell-dictionary lang))))
+  "Establece el diccionario de Hunspell según la opción #+LANGUAGE del buffer Org."
+  (when (derived-mode-p 'org-mode)
+    (let ((lang (cdr (assoc "LANGUAGE" (org-collect-keywords '("LANGUAGE"))))))
+      (when lang
+        (setq-local ispell-dictionary (downcase (car lang)))))))
 
-(add-hook 'org-mode-hook 'my/org-mode-set-language)
+(add-hook 'org-mode-hook #'my/org-mode-set-language)
 
 ;; -------------------------------
 ;; Configuración de blogging
 ;; -------------------------------
 
-;; Configuración específica de ox-hugo
-(with-eval-after-load 'ox-hugo
-  (setq org-hugo-base-dir "~/Workspace/blog-hugo")
-  (setq org-hugo-section "posts")
-  (setq org-hugo-default-section-directory "posts")
-  (setq org-hugo-preserve-filing 'force)
-  (setq org-hugo-auto-set-lastmod t)
-  (setq org-hugo-export-with-toc nil)
-  (setq org-hugo-allow-spaces-in-tags t)
-  (setq org-hugo-paired-shortcodes "note,warning,tip,details"))
+(after! ox-hugo
+    ;; Ruta base del sitio Hugo
+    (setq org-hugo-base-dir "~/Workspace/blog-hugo"
+     org-hugo-content-directory "content-org"
+     org-hugo-default-section-directory "posts"
+     org-hugo-section "posts"
+     org-hugo-preserve-filing 'force
+     org-hugo-auto-set-lastmod t
+     org-hugo-export-with-toc nil
+     org-hugo-allow-spaces-in-tags t
+     org-hugo-paired-shortcodes "note,warning,tip,details"
 
-(setq org-hugo-taxonomy-tags "tags")
-(setq org-hugo-taxonomy-categories "categories")
+     ;; Taxonomías
+     org-hugo-taxonomy-tags "tags"
+     org-hugo-taxonomy-categories "categories"
 
-;; Configuración de directorios por idioma
-(setq org-hugo-content-directory "content-org")
-(setq org-hugo-languages '(("es" . "Spanish") ("en" . "English")))
+     ;; Archivos estáticos válidos
+     org-hugo-static-file-extensions
+     '("png" "jpg" "jpeg" "gif" "svg" "pdf" "css" "js" "woff" "woff2" "ttf")
 
-(setq org-hugo-static-file-extensions
-      '("png" "jpg" "jpeg" "gif" "svg" "pdf" "css" "js" "woff" "woff2" "ttf"))
+     ;; Idiomas configurados para Hugo multilingüe
+     org-hugo-languages '(("es" . "Spanish")
+                          ("en" . "English"))))
 
 ;; -------------------------------
 ;; Configuración de LaTeX
 ;; -------------------------------
 
-(setq TeX-PDF-mode t) ; Fuerza la generación de PDF en lugar de DVI
-;; (setq TeX-command-extra-options "-shell-escape")
-;; (add-hook 'TeX-after-TeX-file-run-hook #'TeX-clean)
+(after! tex
+    ;; Generar siempre PDF en lugar de DVI
+    (setq TeX-PDF-mode t)
+
+  ;; Habilitar shell-escape para TikZ, minted, etc.
+  (setq TeX-command-extra-options "-shell-escape")
+
+  ;; Limpiar archivos auxiliares después de compilar
+  (add-hook 'TeX-after-TeX-file-run-hook #'TeX-clean)
+
+  ;; Usar `latexmk` como comando por defecto (opcional pero recomendado)
+  (setq TeX-command-default "LatexMk")
+
+  ;; Activar modo visual-line y flyspell cuando estés en LaTeX
+  (add-hook 'TeX-mode-hook #'visual-line-mode)
+  (add-hook 'TeX-mode-hook #'flyspell-mode)
+
+  ;; Ver automáticamente el PDF tras la compilación
+  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+        TeX-source-correlate-mode t
+        TeX-source-correlate-start-server t))
 
 ;; -------------------------------
 ;; Configuración de Typescript (NestJS)
@@ -478,12 +501,12 @@
 ;; Configuración de company
 ;; -------------------------------
 
-(use-package! cape
-  :init
-  (after! term
-      (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
-    (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
-  :defer t)
+;; (use-package! cape
+;;   :init
+;;   (after! term
+;;       (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
+;;     (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
+;;   :defer t)
 
 (after! company
     (setq company-minimum-prefix-length 2
