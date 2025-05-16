@@ -738,22 +738,6 @@
 ;;       "r" #'emms-random)
 
 ;; -------------------------------
-;; Configuración de Workspaces
-;; -------------------------------
-
-(defun my/new-frame-with-workspace ()
-  "Crea un nuevo frame y un nuevo workspace vinculado a él."
-  (interactive)
-  (let ((new-frame (make-frame)))
-    (select-frame-set-input-focus new-frame)
-    (doom/workspace-new nil t) ; Crea un workspace nuevo
-    (message "Nuevo frame + workspace creado!")))
-
-(map! :leader
-      :prefix "TAB"
-      :desc "Nuevo frame + workspace" "N" #'my/new-frame-with-workspace)
-
-;; -------------------------------
 ;; Configuración de deft
 ;; -------------------------------
 
