@@ -138,15 +138,6 @@
 (setq lisp-indent-function 'common-lisp-indent-function)
 
 ;; -------------------------------
-;; Configuración de notificaciones
-;; -------------------------------
-
-(use-package! alert
-  :defer t
-  :custom
-  (alert-default-style (if IS-LINUX 'libnotify 'osx-notifier)))
-
-;; -------------------------------
 ;; Configuración de escritura
 ;; -------------------------------
 
@@ -292,11 +283,23 @@
 ;; Configuración de org-mode
 ;; -------------------------------
 
-(setq org-directory "~/Org"                   ; Directorio de notas
-      org-agenda-files '("~/Org/agenda")
+(setq org-directory "~/Org"
       org-roam-directory "~/Org/notes"
-      org-startup-indented t                  ; Indentación automática
+      org-startup-indented t
       org-ellipsis " ⤵")                     ; Icono para folds
+
+(setq org-agenda-files
+      (append
+       (directory-files-recursively "~/Org/agenda" "\\.org$")
+       (directory-files-recursively "~/Org/notes" "\\.org$")))
+
+(setq org-agenda-files-work
+      (directory-files-recursively "~/Org/notes-work" "\\.org$"))
+
+(setq org-agenda-custom-commands
+      '(("w" "Agenda Trabajo"
+         ((agenda "" ((org-agenda-files (directory-files-recursively "~/Org/notes-work" "\\.org$"))))
+          (todo "" ((org-agenda-files (directory-files-recursively "~/Org/notes-work" "\\.org$"))))))))
 
 ;; Ajustar sangría
 (setq org-edit-src-content-indentation 2)
@@ -324,38 +327,74 @@
     "Face for PROJ tasks.")
   (defface +org-todo-cancel
       '((t (:inherit (shadow org-done))))
-    "Face for CANCELLED tasks.")
+    "Face for CANCELLED tasks."))
 
-  ;; Definir keywords y asociarles las caras
-  (setq org-todo-keywords
-        '((sequence "TODO(t)" "NEXT(n)" "PROJ(p)" "WAIT(w)" "IDEA(i)" "EVENT(e)" "|"
-           "DONE(d)" "CANCELLED(c)")))
+;; Definir keywords y asociarles las caras
+(setq org-todo-keywords
+      '((sequence
+         "TODO(t)"    ;; Tarea pendiente
+         "NEXT(n)"    ;; Siguiente tarea a hacer
+         "PROJ(p)"    ;; Proyecto en progreso
+         "WAIT(w)"    ;; En espera
+         "IDEA(i)"    ;; Idea, aún no definida
+         "EVENT(e)"   ;; Evento programado
+         "|"
+         "DONE(d)"    ;; Finalizado
+         "CANCELLED(c)"))) ;; Cancelado
 
-  (setq org-todo-keyword-faces
-        '(("NEXT"      . +org-todo-active)
-          ("WAIT"      . +org-todo-wait)
-          ("EVENT"     . +org-todo-onhold)
-          ("PROJ"      . +org-todo-project)
-          ("CANCELLED" . +org-todo-cancel)))
 
-  ;; Plantillas de captura
+;; Asignar caras (colores y estilos) a las keywords TODO
+(setq org-todo-keyword-faces
+      '(("TODO"      . +org-todo-active)
+        ("NEXT"      . +org-todo-active)
+        ("PROJ"      . +org-todo-project)
+        ("WAIT"      . +org-todo-wait)
+        ("IDEA"      . +org-todo-onhold)
+        ("EVENT"     . +org-todo-onhold)
+        ("DONE"      . +org-todo-done)
+        ("CANCELLED" . +org-todo-cancel)))
+
+(defun my/org-notas-trabajo-file ()
+  "Devuelve una ruta de archivo basada en la fecha actual para notas de trabajo."
+  (let* ((fecha (format-time-string "%Y/%m/%d-nota.org"))
+         (ruta (expand-file-name fecha "~/Org/notes-work/")))
+    ;; Crear directorio si no existe
+    (make-directory (file-name-directory ruta) t)
+    ruta))
+
+;; Plantillas de captura
+(after! org
   (setq org-capture-templates
-        '(("t" "Tarea" entry
-           (file+datetree "~/Org/notes/task/tareas.org" "Tareas Pendientes")
-           "* TODO %?\nFecha: %T\n%i\n%a"
-           :mkdir t :empty-lines 1)
-          ("n" "Nota General" entry
-           (file+headline "~/Org/notes/note/notas.org" "Notas")
-           "* %?\nFecha: %T\n%i\n%a"
-           :mkdir t)
-          ("w" "Notas del trabajo" entry
-           (file+headline "~/Org/notes-work/notas.org" "Notas")
-           "* %?\nFecha: %T\n%i\n%a"
-           :mkdir t)
+        `(
+          ;; Tarea general en árbol por fecha
+          ("t" "Tarea General" entry
+           (file+datetree "~/Org/notes/taks.org")
+           "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+           :empty-lines 1 :mkdir t)
+
+          ;; Notas personal
+          ("n" "Nota Personal" entry
+           (file+datetree "~/Org/notes/notes.org")
+           "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+           :empty-lines 1 :mkdir t)
+
+          ;; Notas de trabajo
+          ("w" "Nota Trabajo" entry
+           (file+datetree ,(my/org-notas-trabajo-file))
+           "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+           :empty-lines 1)
+
+          ;; Entrada para post de blog
           ("h" "Nota Hugo (Blog)" entry
-           (file+olp "~/Org/notes/hugo/posts.org" "Borradores")
-           "* %?\nFecha: %T\n%i\n%a"
-           :mkdir t))))
+           (file+olp "~/Org/notes/posts.org" "Borradores")
+           "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+           :empty-lines 1 :mkdir t)
+
+          ;; Tarea para la agenda
+          ("a" "Tarea en Agenda" entry
+           (file+headline "~/Org/agenda/agenda.org" "Tareas")
+           "* TODO %?\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:"
+           :empty-lines 1 :mkdir t))))
 
 (defun my/org-mode-set-language ()
   "Establece el diccionario de Hunspell según la opción #+LANGUAGE del buffer Org."
@@ -374,7 +413,6 @@
     ;; Ruta base del sitio Hugo
     (setq org-hugo-base-dir "~/Workspace/blog-hugo"
      org-hugo-content-directory "content-org"
-     org-hugo-default-section-directory "posts"
      org-hugo-section "posts"
      org-hugo-preserve-filing 'force
      org-hugo-auto-set-lastmod t
@@ -676,28 +714,28 @@
 ;; Configuración de Emms
 ;; -------------------------------
 
-(use-package! emms
-  :config
-  (setq emms-player-list '(emms-player-mpv)))
+;; (use-package! emms
+;;   :config
+;;   (setq emms-player-list '(emms-player-mpv)))
 
-(require 'emms-setup)
-(emms-all)
-(emms-default-players)
+;; (require 'emms-setup)
+;; (emms-all)
+;; (emms-default-players)
 
-(require 'emms-browser)
-(setq emms-browser-default-directory "~/Music/")
-(setq emms-browser-depth nil)  ; Sin límite de profundidad
-(setq emms-browser-recursive t)
+;; (require 'emms-browser)
+;; (setq emms-browser-default-directory "~/Music/")
+;; (setq emms-browser-depth nil)  ; Sin límite de profundidad
+;; (setq emms-browser-recursive t)
 
-(map! :leader
-      :prefix ("m" . "Music")
-      "b" #'emms-smart-browser
-      "p" #'emms-playlist-mode-go
-      "SPC" #'emms-pause
-      "n" #'emms-next
-      "s" #'emms-stop
-      "f" #'emms-play-find
-      "r" #'emms-random)
+;; (map! :leader
+;;       :prefix ("m" . "Music")
+;;       "b" #'emms-smart-browser
+;;       "p" #'emms-playlist-mode-go
+;;       "SPC" #'emms-pause
+;;       "n" #'emms-next
+;;       "s" #'emms-stop
+;;       "f" #'emms-play-find
+;;       "r" #'emms-random)
 
 ;; -------------------------------
 ;; Configuración de Workspaces
@@ -728,3 +766,16 @@
 
 ;; Ignorar ciertos archivos (ej: archivos temporales de Org)
 (setq deft-ignore-file-regexp "\\.#\\|~$")
+
+;; -------------------------------
+;; Configuración de notificaciones
+;; -------------------------------
+
+(use-package! alert
+  :defer t
+  :custom
+  (alert-default-style (if IS-LINUX 'libnotify 'osx-notifier)))
+
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (alert "Welcome, Master" :title "Doom Emacs Awaits")))
