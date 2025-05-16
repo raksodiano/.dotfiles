@@ -445,17 +445,13 @@
 ;; Configuración Contenedores
 ;; -------------------------------
 
+;; Asociar archivos docker-compose.yml o docker-compose.yaml con yaml-mode
 (add-to-list 'auto-mode-alist
              '("docker-compose[.-]?\\(yml\\|yaml\\)\\'" . yaml-mode))
 
-(setenv "DOCKER_HOST" (concat "unix://" (getenv "XDG_RUNTIME_DIR") "/podman/podman.sock"))
-
-;; (setq lsp-dockerfile-language-server-path "docker-langserver")
-
-;; (use-package! docker-compose-mode
-;;   :mode ("docker-compose.yml\\'" . docker-compose-mode)
-;;   :config
-;;   (setq docker-compose-command "docker-compose"))
+;; Definir variable de entorno DOCKER_HOST para usar Podman socket
+(when-let ((runtime-dir (getenv "XDG_RUNTIME_DIR")))
+  (setenv "DOCKER_HOST" (concat "unix://" runtime-dir "/podman/podman.sock")))
 
 ;; -------------------------------
 ;; Configuración de dired
