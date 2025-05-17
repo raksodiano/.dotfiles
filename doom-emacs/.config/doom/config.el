@@ -5,7 +5,8 @@
 ;; -------------------------------
 
 ;; Iniciar Emacs maximizado
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))  ; Maximiza el primer frame
+(add-to-list 'default-frame-alist '(fullscreen . maximized))  ; Maximiza los nuevos frames
 
 ;; Tema
 ;; (setq doom-theme 'doom-nord)
