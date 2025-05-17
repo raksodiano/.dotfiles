@@ -9,7 +9,8 @@
 
 ;; Tema
 ;; (setq doom-theme 'doom-nord)
-(setq doom-theme 'doom-gruvbox)
+;; (setq doom-theme 'doom-gruvbox)
+(setq doom-theme 'doom-dracula)
 
 ;; Números de línea relativos
 (setq display-line-numbers-type 'relative)
