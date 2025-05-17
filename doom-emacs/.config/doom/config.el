@@ -25,7 +25,37 @@
     (setq all-the-icons-scale-factor 1.5))
 
 (after! doom-modeline
-    (setq doom-modeline-buffer-file-name-style 'truncate-with-project))
+  ;; Mostrar íconos en la modeline
+  (setq doom-modeline-icon t)
+
+  ;; Mostrar el estado de encoding, EOL y major-mode
+  (setq doom-modeline-buffer-encoding t)
+  (setq doom-modeline-major-mode-icon t)
+  (setq doom-modeline-major-mode-color-icon t)
+
+  ;; Mostrar el nombre del proyecto y del archivo
+  ;; (setq doom-modeline-project-detection 'auto)
+  (setq doom-modeline-buffer-file-name-style 'truncate-with-project)
+
+  ;; Mostrar el número de línea y columna
+  (setq doom-modeline-column-zero-based nil) ; 1-based indexing
+  (setq doom-modeline-line-number t)
+  (setq doom-modeline-column-number t)
+
+  ;; Mostrar posición en el buffer
+  (setq doom-modeline-percent-position t)
+
+  ;; Mostrar información de Git
+  (setq doom-modeline-git-branch t)
+  (setq doom-modeline-git-state t)
+  (setq doom-modeline-git-info t)
+
+  ;; Mostrar el entorno de lsp y checker si están activos
+  (setq doom-modeline-lsp t)
+  (setq doom-modeline-checker-simple-format t)
+
+  ;; Mostrar el workspace
+  (setq doom-modeline-workspace-name t))
 
 ;; Tabs estilo IDE (Centaur Tabs)
 (setq centaur-tabs-style "alternate"
@@ -38,8 +68,7 @@
 (add-hook 'sh-mode-hook #'outline-minor-mode) ; Para Shell Script
 (add-hook 'markdown-mode-hook #'outline-minor-mode)
 
-(setq hs-isearch-open t           ; Expandir folds al buscar
-      doom-modeline-icon t)       ; Mostrar íconos en la barra de estado
+(setq hs-isearch-open t)           ; Expandir folds al buscar
 
 (after! highlight-indent-guides
     (setq highlight-indent-guides-method (if (display-graphic-p)
