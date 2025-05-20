@@ -120,7 +120,7 @@
 ;; -------------------------------
 
 (setq-default tab-width 2)               ; Tamaño del tabulador: 2 espacios
-(setq-default indent-tabs-mode nil)      ; Usar espacios en lugar de tabs
+;; (setq-default indent-tabs-mode nil)      ; Usar espacios en lugar de tabs
 
 ;; -------------------------------
 ;; Configuración de diccionarios
@@ -326,8 +326,33 @@
 
 (setq org-directory "~/Org"
       org-roam-directory "~/Org/notes"
+      org-journal-dir "~/Org/notes/journal/"
       org-startup-indented t
       org-ellipsis " ⤵")                     ; Icono para folds
+
+(use-package! org-journal
+  :defer t
+  :custom
+  (org-journal-dir "~/Org/journal/personal/")
+  (org-journal-file-format "%Y-%m-%d.org")
+  (org-journal-date-format "%A, %d %B %Y")
+  (org-journal-date-prefix "#+TITLE: ")
+  (org-journal-time-format "")
+  (org-journal-enable-agenda-integration t))
+
+(defun my/org-journal-open-work ()
+  "Abrir o crear la entrada de diario laboral para hoy."
+  (let ((org-journal-dir "~/Org/journal/work/")
+        (org-journal-file-format "%Y-%m-%d.org")
+        (org-journal-date-format "%A, %d %B %Y")
+        (org-journal-date-prefix "#+TITLE: ")
+        (org-journal-enable-agenda-integration nil))
+    (org-journal-new-entry t)))
+
+(map! :leader
+      (:prefix ("n j" . "journal")
+       :desc "Abrir diario personal" "p" #'org-journal-new-entry
+       :desc "Abrir diario laboral"  "w" #'my/org-journal-open-work))
 
 (setq org-agenda-files
       (append
