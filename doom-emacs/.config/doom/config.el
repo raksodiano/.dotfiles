@@ -52,7 +52,6 @@
 
   ;; Mostrar el entorno de lsp y checker si están activos
   (setq doom-modeline-lsp t)
-  (setq doom-modeline-checker-simple-format t)
 
   ;; Mostrar hora
   (setq display-time-format "%H:%M"
@@ -407,7 +406,6 @@
          "|"
          "DONE(d)"    ;; Finalizado
          "CANCELLED(c)"))) ;; Cancelado
-
 
 ;; Asignar caras (colores y estilos) a las keywords TODO
 (setq org-todo-keyword-faces
