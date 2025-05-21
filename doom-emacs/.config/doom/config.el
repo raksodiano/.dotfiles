@@ -28,27 +28,12 @@
   ;; Mostrar íconos en la modeline
   (setq doom-modeline-icon t)
 
-  ;; Mostrar el estado de encoding, EOL y major-mode
-  (setq doom-modeline-buffer-encoding t)
-  (setq doom-modeline-major-mode-icon t)
-  (setq doom-modeline-major-mode-color-icon t)
-
   ;; Mostrar el nombre del proyecto y del archivo
   ;; (setq doom-modeline-project-detection 'auto)
   (setq doom-modeline-buffer-file-name-style 'truncate-with-project)
 
-  ;; Mostrar el número de línea y columna
-  (setq doom-modeline-column-zero-based nil) ; 1-based indexing
-  (setq doom-modeline-line-number t)
-  (setq doom-modeline-column-number t)
-
   ;; Mostrar posición en el buffer
   (setq doom-modeline-percent-position t)
-
-  ;; Mostrar información de Git
-  (setq doom-modeline-git-branch t)
-  (setq doom-modeline-git-state t)
-  (setq doom-modeline-git-info t)
 
   ;; Mostrar el entorno de lsp y checker si están activos
   (setq doom-modeline-lsp t)
@@ -807,6 +792,9 @@
 
 ;; Configurar directorio de notas
 (setq deft-directory "~/Org/")  ; Ruta donde se guardan las notas
+
+;; Buscamos en subdirectorios
+(setq deft-recursive t)
 
 ;; Usar extensión .org por defecto
 (setq deft-extensions '("org" "md" "txt"))  ; Formatos permitidos
