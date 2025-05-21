@@ -452,7 +452,7 @@
 
           ;; Entrada para post de blog
           ("h" "Nota Hugo (Blog)" entry
-           (file+olp "~/Org/notes/posts.org" "Borradores")
+           (file+headline "~/Org/notes/posts.org" "Borradores")
            "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
            :empty-lines 1 :mkdir t)
 
