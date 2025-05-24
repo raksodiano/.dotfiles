@@ -268,7 +268,8 @@
 ;; Configuración de magit
 ;; -------------------------------
 
-(setq magit-blame-heading-format "%-20a %C %s\n") ; Formato de autor/fecha
+(setq magit-blame-heading-format "%-20a %C %s\n" ; Formato de autor/fecha
+  magit-refresh-status-buffer t)
 
 (custom-set-faces
  '(magit-blame-hash ((t (:foreground "#7F7F7F"))))) ; Color del hash
@@ -279,9 +280,6 @@
 (add-hook 'magit-post-checkout-hook 'magit-refresh-all)
 (add-hook 'magit-post-fetch-hook 'magit-refresh-all)
 
-;; (use-package! magit
-;;   :config
-;;   (setq magit-refresh-status-buffer t))
 
 ;; (use-package! magit-delta
 ;;   :custom (magit-delta-default-dark-theme "Nord")
