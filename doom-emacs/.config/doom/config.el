@@ -280,11 +280,6 @@
 (add-hook 'magit-post-checkout-hook 'magit-refresh-all)
 (add-hook 'magit-post-fetch-hook 'magit-refresh-all)
 
-
-;; (use-package! magit-delta
-;;   :custom (magit-delta-default-dark-theme "Nord")
-;;   :hook   (magit-mode . magit-delta-mode))
-
 ;; (after! magit-delta
 ;;   (defcustom dan/magit-delta-point-max 50000
 ;;     "Maximum length of diff buffer which `magit-delta' will tolerate."
