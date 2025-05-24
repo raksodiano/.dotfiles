@@ -140,6 +140,7 @@
                        "~/Workspace/books/latex"
                        "~/Workspace/books/org"
                        "~/Workspace/blog"
+                       "~/Workspace/work"
                        "~/Workspace/games"))
 
 (dolist (directory my/directories)
@@ -279,6 +280,9 @@
 (add-hook 'magit-post-merge-hook 'magit-refresh-all)
 (add-hook 'magit-post-checkout-hook 'magit-refresh-all)
 (add-hook 'magit-post-fetch-hook 'magit-refresh-all)
+
+(use-package! magit-delta
+  :hook (magit-mode . magit-delta-mode))
 
 ;; (after! magit-delta
 ;;   (defcustom dan/magit-delta-point-max 50000
