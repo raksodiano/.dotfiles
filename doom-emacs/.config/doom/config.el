@@ -269,8 +269,9 @@
 ;; Configuración de magit
 ;; -------------------------------
 
-(setq magit-blame-heading-format "%-20a %C %s\n" ; Formato de autor/fecha
-  magit-refresh-status-buffer t)
+(setq magit-blame-heading-format "%-20a %C %s\n") ; Formato de autor/fecha
+
+(setq magit-refresh-status-buffer t)
 
 (custom-set-faces
  '(magit-blame-hash ((t (:foreground "#7F7F7F"))))) ; Color del hash
@@ -282,25 +283,30 @@
 (add-hook 'magit-post-fetch-hook 'magit-refresh-all)
 
 (use-package! magit-delta
-  :hook (magit-mode . magit-delta-mode))
+  :hook (magit-mode . magit-delta-mode)
+  :config
+  (setq magit-delta-default-options
+        '("--side-by-side"
+          "--line-numbers"
+          "--navigate")))
 
-;; (after! magit-delta
-;;   (defcustom dan/magit-delta-point-max 50000
-;;     "Maximum length of diff buffer which `magit-delta' will tolerate."
-;;     :group 'magit-delta
-;;     :type  'natnum)
-;;   (defadvice! dan/magit-delta-colorize-maybe (fn &rest args)
-;;     "Disable mode if there are too many characters."
-;;     :around #'magit-delta-call-delta-and-convert-ansi-escape-sequences
-;;     (if (<= (point-max) dan/magit-delta-point-max)
-;;         (apply fn args)
-;;       (magit-delta-mode -1))))
+(after! magit-delta
+  (defcustom dan/magit-delta-point-max 50000
+    "Maximum length of diff buffer which `magit-delta' will tolerate."
+    :group 'magit-delta
+    :type  'natnum)
+  (defadvice! dan/magit-delta-colorize-maybe (fn &rest args)
+    "Disable mode if there are too many characters."
+    :around #'magit-delta-call-delta-and-convert-ansi-escape-sequences
+    (if (<= (point-max) dan/magit-delta-point-max)
+        (apply fn args)
+      (magit-delta-mode -1))))
 
-;; (after! magit
-;;   (add-hook! 'magit-post-refresh-hook
-;;     (when (and (not magit-delta-mode)
-;;                (<= (point-max) dan/magit-delta-point-max))
-;;       (magit-delta-mode +1))))
+(after! magit
+  (add-hook! 'magit-post-refresh-hook
+    (when (and (not magit-delta-mode)
+               (<= (point-max) dan/magit-delta-point-max))
+      (magit-delta-mode +1))))
 
 ;; -------------------------------
 ;; Configuración de org-mode
