@@ -9,8 +9,8 @@
 
 ;; Tema
 ;; (setq doom-theme 'doom-nord)
-;; (setq doom-theme 'doom-gruvbox)
-(setq doom-theme 'doom-dracula)
+(setq doom-theme 'doom-gruvbox)
+;; (setq doom-theme 'doom-dracula)
 
 ;; Números de línea relativos
 (setq display-line-numbers-type 'relative)
@@ -133,6 +133,7 @@
                        "~/Org/journal/work"
                        "~/Org/agenda"
                        "~/Org/notes"
+                       "~/Org/notes-games"
                        "~/Org/notes-work"
                        "~/Workspace"
                        "~/Workspace/books"
@@ -341,6 +342,7 @@
 (setq org-agenda-files
       (append
        (directory-files-recursively "~/Org/agenda" "\\.org$")
+       (directory-files-recursively "~/Org/notes-games" "\\.org$")
        (directory-files-recursively "~/Org/notes" "\\.org$")))
 
 (setq org-agenda-files-work
@@ -437,6 +439,16 @@
           ("h" "Nota Hugo (Blog)" entry
            (file+headline "~/Org/notes/posts.org" "Borradores")
            "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+           :empty-lines 1 :mkdir t)
+
+          ("g" "Notas Juegos" entry
+           (file+headline "~/Org/notes-games/notes.org" "Tareas de Juegos")
+           "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+           :empty-lines 1 :mkdir t)
+
+          ("i" "Ideas Juegos" entry
+           (file+headline "~/Org/notes-games/ideas.org" "Ideas de Juegos")
+           "* IDEA %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
            :empty-lines 1 :mkdir t)
 
           ;; Tarea para la agenda
