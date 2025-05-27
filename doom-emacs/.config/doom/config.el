@@ -318,6 +318,15 @@
       org-startup-indented t
       org-ellipsis " ⤵")                     ; Icono para folds
 
+(use-package! org-alert
+  :after org
+  :config
+  (setq org-alert-notification-title "🔔 Recordatorio Org"
+        org-alert-interval 60
+        alert-default-style 'libnotify)
+
+  (org-alert-enable))
+
 (use-package! org-journal
   :defer t
   :custom

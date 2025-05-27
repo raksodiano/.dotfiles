@@ -23,6 +23,7 @@
 ;; Notificaciones
 ;; -----------------------------------
 (package! alert)
+(package! org-alert)
 
 ;; -----------------------------------
 ;; Docker
