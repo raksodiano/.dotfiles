@@ -1,0 +1,10 @@
+[Unit]
+Description=Emacs Socket
+
+[Socket]
+ListenStream=%t/emacs/server
+SocketMode=0600
+DirectoryMode=0700
+
+[Install]
+WantedBy=sockets.target
