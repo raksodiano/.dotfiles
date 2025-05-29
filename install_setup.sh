@@ -94,7 +94,6 @@ for service in "${SERVICES[@]}"; do
   fi
 done
 
-systemctl --user enable --now podman.socket
 systemctl --user enable syncthing.service
 
 echo
