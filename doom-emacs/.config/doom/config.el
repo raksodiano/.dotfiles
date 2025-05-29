@@ -561,8 +561,8 @@
              '("docker-compose[.-]?\\(yml\\|yaml\\)\\'" . yaml-mode))
 
 ;; Definir variable de entorno DOCKER_HOST para usar Podman socket
-(when-let ((runtime-dir (getenv "XDG_RUNTIME_DIR")))
-  (setenv "DOCKER_HOST" (concat "unix://" runtime-dir "/podman/podman.sock")))
+;; (when-let ((runtime-dir (getenv "XDG_RUNTIME_DIR")))
+;;   (setenv "DOCKER_HOST" (concat "unix://" runtime-dir "/podman/podman.sock")))
 
 ;; -------------------------------
 ;; Configuración de dired
