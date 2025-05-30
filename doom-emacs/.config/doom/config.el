@@ -322,7 +322,9 @@
   :after org
   :config
   (setq org-alert-notification-title "🔔 Recordatorio Org"
-        org-alert-interval 60
+        org-alert-notify-cutoff 15
+        org-alert-notify-after-event-cutoff 5
+        org-alert-interval 300
         alert-default-style 'libnotify)
 
   (org-alert-enable))
