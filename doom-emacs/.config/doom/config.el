@@ -327,6 +327,12 @@
 
   (org-alert-enable))
 
+(after! org-alert
+  (defun my/org-alert--force-high-severity (orig-fn message &rest args)
+    (apply orig-fn message
+           (plist-put args :severity 'high)))
+  (advice-add 'org-alert--notify :around #'my/org-alert--force-high-severity))
+
 (use-package! org-journal
   :defer t
   :custom
@@ -376,10 +382,10 @@
   (add-hook 'org-mode-hook #'visual-fill-column-mode))
 
 (after! org
-    ;; Definir caras personalizadas
-    (defface +org-todo-wait
-        '((t (:inherit (bold warning org-todo))))
-      "Face for WAIT tasks.")
+  ;; Definir caras personalizadas
+  (defface +org-todo-wait
+      '((t (:inherit (bold warning org-todo))))
+    "Face for WAIT tasks.")
   (defface +org-todo-active
       '((t (:inherit (bold org-todo))))
     "Face for NEXT tasks.")
@@ -428,46 +434,46 @@
 ;; Plantillas de captura
 (after! org
   (setq org-capture-templates
-        `(
-          ;; Tarea general en árbol por fecha
-          ("t" "Tarea General" entry
-           (file+datetree "~/Org/notes/taks.org")
-           "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
-           :empty-lines 1 :mkdir t)
+    `(
+      ;; Tarea general en árbol por fecha
+      ("t" "Tarea General" entry
+       (file+datetree "~/Org/notes/taks.org")
+       "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+       :empty-lines 1 :mkdir t)
 
-          ;; Notas personal
-          ("n" "Nota Personal" entry
-           (file+datetree "~/Org/notes/notes.org")
-           "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
-           :empty-lines 1 :mkdir t)
+      ;; Notas personal
+      ("n" "Nota Personal" entry
+       (file+datetree "~/Org/notes/notes.org")
+       "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+       :empty-lines 1 :mkdir t)
 
-          ;; Notas de trabajo
-          ("w" "Nota Trabajo" entry
-           (file+datetree ,(my/org-notas-trabajo-file))
-           "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
-           :empty-lines 1)
+      ;; Notas de trabajo
+      ("w" "Nota Trabajo" entry
+       (file+datetree ,(my/org-notas-trabajo-file))
+       "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+       :empty-lines 1)
 
-          ;; Entrada para post de blog
-          ("h" "Nota Hugo (Blog)" entry
-           (file+headline "~/Org/notes/posts.org" "Borradores")
-           "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
-           :empty-lines 1 :mkdir t)
+      ;; Entrada para post de blog
+      ("h" "Nota Hugo (Blog)" entry
+       (file+headline "~/Org/notes/posts.org" "Borradores")
+       "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+       :empty-lines 1 :mkdir t)
 
-          ("g" "Notas Juegos" entry
-           (file+headline "~/Org/notes-games/notes.org" "Tareas de Juegos")
-           "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
-           :empty-lines 1 :mkdir t)
+      ("g" "Notas Juegos" entry
+       (file+headline "~/Org/notes-games/notes.org" "Tareas de Juegos")
+       "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+       :empty-lines 1 :mkdir t)
 
-          ("i" "Ideas Juegos" entry
-           (file+headline "~/Org/notes-games/ideas.org" "Ideas de Juegos")
-           "* IDEA %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
-           :empty-lines 1 :mkdir t)
+      ("i" "Ideas Juegos" entry
+       (file+headline "~/Org/notes-games/ideas.org" "Ideas de Juegos")
+       "* IDEA %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+       :empty-lines 1 :mkdir t)
 
-          ;; Tarea para la agenda
-          ("a" "Tarea en Agenda" entry
-           (file+headline "~/Org/agenda/agenda.org" "Tareas")
-           "* TODO %?\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:"
-           :empty-lines 1 :mkdir t))))
+      ;; Tarea para la agenda
+      ("a" "Tarea en Agenda" entry
+       (file+headline "~/Org/agenda/agenda.org" "Tareas")
+       "* TODO %?\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:"
+       :empty-lines 1 :mkdir t))))
 
 (defun my/org-mode-set-language ()
   "Establece el diccionario de Hunspell según la opción #+LANGUAGE del buffer Org."
@@ -483,35 +489,35 @@
 ;; -------------------------------
 
 (after! ox-hugo
-    ;; Ruta base del sitio Hugo
-    (setq org-hugo-base-dir "~/Workspace/blog-hugo"
-     org-hugo-content-directory "content-org"
-     org-hugo-section "posts"
-     org-hugo-preserve-filing 'force
-     org-hugo-auto-set-lastmod t
-     org-hugo-export-with-toc nil
-     org-hugo-allow-spaces-in-tags t
-     org-hugo-paired-shortcodes "note,warning,tip,details"
+  ;; Ruta base del sitio Hugo
+  (setq org-hugo-base-dir "~/Workspace/blog-hugo"
+    org-hugo-content-directory "content-org"
+    org-hugo-section "posts"
+    org-hugo-preserve-filing 'force
+    org-hugo-auto-set-lastmod t
+    org-hugo-export-with-toc nil
+    org-hugo-allow-spaces-in-tags t
+    org-hugo-paired-shortcodes "note,warning,tip,details"
 
-     ;; Taxonomías
-     org-hugo-taxonomy-tags "tags"
-     org-hugo-taxonomy-categories "categories"
+    ;; Taxonomías
+    org-hugo-taxonomy-tags "tags"
+    org-hugo-taxonomy-categories "categories"
 
-     ;; Archivos estáticos válidos
-     org-hugo-static-file-extensions
-     '("png" "jpg" "jpeg" "gif" "svg" "pdf" "css" "js" "woff" "woff2" "ttf")
+    ;; Archivos estáticos válidos
+    org-hugo-static-file-extensions
+    '("png" "jpg" "jpeg" "gif" "svg" "pdf" "css" "js" "woff" "woff2" "ttf")
 
-     ;; Idiomas configurados para Hugo multilingüe
-     org-hugo-languages '(("es" . "Spanish")
-                          ("en" . "English"))))
+    ;; Idiomas configurados para Hugo multilingüe
+    org-hugo-languages '(("es" . "Spanish")
+                         ("en" . "English"))))
 
 ;; -------------------------------
 ;; Configuración de LaTeX
 ;; -------------------------------
 
 (after! tex
-    ;; Generar siempre PDF en lugar de DVI
-    (setq TeX-PDF-mode t)
+  ;; Generar siempre PDF en lugar de DVI
+  (setq TeX-PDF-mode t)
 
   ;; Habilitar shell-escape para TikZ, minted, etc.
   (setq TeX-command-extra-options "-shell-escape")
@@ -623,8 +629,8 @@
 ;;   :defer t)
 
 (after! company
-    (setq company-minimum-prefix-length 2
-     company-idle-delay 0.05))
+  (setq company-minimum-prefix-length 2
+   company-idle-delay 0.05))
 
 (use-package! consult-company
   :commands consult-company)
@@ -634,9 +640,9 @@
      "C-S-s" #'consult-company))
 
 (after! consult-dir
-    (defun consult-dir--fasd-dirs ()
-      "Return list of fasd dirs."
-      (split-string (shell-command-to-string "fasd -ld") "\n" t))
+  (defun consult-dir--fasd-dirs ()
+    "Return list of fasd dirs."
+    (split-string (shell-command-to-string "fasd -ld") "\n" t))
 
   (defvar consult-dir--source-fasd
     `(:name     "Fasd dirs"
@@ -830,6 +836,20 @@
 ;; -------------------------------
 ;; Configuración de notificaciones
 ;; -------------------------------
+(after! alert
+  (defun my/alert-sound-wrapper (orig-fn message &rest args)
+    (apply orig-fn message args)
+    (let* ((severity (plist-get args :severity))
+           (sound (pcase severity
+                    ('high "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga")
+                    ('moderate "/usr/share/sounds/freedesktop/stereo/message.oga")
+                    ('normal "/usr/share/sounds/freedesktop/stereo/dialog-information.oga")
+                    ('low "/usr/share/sounds/freedesktop/stereo/complete.oga")
+                    (_ "/usr/share/sounds/freedesktop/stereo/dialog-information.oga")))) ; valor por defecto
+      (ignore-errors
+        (start-process "alert-sound" nil "paplay" sound))))
+
+  (advice-add 'alert :around #'my/alert-sound-wrapper))
 
 (use-package! alert
   :defer t
