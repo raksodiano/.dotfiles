@@ -18,7 +18,6 @@
 ;; Tema
 (setq doom-theme 'doom-nord)
 ;; (setq doom-theme 'doom-gruvbox)
-;; (setq doom-theme 'doom-dracula)
 
 (setq which-key-idle-delay 0.2)
 
@@ -33,35 +32,6 @@
 
 (after! all-the-icons
     (setq all-the-icons-scale-factor 1.5))
-
-(setq doom-modeline-major-mode-icon t)
-(setq doom-modeline-lsp-icon t)
-(setq doom-modeline-major-mode-color-icon t)
-
-(after! doom-modeline
-  ;; Mostrar íconos en la modeline
-  (setq doom-modeline-icon t)
-
-  ;; Mostrar el nombre del proyecto y del archivo
-  ;; (setq doom-modeline-project-detection 'auto)
-  (setq doom-modeline-buffer-file-name-style 'truncate-with-project)
-
-  ;; Mostrar posición en el buffer
-  (setq doom-modeline-percent-position t)
-
-  ;; Mostrar el entorno de lsp y checker si están activos
-  (setq doom-modeline-lsp t)
-
-  ;; Mostrar hora
-  (setq display-time-format "%H:%M"
-        display-time-default-load-average nil)
-  (display-time-mode 1)
-
-  ;; Mostrar batería
-  (display-battery-mode 1)
-
-  ;; Mostrar el workspace
-  (setq doom-modeline-workspace-name t))
 
 ;; Tabs estilo IDE (Centaur Tabs)
 (setq centaur-tabs-style "alternate"
@@ -117,12 +87,40 @@
 
 (setq comment-tabs t)  ; Alinea comentarios con tabs o espacios
 
-;; -------------------------------
 ;; Indentación y formato de código
+(setq-default tab-width 2)
+
+;; -------------------------------
+;; Configuración modeline
 ;; -------------------------------
 
-(setq-default tab-width 2)               ; Tamaño del tabulador: 2 espacios
-;; (setq-default indent-tabs-mode nil)      ; Usar espacios en lugar de tabs
+(setq doom-modeline-major-mode-icon t)
+(setq doom-modeline-lsp-icon t)
+(setq doom-modeline-major-mode-color-icon t)
+
+;; Mostrar íconos en la modeline
+(setq doom-modeline-icon t)
+
+;; Mostrar el nombre del proyecto y del archivo
+;; (setq doom-modeline-project-detection 'auto)
+(setq doom-modeline-buffer-file-name-style 'truncate-with-project)
+
+;; Mostrar posición en el buffer
+(setq doom-modeline-percent-position t)
+
+;; Mostrar el entorno de lsp y checker si están activos
+(setq doom-modeline-lsp t)
+
+;; Mostrar hora
+(setq display-time-format "%H:%M"
+      display-time-default-load-average nil)
+(display-time-mode 1)
+
+;; Mostrar batería
+(display-battery-mode 1)
+
+;; Mostrar el workspace
+(setq doom-modeline-workspace-name t)
 
 ;; -------------------------------
 ;; Configuración de diccionarios
@@ -151,8 +149,11 @@
                        "~/Org/journal/work"
                        "~/Org/agenda"
                        "~/Org/notes"
-                       "~/Org/notes-games"
-                       "~/Org/notes-work"
+                       "~/Org/notes/blog"
+                       "~/Org/notes/book"
+                       "~/Org/notes/personal"
+                       "~/Org/notes/work"
+                       "~/Org/notes/games"
                        "~/Workspace"
                        "~/Workspace/books"
                        "~/Workspace/books/latex"
@@ -216,13 +217,6 @@
         lsp-enable-snippet nil
         lsp-enable-symbol-highlighting nil
         lsp-enable-links nil
-
-        ;; Go-specific settings
-        lsp-go-hover-kind "Synopsis"
-        lsp-go-analyses '((fieldalignment . t)
-                          (nilness . t)
-                          (unusedwrite . t)
-                          (unusedparams . t))
 
         ;; Register custom gopls settings
         lsp-gopls-completeUnimported t
@@ -324,7 +318,6 @@
 ;; -------------------------------
 
 (setq magit-blame-heading-format "%-20a %C %s\n") ; Formato de autor/fecha
-
 (setq magit-refresh-status-buffer t)
 
 (custom-set-faces
@@ -368,9 +361,9 @@
 
 (setq org-directory "~/Org"
       org-roam-directory "~/Org/notes"
-      org-journal-dir "~/Org/notes/journal/"
-      org-startup-indented t
-      org-ellipsis " ⤵")                     ; Icono para folds
+      org-journal-dir "~/Org/journal"
+      org-startup-indented t)
+
 
 (use-package! org-alert
   :after org
@@ -416,16 +409,15 @@
 (setq org-agenda-files
       (append
        (directory-files-recursively "~/Org/agenda" "\\.org$")
-       (directory-files-recursively "~/Org/notes-games" "\\.org$")
        (directory-files-recursively "~/Org/notes" "\\.org$")))
 
 (setq org-agenda-files-work
-      (directory-files-recursively "~/Org/notes-work" "\\.org$"))
+      (directory-files-recursively "~/Org/notes/work" "\\.org$"))
 
 (setq org-agenda-custom-commands
       '(("w" "Agenda Trabajo"
-         ((agenda "" ((org-agenda-files (directory-files-recursively "~/Org/notes-work" "\\.org$"))))
-          (todo "" ((org-agenda-files (directory-files-recursively "~/Org/notes-work" "\\.org$"))))))))
+         ((agenda "" ((org-agenda-files (directory-files-recursively "~/Org/notes/work" "\\.org$"))))
+          (todo "" ((org-agenda-files (directory-files-recursively "~/Org/notes/work" "\\.org$"))))))))
 
 ;; Ajustar sangría
 (setq org-edit-src-content-indentation 2)
@@ -481,8 +473,8 @@
 
 (defun my/org-notas-trabajo-file ()
   "Devuelve una ruta de archivo basada en la fecha actual para notas de trabajo."
-  (let* ((fecha (format-time-string "%Y/%m/%d-nota.org"))
-         (ruta (expand-file-name fecha "~/Org/notes-work/")))
+  (let* ((fecha (format-time-string "%Y/%m/%d-note.org"))
+         (ruta (expand-file-name fecha "~/Org/notes/work/")))
     ;; Crear directorio si no existe
     (make-directory (file-name-directory ruta) t)
     ruta))
@@ -491,44 +483,49 @@
 (after! org
   (setq org-capture-templates
     `(
-      ;; Tarea general en árbol por fecha
-      ("t" "Tarea General" entry
-       (file+datetree "~/Org/notes/taks.org")
+
+      ;; Events
+      ("a" "Events" entry
+       (file+headline "~/Org/agenda/agenda.org" "Events")
+       "* TODO %?\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:"
+       :empty-lines 1 :mkdir t)
+
+      ;; Tareas generales
+      ("t" "General Task" entry
+       (file+headline "~/Org/notes/taks.org" "General Task")
        "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
        :empty-lines 1 :mkdir t)
 
-      ;; Notas personal
-      ("n" "Nota Personal" entry
-       (file+datetree "~/Org/notes/notes.org")
+      ;; Personal Notes
+      ("p" "Personal Notes" entry
+       (file+headline "~/Org/notes/personal/notes.org" "Personal Notes")
        "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
        :empty-lines 1 :mkdir t)
 
-      ;; Notas de trabajo
-      ("w" "Nota Trabajo" entry
-       (file+datetree ,(my/org-notas-trabajo-file))
+      ;; Blog Notes (IDEAS)
+      ("h" "Blog Ideas" entry
+       (file+headline "~/Org/notes/blog/posts.org" "Blog Ideas")
+       "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+       :empty-lines 1 :mkdir t)
+
+      ;; Work Notes
+      ("w" "Work Notes" entry
+       (file+headline ,(my/org-notas-trabajo-file) "Work Notes")
        "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
        :empty-lines 1)
 
-      ;; Entrada para post de blog
-      ("h" "Nota Hugo (Blog)" entry
-       (file+headline "~/Org/notes/posts.org" "Borradores")
+      ("g" "Games")
+
+      ;; Notes Games
+      ("gg" "Game's Notes" entry
+       (file+headline "~/Org/notes/games/notes.org" "Game's Notes")
        "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
        :empty-lines 1 :mkdir t)
 
-      ("g" "Notas Juegos" entry
-       (file+headline "~/Org/notes-games/notes.org" "Tareas de Juegos")
-       "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
-       :empty-lines 1 :mkdir t)
-
-      ("i" "Ideas Juegos" entry
-       (file+headline "~/Org/notes-games/ideas.org" "Ideas de Juegos")
+      ;; Ideas Games
+      ("gi" "Game ideas" entry
+       (file+headline "~/Org/notes/games/ideas.org" "Game ideas")
        "* IDEA %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
-       :empty-lines 1 :mkdir t)
-
-      ;; Tarea para la agenda
-      ("a" "Tarea en Agenda" entry
-       (file+headline "~/Org/agenda/agenda.org" "Tareas")
-       "* TODO %?\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:"
        :empty-lines 1 :mkdir t))))
 
 (defun my/org-mode-set-language ()
@@ -621,10 +618,6 @@
 ;; Asociar archivos docker-compose.yml o docker-compose.yaml con yaml-mode
 (add-to-list 'auto-mode-alist
              '("docker-compose[.-]?\\(yml\\|yaml\\)\\'" . yaml-mode))
-
-;; Definir variable de entorno DOCKER_HOST para usar Podman socket
-;; (when-let ((runtime-dir (getenv "XDG_RUNTIME_DIR")))
-;;   (setenv "DOCKER_HOST" (concat "unix://" runtime-dir "/podman/podman.sock")))
 
 ;; -------------------------------
 ;; Configuración de dired
