@@ -15,9 +15,33 @@
 (add-hook! '+doom-dashboard-functions :append
   (insert "\n" (+doom-dashboard--center +doom-dashboard--width "Welcome Home, Master.")))
 
+;; Blink cursor
+(blink-cursor-mode 1)
+
 ;; Tema
 (setq doom-theme 'doom-nord)
 ;; (setq doom-theme 'doom-gruvbox)
+
+;; Maintain terminal transparency in Doom Emacs
+(after! doom-themes
+  (unless (display-graphic-p)
+    (set-face-background 'default "undefined")))
+
+;; remove top frame bar in emacs
+(add-to-list 'default-frame-alist '(undecorated . t))
+
+;; Transparency
+(set-frame-parameter (selected-frame) 'alpha '(96 . 97))
+(add-to-list 'default-frame-alist '(alpha . (96 . 97)))
+
+;; Evil-escape sequence
+(setq-default evil-escape-key-sequence "kj")
+(setq-default evil-escape-delay 0.1)
+
+; Don't move cursor back when exiting insert mode
+(setq evil-move-cursor-back nil)
+;; granular undo with evil mode
+(setq evil-want-fine-undo t)
 
 (setq which-key-idle-delay 0.2)
 
@@ -202,6 +226,77 @@
     (setq flyspell-lazy-idle-seconds 0.3))
 
 ;; -------------------------------
+;; Configuración de Modo Zen
+;; -------------------------------
+
+;; Setup writeroom width and appearance
+(after! writeroom-mode
+  ;; Set width for centered text
+  (setq writeroom-width 40)
+
+  ;; Ensure the text is truly centered horizontally
+  (setq writeroom-fringes-outside-margins nil)
+  (setq writeroom-center-text t)
+
+  ;; Add vertical spacing for better readability
+  (setq writeroom-extra-line-spacing 4)  ;; Adds space between lines
+
+  ;; Improve vertical centering with visual-fill-column integration
+  (add-hook! 'writeroom-mode-hook
+    (defun my-writeroom-settings ()
+      "Configure various settings when entering/exiting writeroom-mode."
+      (if writeroom-mode
+          (progn
+            ;; When entering writeroom mode
+            (display-line-numbers-mode -1)       ;; Turn off line numbers
+            (setq cursor-type 'bar)              ;; Change cursor to a thin bar for writing
+            (hl-line-mode -1)                    ;; Disable current line highlighting
+            (setq left-margin-width 0)           ;; Let writeroom handle margins
+            (setq right-margin-width 0)
+            (text-scale-set 1)                   ;; Slightly increase text size
+
+            ;; Improve vertical centering
+            (when (bound-and-true-p visual-fill-column-mode)
+              (visual-fill-column-mode -1))      ;; Temporarily disable if active
+            (setq visual-fill-column-width 40)   ;; Match writeroom width
+            (setq visual-fill-column-center-text t)
+            (setq visual-fill-column-extra-text-width '(0 . 0))
+
+            ;; Set top/bottom margins to improve vertical centering
+            ;; These larger margins push content toward vertical center
+            (setq-local writeroom-top-margin-size
+                        (max 10 (/ (- (window-height) 40) 3)))
+            (setq-local writeroom-bottom-margin-size
+                        (max 10 (/ (- (window-height) 40) 3)))
+
+            ;; Enable visual-fill-column for better text placement
+            (visual-fill-column-mode 1))
+
+        ;; When exiting writeroom mode
+        (progn
+          (display-line-numbers-mode +1)       ;; Restore line numbers
+          (setq cursor-type 'box)              ;; Restore default cursor
+          (hl-line-mode +1)                    ;; Restore line highlighting
+          (text-scale-set 0)                   ;; Restore normal text size
+          (when (bound-and-true-p visual-fill-column-mode)
+            (visual-fill-column-mode -1))))))  ;; Disable visual fill column mode
+
+  ;; Hide modeline for a cleaner look
+  (setq writeroom-mode-line nil)
+
+  ;; Add additional global effects for writeroom
+  (setq writeroom-global-effects
+        '(writeroom-set-fullscreen        ;; Enables fullscreen
+          writeroom-set-alpha             ;; Adjusts frame transparency
+          writeroom-set-menu-bar-lines
+          writeroom-set-tool-bar-lines
+          writeroom-set-vertical-scroll-bars
+          writeroom-set-bottom-divider-width))
+
+  ;; Set frame transparency
+  (setq writeroom-alpha 0.95))
+
+;; -------------------------------
 ;; Configuración de LSP para todos los lenguajes
 ;; -------------------------------
 
@@ -364,6 +459,14 @@
       org-journal-dir "~/Org/journal"
       org-startup-indented t)
 
+(use-package org
+  :ensure nil
+  :custom (org-modules '(org-habit)))
+
+(after! org
+  (map! :map org-mode-map
+        :n "<M-left>" #'org-do-promote
+        :n "<M-right>" #'org-do-demote))
 
 (use-package! org-alert
   :after org
@@ -503,7 +606,7 @@
        :empty-lines 1 :mkdir t)
 
       ;; Book Notes (IDEAS)
-      ("h" "Book Ideas" entry
+      ("b" "Book Ideas" entry
        (file+headline "~/Org/notes/blog/posts.org" "Book Ideas")
        "* IDEA %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
        :empty-lines 1 :mkdir t)
@@ -847,6 +950,39 @@
 ;; -------------------------------
 ;; Configuración de Emms
 ;; -------------------------------
+
+(emms-all)
+(emms-default-players)
+(emms-mode-line-mode 1)
+(emms-playing-time-mode 1)
+
+(setq emms-source-file-default-directory "~/Music"
+      emms-browser-covers #'emms-browser-cache-thumbnail-async
+      emms-browser-thumbnail-small-size 64
+      emms-browser-thumbnail-medium-size 128
+      emms-playlist-buffer-name "*Music*"
+      emms-info-asynchronously t
+      emms-source-file-directory-tree-function 'emms-source-file-directory-tree-find)
+
+(map! :leader
+      (:prefix ("m" . "music/EMMS")  ;; Changed from 'a' to 'm' for music
+       :desc "Play at directory tree"   "d" #'emms-play-directory-tree
+       :desc "Go to emms playlist"      "p" #'emms-playlist-mode-go
+       :desc "Shuffle"                  "h" #'emms-shuffle
+       :desc "Emms pause track"         "x" #'emms-pause
+       :desc "Emms stop track"          "s" #'emms-stop
+       :desc "Emms play previous track" "b" #'emms-previous
+       :desc "Emms play next track"     "n" #'emms-next))
+
+;; Grab album artwork for dunst to display
+(defun emms-cover-art-path ()
+  "Return the path of the cover art for the current track."
+  (let* ((track (emms-playlist-current-selected-track))
+         (path (emms-track-get track 'name))
+         (dir (file-name-directory path))
+         (cover-files (directory-files dir nil ".*\\(jpg\\|png\\|jpeg\\)$")))
+    (when cover-files
+      (concat dir (car cover-files)))))
 
 ;; (use-package! emms
 ;;   :config
