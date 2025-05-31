@@ -5,12 +5,22 @@
 ;; -------------------------------
 
 ;; Iniciar Emacs maximizado
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
+;; Setup custom splashscreen
+;; (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
+(setq fancy-splash-image "~/.config/doom/Logos/gnu_color.png")
+
+(add-hook! '+doom-dashboard-functions :append
+  (insert "\n" (+doom-dashboard--center +doom-dashboard--width "Welcome Home, Master.")))
+
 ;; Tema
-;; (setq doom-theme 'doom-nord)
-(setq doom-theme 'doom-gruvbox)
+(setq doom-theme 'doom-nord)
+;; (setq doom-theme 'doom-gruvbox)
 ;; (setq doom-theme 'doom-dracula)
+
+(setq which-key-idle-delay 0.2)
 
 ;; Números de línea relativos
 (setq display-line-numbers-type 'relative)
@@ -59,6 +69,10 @@
 ;; Folding para lenguajes sin soporte nativo
 (add-hook 'sh-mode-hook #'outline-minor-mode) ; Para Shell Script
 (add-hook 'markdown-mode-hook #'outline-minor-mode)
+
+;; zoom in/out like we do everywhere else.
+(global-set-key (kbd "C-=") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
 
 (setq hs-isearch-open t)           ; Expandir folds al buscar
 
@@ -186,9 +200,45 @@
 ;; Configuración de LSP para todos los lenguajes
 ;; -------------------------------
 
+;; LSP Performance optimizations and settings
+(after! lsp-mode
+  (setq lsp-idle-delay 0.1
+        lsp-log-io nil
+        lsp-completion-provider :capf
+        lsp-enable-file-watchers nil
+        lsp-enable-folding nil
+        lsp-enable-text-document-color nil
+        lsp-enable-on-type-formatting nil
+        lsp-enable-snippet nil
+        lsp-enable-symbol-highlighting nil
+        lsp-enable-links nil
+
+        ;; Go-specific settings
+        lsp-go-hover-kind "Synopsis"
+        lsp-go-analyses '((fieldalignment . t)
+                          (nilness . t)
+                          (unusedwrite . t)
+                          (unusedparams . t))
+
+        ;; Register custom gopls settings
+        lsp-gopls-completeUnimported t
+        lsp-gopls-staticcheck t
+        lsp-gopls-analyses '((unusedparams . t)
+                             (unusedwrite . t))))
+
+;; LSP UI settings for better performance
+(after! lsp-ui
+  (setq lsp-ui-doc-enable t
+        lsp-ui-doc-position 'at-point
+        lsp-ui-doc-max-height 8
+        lsp-ui-doc-max-width 72
+        lsp-ui-doc-show-with-cursor t
+        lsp-ui-doc-delay 0.5
+        lsp-ui-sideline-enable nil
+        lsp-ui-peek-enable t))
+
 ;; LSP general
 (setq lsp-ui-sideline-enable t                ; Información en barra lateral
-      lsp-ui-doc-enable t                     ; Documentación flotante
       lsp-headerline-breadcrumb-enable t      ; Ruta del archivo en headerline
       company-minimum-prefix-length 1
       company-idle-delay 0.1)
