@@ -984,29 +984,6 @@
     (when cover-files
       (concat dir (car cover-files)))))
 
-;; (use-package! emms
-;;   :config
-;;   (setq emms-player-list '(emms-player-mpv)))
-
-;; (require 'emms-setup)
-;; (emms-all)
-;; (emms-default-players)
-
-;; (require 'emms-browser)
-;; (setq emms-browser-default-directory "~/Music/")
-;; (setq emms-browser-depth nil)  ; Sin límite de profundidad
-;; (setq emms-browser-recursive t)
-
-;; (map! :leader
-;;       :prefix ("m" . "Music")
-;;       "b" #'emms-smart-browser
-;;       "p" #'emms-playlist-mode-go
-;;       "SPC" #'emms-pause
-;;       "n" #'emms-next
-;;       "s" #'emms-stop
-;;       "f" #'emms-play-find
-;;       "r" #'emms-random)
-
 ;; -------------------------------
 ;; Configuración de deft
 ;; -------------------------------
