@@ -34,6 +34,10 @@
 (after! all-the-icons
     (setq all-the-icons-scale-factor 1.5))
 
+(setq doom-modeline-major-mode-icon t)
+(setq doom-modeline-lsp-icon t)
+(setq doom-modeline-major-mode-color-icon t)
+
 (after! doom-modeline
   ;; Mostrar íconos en la modeline
   (setq doom-modeline-icon t)
