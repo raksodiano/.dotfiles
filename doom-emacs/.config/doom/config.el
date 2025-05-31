@@ -502,10 +502,16 @@
        "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
        :empty-lines 1 :mkdir t)
 
+      ;; Book Notes (IDEAS)
+      ("h" "Book Ideas" entry
+       (file+headline "~/Org/notes/blog/posts.org" "Book Ideas")
+       "* IDEA %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+       :empty-lines 1 :mkdir t)
+
       ;; Blog Notes (IDEAS)
       ("h" "Blog Ideas" entry
        (file+headline "~/Org/notes/blog/posts.org" "Blog Ideas")
-       "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+       "* IDEA %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
        :empty-lines 1 :mkdir t)
 
       ;; Work Notes
