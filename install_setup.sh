@@ -59,6 +59,9 @@ sudo pacman -Syu --noconfirm
 # Hide native cursor
 hide_cursor
 
+animate "Installing yay..."
+install_yay
+
 animate "Installing fonts..."
 install_packages "${FONTS[@]}"
 
@@ -94,7 +97,16 @@ for service in "${SERVICES[@]}"; do
   fi
 done
 
-systemctl --user enable syncthing.service
+# Enable services for the user
+animate "Configuring services for the user..."
+for service in "${SERVICES_USER[@]}"; do
+  if ! systemctl --user is-enabled "$service" &>/dev/null; then
+    animate "Enabling $service for the user..."
+    sudo systemctl --user enable "$service"
+  else
+    animate "$service is already enabled for the user"
+  fi
+done
 
 echo
 
