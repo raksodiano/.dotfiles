@@ -1013,9 +1013,9 @@
 (use-package! calibredb
   :commands calibredb
   :config
-  (setq calibredb-root-dir "~/Library"
+  (setq calibredb-root-dir "~/Calibre Library"
         calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir)
-        calibredb-library-alist '(("~/Library"))
+        calibredb-library-alist '(("~/Calibre Library"))
         calibredb-format-all-the-icons t)
 
   ;; Set up key bindings for calibredb-search-mode
