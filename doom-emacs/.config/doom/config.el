@@ -608,7 +608,7 @@
 
       ;; Book Notes (IDEAS)
       ("b" "Book Ideas" entry
-       (file+headline "~/Org/notes/blog/posts.org" "Book Ideas")
+       (file+headline "~/Org/notes/book/ideas.org" "Book Ideas")
        "* IDEA %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
        :empty-lines 1 :mkdir t)
 
