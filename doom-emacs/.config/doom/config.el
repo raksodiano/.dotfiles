@@ -993,6 +993,17 @@
     (when cover-files
       (concat dir (car cover-files)))))
 
+(defun my/emms-show-alert ()
+  "Mostrar una alerta cuando cambie la canción en EMMS."
+  (when-let* ((track (emms-playlist-current-selected-track))
+              (artist (emms-track-get track 'info-artist))
+              (title (emms-track-get track 'info-title))
+              (album (emms-track-get track 'info-album)))
+    (alert (format "%s\n%s — %s" title album artist)
+           :title "🎵 Canción en reproducción")))
+
+(add-hook 'emms-player-started-hook #'my/emms-show-alert)
+
 ;; -------------------------------
 ;; Configuración de deft
 ;; -------------------------------
@@ -1050,8 +1061,7 @@
                     ('high "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga")
                     ('moderate "/usr/share/sounds/freedesktop/stereo/message.oga")
                     ('normal "/usr/share/sounds/freedesktop/stereo/dialog-information.oga")
-                    ('low "/usr/share/sounds/freedesktop/stereo/complete.oga")
-                    (_ "/usr/share/sounds/freedesktop/stereo/dialog-information.oga")))) ; valor por defecto
+                    ('low "/usr/share/sounds/freedesktop/stereo/complete.oga"))))
       (ignore-errors
         (start-process "alert-sound" nil "paplay" sound))))
 
@@ -1064,7 +1074,7 @@
 
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (alert "Welcome, Master" :title "Doom Emacs Awaits")))
+            (alert "Welcome, Master" :title "Doom Emacs Awaits" :severity 'normal)))
 
 (defun my/org-export-pdf-alert (&rest _args)
   (alert "Exportación de Org a PDF completada" :title "Org Export" :severity 'normal))
