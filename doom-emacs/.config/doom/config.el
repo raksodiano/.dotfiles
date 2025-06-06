@@ -957,6 +957,14 @@
 (emms-mode-line-mode 1)
 (emms-playing-time-mode 1)
 
+(setq emms-track-description-function
+      (lambda (track)
+        (let ((artist (emms-track-get track 'info-artist))
+              (title (emms-track-get track 'info-title)))
+          (if (and artist title)
+              (format "%s - %s" artist title)
+            (file-name-nondirectory (emms-track-name track))))))
+
 (setq emms-source-file-default-directory "~/Music"
       emms-browser-covers #'emms-browser-cache-thumbnail-async
       emms-browser-thumbnail-small-size 64
