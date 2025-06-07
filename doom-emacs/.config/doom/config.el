@@ -993,14 +993,48 @@
     (when cover-files
       (concat dir (car cover-files)))))
 
+(defvar my/emms-default-cover "~/.config/doom/Logos/kmix.svg")
+
+(defun my/emms-extract-cover (track)
+  "Extrae la carátula embebida del TRACK a un archivo temporal, si existe. Devuelve la ruta o nil."
+  (let ((file (emms-track-get track 'name))
+        (output (make-temp-file "emms-cover-" nil ".jpg")))
+    (when (and file (string-match-p "\\.mp3\\|\\.flac\\|\\.m4a" file))
+      (let ((exit-code (call-process "ffmpeg" nil nil nil
+                                     "-y"                     ; sobrescribe
+                                     "-i" file
+                                     "-an"                    ; sin audio
+                                     "-vcodec" "copy"
+                                     output)))
+        (if (and (file-exists-p output)
+                 (= exit-code 0))
+            output
+          nil)))))
+
 (defun my/emms-show-alert ()
-  "Mostrar una alerta cuando cambie la canción en EMMS."
+  "Muestra una alerta con metadatos musicales y portada si está disponible."
   (when-let* ((track (emms-playlist-current-selected-track))
               (artist (emms-track-get track 'info-artist))
               (title (emms-track-get track 'info-title))
               (album (emms-track-get track 'info-album)))
-    (alert (format "%s\n%s — %s" title album artist)
-           :title "🎵 Canción en reproducción")))
+    (let ((cover (or (my/emms-extract-cover track)
+                     my/emms-default-cover)))
+      (alert (format "%s\n%s" artist album)
+             :title (format "🎵 %s" title)
+             :icon cover
+             :category "music"))))
+
+;; (defun my/emms-show-alert ()
+;;   "Mostrar una alerta cuando cambie la canción en EMMS."
+;;   (when-let* ((track (emms-playlist-current-selected-track))
+;;               (artist (emms-track-get track 'info-artist))
+;;               (title (emms-track-get track 'info-title))
+;;               (album (emms-track-get track 'info-album))
+;;               (cover (my/emms-extract-cover track)))
+;;     (alert (format "%s\n%s" album artist)
+;;            :title (format "🎵 %s" title)
+;;            :icon cover
+;;            :category "music")))
 
 (add-hook 'emms-player-started-hook #'my/emms-show-alert)
 
