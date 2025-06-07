@@ -9,7 +9,6 @@
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Setup custom splashscreen
-;; (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (setq fancy-splash-image "~/.config/doom/Logos/gnu_color.png")
 
 (add-hook! '+doom-dashboard-functions :append
@@ -20,7 +19,6 @@
 
 ;; Tema
 (setq doom-theme 'doom-nord)
-;; (setq doom-theme 'doom-gruvbox)
 
 ;; Maintain terminal transparency in Doom Emacs
 (after! doom-themes
@@ -38,7 +36,7 @@
 (setq-default evil-escape-key-sequence "kj")
 (setq-default evil-escape-delay 0.1)
 
-; Don't move cursor back when exiting insert mode
+;; Don't move cursor back when exiting insert mode
 (setq evil-move-cursor-back nil)
 ;; granular undo with evil mode
 (setq evil-want-fine-undo t)
@@ -780,13 +778,6 @@
 ;; Configuración de company
 ;; -------------------------------
 
-;; (use-package! cape
-;;   :init
-;;   (after! term
-;;       (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
-;;     (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
-;;   :defer t)
-
 (after! company
   (setq company-minimum-prefix-length 2
    company-idle-delay 0.05))
@@ -1024,18 +1015,6 @@
              :icon cover
              :category "music"))))
 
-;; (defun my/emms-show-alert ()
-;;   "Mostrar una alerta cuando cambie la canción en EMMS."
-;;   (when-let* ((track (emms-playlist-current-selected-track))
-;;               (artist (emms-track-get track 'info-artist))
-;;               (title (emms-track-get track 'info-title))
-;;               (album (emms-track-get track 'info-album))
-;;               (cover (my/emms-extract-cover track)))
-;;     (alert (format "%s\n%s" album artist)
-;;            :title (format "🎵 %s" title)
-;;            :icon cover
-;;            :category "music")))
-
 (add-hook 'emms-player-started-hook #'my/emms-show-alert)
 
 ;; -------------------------------
@@ -1087,6 +1066,7 @@
 ;; -------------------------------
 ;; Configuración de notificaciones
 ;; -------------------------------
+
 (after! alert
   (defun my/alert-sound-wrapper (orig-fn message &rest args)
     (apply orig-fn message args)
