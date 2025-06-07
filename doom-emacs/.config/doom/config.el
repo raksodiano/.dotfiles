@@ -1,15 +1,15 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 ;; -------------------------------
-;; Configuración visual y comportamiento
+;; Visual configuration and performance
 ;; -------------------------------
 
-;; Iniciar Emacs maximizado
+;; Start emacs maximized
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Setup custom splashscreen
-(setq fancy-splash-image "~/.config/doom/Logos/gnu_color.png")
+(setq fancy-splash-image "~/.config/doom/images/gnu_color.png")
 
 (add-hook! '+doom-dashboard-functions :append
   (insert "\n" (+doom-dashboard--center +doom-dashboard--width "Welcome Home, Master.")))
@@ -17,7 +17,7 @@
 ;; Blink cursor
 (blink-cursor-mode 1)
 
-;; Tema
+;; Theme
 (setq doom-theme 'doom-nord)
 
 ;; Maintain terminal transparency in Doom Emacs
@@ -43,11 +43,11 @@
 
 (setq which-key-idle-delay 0.2)
 
-;; Números de línea relativos
+;; Relative line numbers
 (setq display-line-numbers-type 'relative)
 (add-hook 'prog-mode-hook #'hl-line-mode)
 
-;; Modelo de línea y fuentes
+;; Line model and fonts
 (custom-set-faces!
     '(mode-line :height 90 :inherit 'variable-pitch)
     '(mode-line-inactive :height 80 :inherit 'variable-pitch))
@@ -55,7 +55,7 @@
 (after! all-the-icons
     (setq all-the-icons-scale-factor 1.5))
 
-;; Tabs estilo IDE (Centaur Tabs)
+;; IDE stile tabs (Centaur Tabs)
 (setq centaur-tabs-style "alternate"
       centaur-tabs-height 32
       centaur-tabs-set-bar 'under)
@@ -63,14 +63,13 @@
 (centaur-tabs-mode t)
 
 ;; Folding para lenguajes sin soporte nativo
-(add-hook 'sh-mode-hook #'outline-minor-mode) ; Para Shell Script
+(add-hook 'sh-mode-hook #'outline-minor-mode)
 (add-hook 'markdown-mode-hook #'outline-minor-mode)
+(setq hs-isearch-open t)
 
 ;; zoom in/out like we do everywhere else.
 (global-set-key (kbd "C-=") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
-
-(setq hs-isearch-open t)           ; Expandir folds al buscar
 
 (after! highlight-indent-guides
     (setq highlight-indent-guides-method (if (display-graphic-p)
@@ -98,7 +97,7 @@
         (goto-char (point-max))
         (insert ?\n))))
 
-;; Mejoramos el manual
+;; Improving the manual
 (add-transient-hook! 'doom-first-input-hook
   (let ((cell (assoc 'side
                      (assoc "^\\*\\(?:Wo\\)?Man " display-buffer-alist))))
@@ -107,9 +106,10 @@
 (use-package! dotenv-mode
   :mode ("\\.env\\.?.*\\'" . dotenv-mode))
 
-(setq comment-tabs t)  ; Alinea comentarios con tabs o espacios
+;; Align comments
+(setq comment-tabs t)
 
-;; Indentación y formato de código
+;; Indentation
 (setq-default tab-width 2)
 
 ;; -------------------------------
@@ -984,7 +984,7 @@
     (when cover-files
       (concat dir (car cover-files)))))
 
-(defvar my/emms-default-cover "~/.config/doom/Logos/kmix.svg")
+(defvar my/emms-default-cover "~/.config/doom/images/kmix.svg")
 
 (defun my/emms-extract-cover (track)
   "Extrae la carátula embebida del TRACK a un archivo temporal, si existe. Devuelve la ruta o nil."
