@@ -467,6 +467,8 @@
         :n "<M-left>" #'org-do-promote
         :n "<M-right>" #'org-do-demote))
 
+(setq org-clock-sound "~/.config/doom/sounds/bell.wav")
+
 (use-package! org-alert
   :after org
   :config
@@ -644,6 +646,59 @@
         (setq-local ispell-dictionary (downcase (car lang)))))))
 
 (add-hook 'org-mode-hook #'my/org-mode-set-language)
+
+(after! ox-latex
+  (let* ((class-dir (expand-file-name "latex-classes/" doom-user-dir))
+         ;; Lista de temas: (nombre-de-clase . archivo.tex)
+         (themes
+          '(("report-custom" . "report.tex")
+            ("elegant-cv" . "elegant-cv.tex")
+            ("history-book" . "history-book.tex"))))
+
+    (dolist (theme themes)
+      (let* ((name  (car theme))
+             (file  (cdr theme))
+             (path  (expand-file-name file class-dir)))
+        (when (file-exists-p path)
+          (let ((class-str (with-temp-buffer
+                             (insert-file-contents path)
+                             (buffer-string))))
+            (add-to-list 'org-latex-classes
+                         `(,name
+                           ,class-str
+                           ;; Secciones
+                           ("\\section{%s}"       . "\\section*{%s}")
+                           ("\\subsection{%s}"    . "\\subsection*{%s}")
+                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                           ("\\paragraph{%s}"     . "\\paragraph*{%s}")
+                           ("\\subparagraph{%s}"  . "\\subparagraph*{%s}"))
+                         t))))))
+
+  (setq org-latex-compiler "xelatex"
+        org-latex-pdf-process
+        '("xelatex -interaction nonstopmode -output-directory %o %f"
+          "xelatex -interaction nonstopmode -output-directory %o %f")))
+
+;; (after! ox-latex
+;;   (let ((class-file (expand-file-name "latex-classes/blue-ruin.tex" doom-user-dir)))
+;;     (when (file-exists-p class-file)
+;;       (let ((class-content (with-temp-buffer
+;;                              (insert-file-contents class-file)
+;;                              (buffer-string))))
+
+;;         (add-to-list 'org-latex-classes
+;;                      `("blue-ruin"
+;;                        ,class-content
+;;                        ("\\section{%s}" . "\\section*{%s}")
+;;                        ("\\subsection{%s}" . "\\subsection*{%s}")
+;;                        ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+;;                        ("\\paragraph{%s}" . "\\paragraph*{%s}")
+;;                        ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+;;                      t))))
+
+;;   (setq org-latex-pdf-process
+;;         '("xelatex -interaction nonstopmode -output-directory %o %f"
+;;           "xelatex -interaction nonstopmode -output-directory %o %f")))
 
 ;; -------------------------------
 ;; Configuración de blogging
