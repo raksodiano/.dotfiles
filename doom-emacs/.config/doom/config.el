@@ -113,14 +113,14 @@
 (setq-default tab-width 2)
 
 ;; -------------------------------
-;; Configuración modeline
+;; Modeline configuration
 ;; -------------------------------
 
 (setq doom-modeline-major-mode-icon t)
 (setq doom-modeline-lsp-icon t)
 (setq doom-modeline-major-mode-color-icon t)
 
-;; Mostrar íconos en la modeline
+;; Show icons
 (setq doom-modeline-icon t)
 
 ;; Mostrar el nombre del proyecto y del archivo
@@ -639,7 +639,7 @@
        :empty-lines 1 :mkdir t))))
 
 (defun my/org-mode-set-language ()
-  "Establece el diccionario de Hunspell según la opción #+LANGUAGE del buffer Org."
+  "Sets the Hunspell dictionary according to the #+LANGUAGE option of the Org buffer."
   (when (derived-mode-p 'org-mode)
     (let ((lang (cdr (assoc "LANGUAGE" (org-collect-keywords '("LANGUAGE"))))))
       (when lang
@@ -649,11 +649,11 @@
 
 (after! ox-latex
   (let* ((class-dir (expand-file-name "latex-classes/" doom-user-dir))
-         ;; Lista de temas: (nombre-de-clase . archivo.tex)
+         ;; list of themes (name-class . file.cls)
          (themes
-          '(("report-custom" . "report.tex")
-            ("elegant-cv" . "elegant-cv.tex")
-            ("history-book" . "history-book.tex"))))
+          '(("report-custom" . "report.cls")
+            ("poem" . "poem.cls")
+            )))
 
     (dolist (theme themes)
       (let* ((name  (car theme))
@@ -666,7 +666,6 @@
             (add-to-list 'org-latex-classes
                          `(,name
                            ,class-str
-                           ;; Secciones
                            ("\\section{%s}"       . "\\section*{%s}")
                            ("\\subsection{%s}"    . "\\subsection*{%s}")
                            ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -674,31 +673,14 @@
                            ("\\subparagraph{%s}"  . "\\subparagraph*{%s}"))
                          t))))))
 
+  (let ((styles-dir (expand-file-name "latex-classes/styles/" doom-user-dir)))
+    (setenv "TEXINPUTS"
+            (concat styles-dir ":" (getenv "TEXINPUTS"))))
+
   (setq org-latex-compiler "xelatex"
         org-latex-pdf-process
         '("xelatex -interaction nonstopmode -output-directory %o %f"
           "xelatex -interaction nonstopmode -output-directory %o %f")))
-
-;; (after! ox-latex
-;;   (let ((class-file (expand-file-name "latex-classes/blue-ruin.tex" doom-user-dir)))
-;;     (when (file-exists-p class-file)
-;;       (let ((class-content (with-temp-buffer
-;;                              (insert-file-contents class-file)
-;;                              (buffer-string))))
-
-;;         (add-to-list 'org-latex-classes
-;;                      `("blue-ruin"
-;;                        ,class-content
-;;                        ("\\section{%s}" . "\\section*{%s}")
-;;                        ("\\subsection{%s}" . "\\subsection*{%s}")
-;;                        ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-;;                        ("\\paragraph{%s}" . "\\paragraph*{%s}")
-;;                        ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
-;;                      t))))
-
-;;   (setq org-latex-pdf-process
-;;         '("xelatex -interaction nonstopmode -output-directory %o %f"
-;;           "xelatex -interaction nonstopmode -output-directory %o %f")))
 
 ;; -------------------------------
 ;; Configuración de blogging
@@ -1018,6 +1000,16 @@
       emms-playlist-buffer-name "*Music*"
       emms-info-asynchronously t
       emms-source-file-directory-tree-function 'emms-source-file-directory-tree-find)
+
+;; Nord theme colors
+(with-eval-after-load 'emms
+  (custom-set-faces
+   ;; Nord colors: https://www.nordtheme.com/docs/colors-and-palettes
+   '(emms-browser-artist-face ((t (:foreground "#ECEFF4" :height 1.1))))  ;; Nord Snow Storm (bright white)
+   '(emms-browser-album-face ((t (:foreground "#88C0D0" :height 1.0))))   ;; Nord Frost (blue)
+   '(emms-browser-track-face ((t (:foreground "#A3BE8C" :height 1.0))))   ;; Nord Aurora (green)
+   '(emms-playlist-track-face ((t (:foreground "#D8DEE9" :height 1.0))))  ;; Nord Snow Storm (lighter white)
+   '(emms-playlist-selected-face ((t (:foreground "#BF616A" :weight bold))))))  ;; Nord Aurora (red)
 
 (map! :leader
       (:prefix ("m" . "music/EMMS")  ;; Changed from 'a' to 'm' for music

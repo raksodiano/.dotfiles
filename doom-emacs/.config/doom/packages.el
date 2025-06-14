@@ -2,25 +2,25 @@
 ;;; $DOOMDIR/packages.el
 
 ;; -----------------------------------
-;; Paquetes para edición y utilidades
+;; Editing and utilities
 ;; -----------------------------------
 (package! dotenv-mode)
 (package! vlf)
 (package! lorem-ipsum)
 
 ;; -----------------------------------
-;; Paquetes para Dired
+;; Dired
 ;; -----------------------------------
 (package! dired-open)
 (package! dired-subtree)
 
 ;; -----------------------------------
-;; Paquetes para Magit
+;; Magit
 ;; -----------------------------------
 (package! magit-delta)
 
 ;; -----------------------------------
-;; Notificaciones
+;; Notifications
 ;; -----------------------------------
 (package! alert)
 (package! org-alert)
@@ -31,12 +31,12 @@
 (package! docker-compose-mode)
 
 ;; -----------------------------------
-;; Proceso en segundo plano
+;; Background process
 ;; -----------------------------------
 (package! detached)
 
 ;; -----------------------------------
-;; Consult y complementos
+;; Consult
 ;; -----------------------------------
 (package! consult-company)
 (package! consult-projectile)
@@ -51,3 +51,9 @@
 ;; -----------------------------------
 (package! nov)
 (package! calibredb)
+
+;; -----------------------------------
+;; Elfeed
+;; -----------------------------------
+(package! elfeed-tube)
+(package! elfeed-tube-mpv)
