@@ -7,6 +7,7 @@
 (package! dotenv-mode)
 (package! vlf)
 (package! lorem-ipsum)
+(package! gtea)
 
 ;; -----------------------------------
 ;; Dired
