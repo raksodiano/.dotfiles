@@ -4,6 +4,36 @@
 ;; Visual configuration and performance
 ;; -------------------------------
 
+;; Line wrapping
+(global-visual-line-mode t)
+
+;; Send files to trash instead of fully deleting
+(setq delete-by-moving-to-trash t)
+
+;; Save automatically
+(setq auto-save-default t)
+
+;; Performance optimizations
+(setq gc-cons-threshold (* 256 1024 1024))
+(setq read-process-output-max (* 4 1024 1024))
+(setq comp-deferred-compilation t)
+(setq comp-async-jobs-number 8)
+
+;; Garbage collector optimization
+(setq gcmh-idle-delay 5)
+(setq gcmh-high-cons-threshold (* 1024 1024 1024))
+
+;; Version control optimization
+(setq vc-handled-backends '(Git))
+
+;; Fix x11 issues
+(setq x-no-window-manager t)
+(setq frame-inhibit-implied-resize t)
+(setq focus-follows-mouse nil)
+
+(setq doom-load-packages-incrementally nil)
+(remove-hook 'doom-after-init-hook #'doom-load-packages-incrementally-h)
+
 ;; Start emacs maximized
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -82,7 +112,7 @@
                      (assoc "^\\*\\(?:Wo\\)?Man " display-buffer-alist))))
     (setcdr cell 'right)))
 
-(setq require-final-newline 'ask)
+(setq require-final-newline 'nil)
 
 (after! persp-mode
     (defadvice! dan/persp-autosave--add-breakline (&rest _)
@@ -652,8 +682,8 @@
          ;; list of themes (name-class . file.cls)
          (themes
           '(("report-custom" . "report.cls")
-            ("poem" . "poem.cls")
-            )))
+            ("poem" . "poem.cls"))))
+
 
     (dolist (theme themes)
       (let* ((name  (car theme))
@@ -1092,9 +1122,9 @@
 (use-package! calibredb
   :commands calibredb
   :config
-  (setq calibredb-root-dir "~/Calibre Library"
+  (setq calibredb-root-dir "~/Library"
         calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir)
-        calibredb-library-alist '(("~/Calibre Library"))
+        calibredb-library-alist '(("~/Library"))
         calibredb-format-all-the-icons t)
 
   ;; Set up key bindings for calibredb-search-mode
