@@ -7,7 +7,6 @@
 (package! dotenv-mode)
 (package! vlf)
 (package! lorem-ipsum)
-(package! gtea)
 
 ;; -----------------------------------
 ;; Dired
@@ -19,6 +18,10 @@
 ;; Magit
 ;; -----------------------------------
 (package! magit-delta)
+(package! glab)
+(package! gtea)
+(package! gogs)
+(package! buck)
 
 ;; -----------------------------------
 ;; Notifications
@@ -58,3 +61,8 @@
 ;; -----------------------------------
 (package! elfeed-tube)
 (package! elfeed-tube-mpv)
+
+;; -----------------------------------
+;; Elfeed
+;; -----------------------------------
+(package! prettier-js)

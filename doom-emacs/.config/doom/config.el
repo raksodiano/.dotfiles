@@ -447,11 +447,11 @@
 (custom-set-faces
  '(magit-blame-hash ((t (:foreground "#7F7F7F"))))) ; Color del hash
 
-(add-hook 'magit-post-push-hook 'magit-refresh-all)
-(add-hook 'magit-post-commit-hook 'magit-refresh-all)
-(add-hook 'magit-post-merge-hook 'magit-refresh-all)
-(add-hook 'magit-post-checkout-hook 'magit-refresh-all)
-(add-hook 'magit-post-fetch-hook 'magit-refresh-all)
+;; (add-hook 'magit-post-push-hook 'magit-refresh-all)
+;; (add-hook 'magit-post-commit-hook 'magit-refresh-all)
+;; (add-hook 'magit-post-merge-hook 'magit-refresh-all)
+;; (add-hook 'magit-post-checkout-hook 'magit-refresh-all)
+;; (add-hook 'magit-post-fetch-hook 'magit-refresh-all)
 
 (use-package! magit-delta
   :hook (magit-mode . magit-delta-mode)
@@ -718,7 +718,7 @@
 
 (after! ox-hugo
   ;; Ruta base del sitio Hugo
-  (setq org-hugo-base-dir "~/Workspace/blog-hugo"
+  (setq org-hugo-base-dir "~/Workspace/blog"
     org-hugo-content-directory "content-org"
     org-hugo-section "posts"
     org-hugo-preserve-filing 'force
