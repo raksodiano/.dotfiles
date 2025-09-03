@@ -63,6 +63,6 @@
 (package! elfeed-tube-mpv)
 
 ;; -----------------------------------
-;; Elfeed
+;; Javascript
 ;; -----------------------------------
 (package! prettier-js)
