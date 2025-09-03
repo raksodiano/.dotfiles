@@ -208,12 +208,14 @@
                        "~/Org/notes/games"
                        "~/Library"
                        "~/Workspace"
-                       "~/Workspace/books"
-                       "~/Workspace/books/latex"
-                       "~/Workspace/books/org"
-                       "~/Workspace/blog"
-                       "~/Workspace/work"
-                       "~/Workspace/games"))
+                       "~/Workspace/Books"
+                       "~/Workspace/Books/latex"
+                       "~/Workspace/Books/org"
+                       "~/Workspace/Blog"
+                       "~/Workspace/Personal"
+                       "~/Workspace/Scripts"
+                       "~/Workspace/Work"
+                       "~/Workspace/Games"))
 
 (dolist (directory my/directories)
   (unless (file-directory-p directory)

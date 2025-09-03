@@ -114,7 +114,7 @@ source $ZSH/oh-my-zsh.sh
 export PATH="$HOME/.volta/bin:$PATH"
 
 alias cat="bat"
-alias ls="lsd"
+alias ls="eza"
 alias l='ls -l'
 alias la='ls -a'
 alias lla='ls -la'
@@ -122,5 +122,5 @@ alias lt='ls --tree'
 
 alias doom='~/.config/emacs/bin/doom'
 
-eval $(thefuck --alias)
-eval "$(starship init zsh)"
+# eval $(thefuck --alias)
+# eval "$(starship init zsh)"
