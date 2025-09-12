@@ -66,3 +66,10 @@
 ;; Javascript
 ;; -----------------------------------
 (package! prettier-js)
+
+;; -----------------------------------
+;; IA
+;; -----------------------------------
+(package! gptel)
+(package! ellama)
+(package! llm) ; Dependency for ellama
