@@ -328,6 +328,69 @@
   (setq writeroom-alpha 0.95))
 
 ;; -------------------------------
+;; IA configuration
+;; -------------------------------
+
+(use-package! ellama
+  :defer t
+  :bind ("C-c e" . ellama-chat)
+  :hook (org-ctrl-c-ctrl-c-final . ellama-chat-send-last-message)
+  :init
+  (setopt ellama-language "Spanish")
+  (require 'llm-ollama)
+  (setopt ellama-provider
+          (make-llm-ollama
+           :chat-model "qwen2.5:3b"
+           :embedding-model "nomic-embed-text"
+           :default-chat-non-standard-params '(("num_ctx" . 8192))))
+  (setopt ellama-summarization-provider
+          (make-llm-ollama
+           :chat-model "qwen2.5:1.5b"
+           :embedding-model "nomic-embed-text"
+           :default-chat-non-standard-params '(("num_ctx" . 8192))))
+  (setopt ellama-coding-provider
+          (make-llm-ollama
+           :chat-model "qwen2.5-coder:1.5b"
+           :embedding-model "nomic-embed-text"
+           :default-chat-non-standard-params '(("num_ctx" . 8192))))
+  (setopt ellama-providers
+          '(("text" . (make-llm-ollama
+                       :chat-model "qwen2.5:3b"
+                       :embedding-model "nomic-embed-text"))
+            ("code" . (make-llm-ollama
+                       :chat-model "qwen2.5-coder:1.5b"
+                       :embedding-model "nomic-embed-text"))
+            ("small-text" . (make-llm-ollama
+                             :chat-model "gemma2:2b"
+                             :embedding-model "nomic-embed-text"))
+            ("small-code" . (make-llm-ollama
+                             :chat-model "phi3:mini"
+                             :embedding-model "nomic-embed-text"))))
+  (setopt ellama-naming-provider
+          (make-llm-ollama
+           :chat-model "qwen2.5:0.5b"
+           :embedding-model "nomic-embed-text"
+           :default-chat-non-standard-params '(("stop" . ("\n")))))
+  (setopt ellama-naming-scheme 'ellama-generate-name-by-llm)
+  (setopt ellama-translation-provider
+          (make-llm-ollama
+           :chat-model "qwen2.5:1.5b"
+           :embedding-model "nomic-embed-text"
+           :default-chat-non-standard-params '(("num_ctx" . 8192))))
+  (setopt ellama-extraction-provider
+          (make-llm-ollama
+           :chat-model "qwen2.5-coder:1.5b"
+           :embedding-model "nomic-embed-text"
+           :default-chat-non-standard-params '(("num_ctx" . 8192))))
+  (setopt ellama-chat-display-action-function #'display-buffer-full-frame)
+  (setopt ellama-instant-display-action-function #'display-buffer-at-bottom)
+  :config
+  (ellama-context-header-line-global-mode +1)
+  (ellama-session-header-line-global-mode +1)
+  (advice-add 'pixel-scroll-precision :before #'ellama-disable-scroll)
+  (advice-add 'end-of-buffer :after #'ellama-enable-scroll))
+
+;; -------------------------------
 ;; Configuración de LSP para todos los lenguajes
 ;; -------------------------------
 
