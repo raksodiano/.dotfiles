@@ -1,125 +1,127 @@
-"$schema" = "https://starship.rs/config-schema.json"
-
-# colorscheme
-#
-# #2E3440
-# #3B4252
-# #434C5E
-# #4C566A
-# #D8DEE9
-# #E5E9F0
-# #ECEFF4
-# #8FBCBB
-# #88C0D0
-# #81A1C1
-# #5E81AC
-# #BF616A
-# #D08770
-# #EBCB8B
-# #A3BE8C
-# #B48EAD
-
 format = """
-$username\
+[╭](bold overlay1) \
+$python\
 $directory\
 $git_branch\
 $git_status\
-$c\
-$elixir\
-$elm\
-$golang\
-$haskell\
-$java\
-$julia\
-$nodejs\
-$nim\
-$rust\
-[\uE0B0 ](fg:#81A1C1 bg:#2E3440)\
-$line_break\
-$character
-"""
+$kubernetes \
+$cmd_duration \
+\n$character"""
+
+palette = 'catppuccin_mocha'
+[palettes.catppuccin_mocha]
+rosewater = "#f5e0dc"
+flamingo = "#f2cdcd"
+pink = "#f5c2e7"
+mauve = "#cba6f7"
+red = "#f38ba8"
+maroon = "#eba0ac"
+peach = "#fab387"
+yellow = "#f9e2af"
+green = "#a6e3a1"
+teal = "#94e2d5"
+sky = "#89dceb"
+sapphire = "#74c7ec"
+blue = "#89b4fa"
+lavender = "#b4befe"
+text = "#cdd6f4"
+subtext1 = "#bac2de"
+subtext0 = "#a6adc8"
+overlay2 = "#9399b2"
+overlay1 = "#7f849c"
+overlay0 = "#6c7086"
+surface2 = "#585b70"
+surface1 = "#45475a"
+surface0 = "#313244"
+base = "#1e1e2e"
+mantle = "#181825"
+crust = "#11111b"
+
+[palettes.gruvbox]
+color_fg0 = '#ebdbb2'   # text foreground
+color_bg0 = '#3C4841'
+color_bg1 = '#3c3836'
+color_bg3 = '#665c54'
+color_blue = '#458588'
+color_aqua = '#689d6a'
+color_green = '#98971a'
+color_orange = '#d65d0e'
+color_red = '#cc241d'
+color_yellow = '#d79921'
 
 [character]
-success_symbol = "[   \uE007  ](bg:#4C566A)[\uE0BC](fg:#4C566A)"
-error_symbol = "[   \uE007  ](bg:#4C566A fg:#BF616A)[\uE0BC](fg:#4C566A)"
-
-# system
-
-[username]
-show_always = true
-style_user = "bg:#4C566A"
-style_root = "bg:#4C566A"
-format = "[ $user ]($style)[\uE0BC](bg:#BF616A fg:#4C566A)"
+format = """
+[╰─$symbol](fg:overlay1) """
+success_symbol = '[󰘧](fg:bold green)'
+error_symbol = '[](fg:bold red)'
 
 [directory]
-style = "bg:#BF616A"
-format = "[ $path ]($style)[\uE0BE](bg:#BF616A fg:#D08770)"
-truncate_to_repo = false
+# style = "fg:color_fg0 bg:color_bg0"
+format = '[$path](fg:bold teal)'
 truncation_length = 3
-truncation_symbol = "…/"
+truncation_symbol = "·/"
+fish_style_pwd_dir_length = 1
 
-# git
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
+
+[kubernetes]
+disabled = false
+style = "fg:color_yellow"
+format = '( | [$context]($style)( in [$namespace]($style)))'
+
+[time]
+disabled = false
+time_format = "%R" # Hour:Minute Format
+format = '| $time'
 
 [git_branch]
-symbol = "\uE0A0"
-style = "bg:#D08770"
-format = "[[ $symbol $branch ](bg:#D08770)]($style)"
-
-[git_metrics]
-disabled = false
+format = "[ | in [$symbol$branch](rosewater) with ](text)"
+symbol = " "
 
 [git_status]
-format = "[($all_status$ahead_behind)]($style)[\uE0BC](bg:#81A1C1 fg:#D08770)"
-style = "bg:#D08770"
-conflicted = "👿 $count "
-ahead = "⇡ $count "
-behind = "⇣ $count "
-diverged = " $count "
-untracked = "🤷 $count "
-stashed = "‍📦 $count "
-modified = "פֿ $count "
-staged = " $count "
-renamed = " $count "
-deleted = "🗑 $count "
+format = "$all_status$ahead_behind"
+conflicted = "="
+ahead = "[⇡${count} ](green)"
+behind = "⇣${count} "
+diverged = "[⇕⇡${ahead_count} ⇣${behind_count} ](teal)"
+up_to_date = "[󰄸 ](bold green)"
+untracked = "[?${count} ](maroon)"
+stashed = "[󰏖  ](bold green)"
+modified = "[~${count} ](yellow)"
+staged = "[+${count} ](green)"
+renamed = "[»${count} ](peach)"
+# deleted = "[ ${count} ](bold red)"
+deleted = "[-${count} ](bold red)"
 
-# languages
+[git_commit]
+format = "[\\($hash\\)]($style) [\\($tag\\)]($style)"
+style = "green"
 
-[c]
-symbol = "© "
-style = "bg:#D8DEE9"
-format = "[[ $symbol ($version) ](bg:#D8DEE9)]($style)"
+[git_state]
+rebase = "REBASING"
+merge = "MERGING"
+revert = "REVERTING"
+cherry_pick = "CHERRY-PICKING"
+bisect = "BISECTING"
+am = "AM"
+am_or_rebase = "AM/REBASE"
+style = "yellow"
+format = '\([$state( $progress_current/$progress_total)]($style)\) '
 
-[elixir]
-symbol = "\uE62D "
-style = "bg:#D8DEE9"
-format = "[[ $symbol ($version) ](bg:#D8DEE9)]($style)"
+[cmd_duration]
+min_time = 10
+format = '| 󰪢 [$duration](bold purple)'
+show_milliseconds = true
 
-[elm]
-symbol = "\uE62C "
-style = "bg:#D8DEE9"
-format = "[[ $symbol ($version) ](bg:#D8DEE9)]($style)"
+# [python]
+# symbol = " "
+# format = '[]($style)[(\($virtualenv\))](bg:#161821 fg:#BBC3DF)[ ]($style)'
+# style = "bg:none fg:#161821"
 
-[golang]
-symbol = "\uE627 "
-style = "bg:#81A1C1 fg:#4C566A"
-format = "[ $symbol]($style)"
-
-[haskell]
-symbol = "\uE777 "
-style = "bg:#D8DEE9"
-format = "[[ $symbol($version)](bg:#D8DEE9)]($style)"
-
-[nodejs]
-symbol = "\uE718 "
-style = "bg:#81A1C1 fg:#4C566A"
-format = "[ $symbol]($style)"
-
-[rust]
-symbol = "\uE7A8 "
-style = "bg:#D8DEE9"
-format = "[[ $symbol($version) ](bg:#D8DEE9)]($style)"
-
-[ruby]
-symbol = "\uE739 "
-style = "bg:#D8DEE9"
-format = "[[ $symbol($version) ](bg:#D8DEE9)]($style)"
+[python]
+symbol = " "
+format = '[(\($virtualenv\) | )]($style)'

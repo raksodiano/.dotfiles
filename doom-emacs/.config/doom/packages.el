@@ -2,6 +2,11 @@
 ;;; $DOOMDIR/packages.el
 
 ;; -----------------------------------
+;; Theme
+;; -----------------------------------
+(package! catppuccin-theme)
+
+;; -----------------------------------
 ;; Editing and utilities
 ;; -----------------------------------
 (package! dotenv-mode)
@@ -73,3 +78,9 @@
 (package! gptel)
 (package! ellama)
 (package! llm) ; Dependency for ellama
+
+;; -----------------------------------
+;; Markdown
+;; -----------------------------------
+(package! markdown-soma)
+(package! kdl-mode)

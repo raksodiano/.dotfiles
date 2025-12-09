@@ -122,5 +122,6 @@ alias lt='ls --tree'
 
 alias doom='~/.config/emacs/bin/doom'
 
-# eval $(thefuck --alias)
-# eval "$(starship init zsh)"
+eval "$(starship init zsh)"
+
+. "$HOME/.local/bin/env"
