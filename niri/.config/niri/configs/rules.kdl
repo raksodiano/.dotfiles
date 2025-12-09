@@ -2,16 +2,17 @@ workspace "🌍 WWW"
 workspace "🖳 TERM"
 workspace "🗒️ JOT"
 workspace "𝓔 EMACS"
-// workspace "5"
+workspace "📦 MISC"
 workspace "📂 FILE"
-workspace "📓 NOTE"
-workspace "🎵 SONG"
+workspace "✎ NOTE"
+workspace "♫ SONG"
 workspace "💬 CHAT"
-// workspace "0"
+workspace "🎮 GAME"
 
 /*
 [[ Layer Rule ]]
 */
+
 // Set the overview wallpaper on the backdrop.
 layer-rule {
   match namespace="^noctalia-overview*"
@@ -141,7 +142,7 @@ window-rule {
 }
 
 window-rule {
-    geometry-corner-radius 18
+    geometry-corner-radius 8
     clip-to-geometry true
 }
 
@@ -174,22 +175,52 @@ window-rule {
 }
 
 window-rule {
+    match title="EMACS NOTES"
+    open-on-workspace "✎ NOTE"
+}
+
+window-rule {
+    match title="EMACS FEEDS"
+    open-on-workspace "🌍 WWW"
+}
+
+window-rule {
+    match title="EMACS AI"
+    open-on-workspace "💬 CHAT"
+}
+
+window-rule {
+    match title="EMACS MUSIC"
+    open-on-workspace "♫ SONG"
+}
+
+window-rule {
+    match title="EMACS CALENDAR"
+    open-on-workspace "🗒️ JOT"
+}
+
+window-rule {
     match app-id="^pcmanfm$"
     open-on-workspace "📂 FILE"
 }
 
 window-rule {
     // match app-id="^obsidian$"
-    // open-on-workspace "📓 NOTE"
+    // open-on-workspace "✎ NOTE"
 }
 
 window-rule {
     // match app-id="Spotify"
-    // open-on-workspace "🎵 SONG"
+    // open-on-workspace "♫ SONG"
 }
 
 window-rule {
     match app-id="^Slack$"
     match app-id="^org.telegram.desktop$"
     open-on-workspace "💬 CHAT"
+}
+
+window-rule {
+    match app-id="steam"
+    open-on-workspace "🎮 GAME"
 }

@@ -6,6 +6,7 @@
 ██║  ██╗███████╗   ██║   ██████╔╝██║██║ ╚████║██████╔╝███████║
 ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═════╝ ╚═╝╚═╝  ╚═══╝╚═════╝ ╚══════╝
 */
+
 binds {
     Mod+Shift+Slash {
         show-hotkey-overlay
@@ -50,8 +51,28 @@ binds {
     }
 
     // Emacs
-    Mod+Alt+N {
+    Mod+Alt+E {
         spawn "emacsclient" "-c" "-n"
+    }
+
+    Mod+Alt+N {
+        spawn "emacsclient" "-c" "-F" "((name . \"EMACS NOTES\"))" "--eval" "(progn (select-frame-set-input-focus (selected-frame)) (org-capture))"
+    }
+     
+    Mod+Alt+F {
+        spawn "emacsclient" "-c" "-F" "((name . \"EMACS FEEDS\"))" "--eval" "(progn (select-frame-set-input-focus (selected-frame)) (elfeed))"
+    }
+
+    Mod+Alt+M {
+        spawn "emacsclient" "-c" "-F" "((name . \"EMACS MUSIC\"))" "--eval" "(progn (select-frame-set-input-focus (selected-frame)) (emms))"
+    }
+
+    Mod+Alt+C {
+        spawn "emacsclient" "-c" "-F" "((name . \"EMACS CALENDAR\"))" "--eval" "(progn (delete-other-windows) (switch-to-buffer \"*Calendar*\") (select-frame-set-input-focus (selected-frame)) (calendar))"
+    }
+
+    Mod+Alt+I {
+        spawn "emacsclient" "-c" "-F" "((name . \"EMACS AI\"))" "--eval" "(progn (delete-other-windows) (switch-to-buffer \"*ellama*\") (select-frame-set-input-focus (selected-frame)) (ellama-chat))"
     }
 
     //Binds for application
@@ -346,7 +367,7 @@ binds {
     }
 
     Mod+5 {
-        focus-workspace "5"
+        focus-workspace "📦 MISC"
     }
 
     Mod+6 {
@@ -354,11 +375,11 @@ binds {
     }
 
     Mod+7 {
-        focus-workspace "📓 NOTE"
+        focus-workspace "✎ NOTE"
     }
 
     Mod+8 {
-        focus-workspace "🎵 SONG"
+        focus-workspace "♫ SONG"
     }
 
     Mod+9 {
@@ -366,7 +387,7 @@ binds {
     }
 
     Mod+0 {
-        focus-workspace "0"
+        focus-workspace "🎮 GAME"
     }
 
     Mod+Shift+1 {
@@ -386,7 +407,7 @@ binds {
     }
 
     Mod+Shift+5 {
-        move-column-to-workspace "5"
+        move-column-to-workspace "📦 MISC"
     }
 
     Mod+Shift+6 {
@@ -394,11 +415,11 @@ binds {
     }
 
     Mod+Shift+7 {
-        move-column-to-workspace "📓 NOTE"
+        move-column-to-workspace "✎ NOTE"
     }
 
     Mod+Shift+8 {
-        move-column-to-workspace "🎵 SONG"
+        move-column-to-workspace "♫ SONG"
     }
 
     Mod+Shift+9 {
@@ -406,7 +427,7 @@ binds {
     }
 
     Mod+Shift+0 {
-        move-column-to-workspace "0"
+        move-column-to-workspace "🎮 GAME"
     }
 
     // The following binds move the focused window in and out of a column.
