@@ -49,10 +49,11 @@
 
 ;; Theme
 ;; (setq doom-theme 'doom-nord)
-(setq doom-theme 'catppuccin
-      catppuccin-flavor 'mocha)
+;; (setq doom-theme 'catppuccin
+;;       catppuccin-flavor 'mocha)
 
-(load-theme 'catppuccin t)
+;; (load-theme 'catppuccin t)
+(load-theme 'noctalia t)
 
 ;; Maintain terminal transparency in Doom Emacs
 (after! doom-themes
@@ -1048,12 +1049,21 @@
   (setq elfeed-org-allow-http-feeds t))
 
 (after! elfeed-org
-    (setq rmh-elfeed-org-files (list "~/Org/rss/elfeeds.org"))
-  ;; Crear estructura inicial si no existe
-  (unless (file-exists-p (concat my/rss-base-dir "elfeeds.org"))
-    (with-temp-file (concat my/rss-base-dir "elfeeds.org")
-      (insert "#+TITLE: Gestión de Feeds\n\n")
-      (insert "* root :elfeed:\n"))))
+  (let ((rss-dir "~/Org/rss/"))
+    (setq rmh-elfeed-org-files (list (concat rss-dir "elfeeds.org")))
+    (unless (file-exists-p (concat rss-dir "elfeeds.org"))
+      (make-directory rss-dir t)
+      (with-temp-file (concat rss-dir "elfeeds.org")
+        (insert "#+TITLE: Gestión de Feeds\n\n")
+        (insert "* root :elfeed:\n")))))
+
+;; (after! elfeed-org
+;;     (setq rmh-elfeed-org-files (list "~/Org/rss/elfeeds.org"))
+;;   ;; Crear estructura inicial si no existe
+;;   (unless (file-exists-p (concat my/rss-base-dir "elfeeds.org"))
+;;     (with-temp-file (concat my/rss-base-dir "elfeeds.org")
+;;       (insert "#+TITLE: Gestión de Feeds\n\n")
+;;       (insert "* root :elfeed:\n"))))
 
 ;; Lectura de los feeds
 (setq-default fill-column 120)

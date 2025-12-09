@@ -23,9 +23,3 @@ input_delay 3
 sync_to_monitor yes
 
 include ~/.config/kitty/themes/mocha.conf
-
-
-# BEGIN_KITTY_THEME
-# Noctalia
-include current-theme.conf
-# END_KITTY_THEME
