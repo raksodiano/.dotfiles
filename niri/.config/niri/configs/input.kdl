@@ -1,0 +1,41 @@
+
+/*
+
+██╗███╗   ██╗██████╗ ██╗   ██╗████████╗
+██║████╗  ██║██╔══██╗██║   ██║╚══██╔══╝
+██║██╔██╗ ██║██████╔╝██║   ██║   ██║
+██║██║╚██╗██║██╔═══╝ ██║   ██║   ██║
+██║██║ ╚████║██║     ╚██████╔╝   ██║
+╚═╝╚═╝  ╚═══╝╚═╝      ╚═════╝    ╚═╝
+*/
+input {
+    keyboard {
+        xkb {
+	          layout "eu"
+        }
+    }
+
+    touchpad {
+        tap
+        dwt
+        accel-speed 0.3
+    }
+
+    mouse {
+        accel-speed 0.2
+    }
+
+    trackpoint {
+        accel-speed 0.2
+    }
+
+    workspace-auto-back-and-forth
+    warp-mouse-to-focus
+    focus-follows-mouse max-scroll-amount="0%"
+}
+gestures {
+    hot-corners {
+ // off
+
+    }
+}

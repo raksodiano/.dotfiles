@@ -1,0 +1,33 @@
+environment {
+    QT_QPA_PLATFORM "wayland"
+    QT_QPA_PLATFORMTHEME "qt6ct"
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+    MOZ_ENABLE_WAYLAND "1"
+    DISPLAY ":1"
+    GTK_THEME "adw-gtk3-dark"
+    XDG_MENU_PREFIX "arch-"
+}
+
+// Miscellaneous Settings
+prefer-no-csd
+screenshot-path "~/Pictures/Screenshots/%Y-%m-%d %H-%M-%S.png"
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+// One day I hope my laptop shows this event
+switch-events {
+    lid-close {
+        spawn "systemctl" "suspend"
+    }
+    lid-open {
+        spawn "notify-send" "The laptop lid is open!"
+    }
+}
+
+cursor {
+    xcursor-theme "Bibata-Modern-Classic"
+    xcursor-size 20
+    hide-when-typing
+}

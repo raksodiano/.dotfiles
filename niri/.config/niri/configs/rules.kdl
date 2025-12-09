@@ -1,0 +1,189 @@
+workspace "🌍 WWW" 
+workspace "🖳 TERM"
+workspace "🗒️ JOT"
+workspace "𝓔 EMACS"
+// workspace "5"
+workspace "📂 FILE"
+workspace "📓 NOTE"
+workspace "🎵 SONG"
+workspace "💬 CHAT"
+// workspace "0"
+
+/*
+[[ Layer Rule ]]
+*/
+layer-rule {
+    match namespace="^launcher$"
+    opacity 1.0
+}
+
+layer-rule {
+    //  eww
+    match namespace="gtk-layer-shell"
+    match at-startup=true
+    shadow {
+        on
+        softness 10
+        spread 1
+        offset x=0 y=1
+        draw-behind-window true
+        color "#00000030"
+    }
+}
+
+layer-rule {
+    //  eww
+    match namespace="rofi"
+    match at-startup=true
+    shadow {
+        on
+        softness 10
+        spread 1
+        offset x=0 y=1
+        draw-behind-window true
+        color "#00000030"
+    }
+}
+
+/*
+██╗    ██╗██╗███╗   ██╗██████╗  ██████╗ ██╗    ██╗    ██████╗ ██╗   ██╗██╗     ███████╗███████╗
+██║    ██║██║████╗  ██║██╔══██╗██╔═══██╗██║    ██║    ██╔══██╗██║   ██║██║     ██╔════╝██╔════╝
+██║ █╗ ██║██║██╔██╗ ██║██║  ██║██║   ██║██║ █╗ ██║    ██████╔╝██║   ██║██║     █████╗  ███████╗
+██║███╗██║██║██║╚██╗██║██║  ██║██║   ██║██║███╗██║    ██╔══██╗██║   ██║██║     ██╔══╝  ╚════██║
+╚███╔███╔╝██║██║ ╚████║██████╔╝╚██████╔╝╚███╔███╔╝    ██║  ██║╚██████╔╝███████╗███████╗███████║
+╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝  ╚══╝╚══╝     ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝╚══════╝
+*/
+window-rule {
+    match title="^(file_progress)$"
+    match title="^(confirm)$"
+    match title="^(dialog)$"
+    match title="^(download)$"
+    match title="^(notification )$"
+    match title="^(error)$"
+    match title="^(splash)$"
+    match title="^(nwg-look)$"
+    match title="^(confirmreset)$"
+    match title="^(Delete profile)$"
+    match title="^File Operation Progress$"
+    match title="^Confirm to replace files$"
+    match title="^KDE Connect URL handler$"
+    match title="^(Open File)(.*)$"
+    match title="^(Select a File)(.*)$"
+    match title="^(Choose wallpaper)(.*)$"
+    match title="^(Open Folder)(.*)$"
+    match title="^(Save As)(.*)$"
+    match title="^(Library)(.*)$"
+    match title="^(File Upload)(.*)$"
+    match title="^(hyprland-share-picker)$"
+    match title="^(.*)-Google$"
+    match title="^(.*)System Update$"
+    match title="(.*) - Google (.*) - (.*)"
+    match app-id="^xdm-app$"
+    match app-id="^org.qbittorrent.qBittorrent$"
+    match app-id="^org.pulseaudio.pavucontrol$"
+    match app-id="^net.davidotek.pupgui2$"
+    match app-id="^com.github.th_ch.youtube_music$"
+    open-floating true
+}
+
+window-rule {
+    match app-id="firefox$" title="^Picture-in-Picture$"
+    open-floating true
+}
+
+// Work around WezTerm's initial configure bug
+// by setting an empty default-column-width.
+window-rule {
+    // This regular expression is intentionally made as specific as possible,
+    // since this is the default config, and we want no false positives.
+    // You can get away with just app-id="wezterm" if you want.
+    match app-id="^org\\.wezfurlong\\.wezterm$"
+    default-column-width {
+
+    }
+}
+
+window-rule {
+    // match app-id="com.github.th_ch.youtube_music" 
+    // default-floating-position x=95 y=30 
+}
+
+// Needed for steam, read wiki for more
+window-rule {
+    match app-id="steam" title="^notificationtoasts_\\d+_desktop$"
+    default-floating-position x=10 y=10 relative-to="bottom-right"
+}
+
+window-rule {
+    match app-id="Slack$"
+    match app-id="org.telegram.desktop$"
+    match app-id="pcmanfm$"
+    match app-id="Insomnia"
+    // match app-id="obsidian$"
+    // match app-id="Spotify"
+    // match app-id="Element"
+    match app-id="emacs$"
+    match app-id="steam"
+    match app-id="brave"
+    match app-id="firefox"
+    open-maximized true
+}
+
+window-rule {
+    match app-id="mpv$"
+    open-fullscreen true
+}
+
+window-rule {
+    geometry-corner-radius 18
+    clip-to-geometry true
+}
+
+/*
+[[ App Rules ]]
+*/
+window-rule {
+    draw-border-with-background false
+    match app-id="kitty$"
+    match app-id="com.mitchellh.ghostty$"
+    opacity 0.70
+}
+
+window-rule {
+    match app-id="brave$"
+    match app-id="firefox$"
+    open-on-workspace "🌍 WWW"
+}
+
+window-rule {
+    match app-id="codium$"
+    match app-id="Antigravity$"
+    match app-id="Insomnia$"
+    open-on-workspace "🖳 TERM"
+}
+
+window-rule {
+    match app-id="emacs$"
+    open-on-workspace "𝓔 EMACS"
+}
+
+window-rule {
+    match app-id="^pcmanfm$"
+    open-on-workspace "📂 FILE"
+}
+
+window-rule {
+    // match app-id="^obsidian$"
+    // open-on-workspace "📓 NOTE"
+}
+
+window-rule {
+    // match app-id="Spotify"
+    // open-on-workspace "🎵 SONG"
+}
+
+window-rule {
+    match app-id="^Slack$"
+    match app-id="^org.telegram.desktop$"
+    open-on-workspace "💬 CHAT"
+}
