@@ -48,7 +48,11 @@
 (blink-cursor-mode 1)
 
 ;; Theme
-(setq doom-theme 'doom-nord)
+;; (setq doom-theme 'doom-nord)
+(setq doom-theme 'catppuccin
+      catppuccin-flavor 'mocha)
+
+(load-theme 'catppuccin t)
 
 ;; Maintain terminal transparency in Doom Emacs
 (after! doom-themes
@@ -59,8 +63,8 @@
 (add-to-list 'default-frame-alist '(undecorated . t))
 
 ;; Transparency
-(set-frame-parameter (selected-frame) 'alpha '(96 . 97))
-(add-to-list 'default-frame-alist '(alpha . (96 . 97)))
+(set-frame-parameter (selected-frame) 'alpha '(92 . 95))
+(add-to-list 'default-frame-alist '(alpha . (92 . 95)))
 
 ;; Evil-escape sequence
 (setq-default evil-escape-key-sequence "kj")
@@ -906,6 +910,12 @@
   :config
   (setq markdown-command "pandoc"))
 
+;; -------------------------------
+;; Configuración de kdl
+;; -------------------------------
+
+(use-package! kdl-mode
+  :mode "\\.kdl\\'")
 ;; -------------------------------
 ;; Configuración de company
 ;; -------------------------------
