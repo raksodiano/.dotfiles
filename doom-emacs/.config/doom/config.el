@@ -49,11 +49,11 @@
 
 ;; Theme
 ;; (setq doom-theme 'doom-nord)
-;; (setq doom-theme 'catppuccin
-;;       catppuccin-flavor 'mocha)
+(setq doom-theme 'catppuccin
+      catppuccin-flavor 'mocha)
 
-;; (load-theme 'catppuccin t)
-(load-theme 'noctalia t)
+(load-theme 'catppuccin t)
+;; (load-theme 'noctalia t)
 
 ;; Maintain terminal transparency in Doom Emacs
 (after! doom-themes
