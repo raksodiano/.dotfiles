@@ -71,16 +71,16 @@ ZSH_THEME="gnzh"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-	git
-	git-prompt
-	gitignore
-	gnu-utils
-	sudo
-	zsh-autosuggestions
-	zsh-navigation-tools
-	zsh-history-substring-search
-	zsh-syntax-highlighting
-	zsh-interactive-cd
+    git
+    git-prompt
+    gitignore
+    gnu-utils
+    sudo
+    zsh-autosuggestions
+    zsh-navigation-tools
+    zsh-history-substring-search
+    zsh-syntax-highlighting
+    zsh-interactive-cd
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -113,8 +113,8 @@ source $ZSH/oh-my-zsh.sh
 
 export PATH="$HOME/.volta/bin:$PATH"
 
-alias cat="bat"
-alias ls="eza"
+alias cat='bat --theme="Catppuccin Mocha"'
+alias ls='eza --icons'
 alias l='ls -l'
 alias la='ls -a'
 alias lla='ls -la'
