@@ -1,0 +1,4 @@
+// spawn-at-startup "emacs" "--daemon"
+spawn-at-startup "xwayland-satellite"
+spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+spawn-at-startup "/home/greed/.local/scripts/support-sticky-floating"
