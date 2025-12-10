@@ -46,9 +46,9 @@ binds {
         quit skip-confirmation=true
     }
 
-    Mod+Alt+P {
-        power-off-monitors
-    }
+    // Mod+Alt+P {
+    //     power-off-monitors
+    // }
 
     // Emacs
     Mod+Alt+E {
@@ -73,6 +73,10 @@ binds {
 
     Mod+Alt+I {
         spawn "emacsclient" "-c" "-F" "((name . \"EMACS AI\"))" "--eval" "(progn (delete-other-windows) (switch-to-buffer \"*ellama*\") (select-frame-set-input-focus (selected-frame)) (ellama-chat))"
+    }
+
+    Mod+Alt+P {
+        spawn "emacsclient" "-c" "-F" "((name . \"EMACS PASS\"))" "--eval" "(progn (delete-other-windows) (pass) (delete-other-windows))"
     }
 
     //Binds for application

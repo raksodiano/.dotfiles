@@ -176,6 +176,7 @@ window-rule {
 
 window-rule {
     match title="EMACS NOTES"
+    match title="EMACS PASS"
     open-on-workspace "✎ NOTE"
 }
 
