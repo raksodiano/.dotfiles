@@ -1043,33 +1043,73 @@
 ;; -------------------------------
 
 (add-hook! 'elfeed-search-mode-hook #'elfeed-update)
+(make-directory "~/.elfeed" t)
 
 (after! elfeed
     (setq elfeed-search-filter "@7-days-ago +unread")
   (setq elfeed-org-allow-http-feeds t))
 
-(after! elfeed-org
-  (let ((rss-dir "~/Org/rss/"))
-    (setq rmh-elfeed-org-files (list (concat rss-dir "elfeeds.org")))
-    (unless (file-exists-p (concat rss-dir "elfeeds.org"))
-      (make-directory rss-dir t)
-      (with-temp-file (concat rss-dir "elfeeds.org")
-        (insert "#+TITLE: Gestión de Feeds\n\n")
-        (insert "* root :elfeed:\n")))))
+;; Set org feed file
+(setq rmh-elfeed-org-files '("~/.config/doom/elfeed/elfeeds.org"))
 
-;; (after! elfeed-org
-;;     (setq rmh-elfeed-org-files (list "~/Org/rss/elfeeds.org"))
-;;   ;; Crear estructura inicial si no existe
-;;   (unless (file-exists-p (concat my/rss-base-dir "elfeeds.org"))
-;;     (with-temp-file (concat my/rss-base-dir "elfeeds.org")
-;;       (insert "#+TITLE: Gestión de Feeds\n\n")
-;;       (insert "* root :elfeed:\n"))))
+;; Load elfeed-download package
+(after! elfeed
+  (load! "lisp/elfeed-download")
+  (require 'elfeed-org)
+  (elfeed-org)
+  (elfeed-download-setup))
+
+;; Configure elfeed - consolidate all elfeed config in one after! block
+(after! elfeed
+  (setq elfeed-db-directory "~/.elfeed")
+  (setq elfeed-search-filter "@1-week-ago +unread")
+
+  ;; Set up elfeed-download
+  (elfeed-download-setup)
+
+  ;; Key bindings
+  (map! :map elfeed-search-mode-map
+        :n "d" #'elfeed-download-current-entry
+        :n "O" #'elfeed-search-browse-url))
+
+;; Update hourly
+(run-at-time nil (* 60 60) #'elfeed-update)
+
+;; Load elfeed-download package
+(after! elfeed
+  (load! "lisp/elfeed-download")
+  (require 'elfeed-org)
+  (elfeed-org)
+  (elfeed-download-setup))
+
+;; Elfeed-tube configuration
+(use-package! elfeed-tube
+  :after elfeed
+  :config
+  (elfeed-tube-setup)
+  :bind (:map elfeed-show-mode-map
+         ("F" . elfeed-tube-fetch)
+         ([remap save-buffer] . elfeed-tube-save)
+         :map elfeed-search-mode-map
+         ("F" . elfeed-tube-fetch)
+         ([remap save-buffer] . elfeed-tube-save)))
 
 ;; Lectura de los feeds
 (setq-default fill-column 120)
 (setq visual-fill-column-width 120
       visual-fill-column-center-text t)
 (add-hook 'elfeed-show-mode-hook #'visual-fill-column-mode)
+
+;; Custom keymaps
+(map! :leader
+      ;; Mappings for Elfeed 
+      (:prefix("e" . "Elfeed")
+       :desc "Open elfeed"              "e" #'elfeed
+       :desc "Open ERC"                 "r" #'my/erc-connect
+       :desc "Open EWW Browser"         "w" #'eww
+       :desc "Update elfeed"            "u" #'elfeed-update
+       :desc "MPV watch video"          "v" #'elfeed-tube-mpv
+       ))
 
 ;; -------------------------------
 ;; Configuración de pdfs

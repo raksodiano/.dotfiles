@@ -1,0 +1,207 @@
+#+TITLE: RSS Feeds
+#+STARTUP: content
+#+STARTUP: fold
+
+* Feeds :elfeed:
+** News
+*** [[http://feeds.feedburner.com/zerohedge/feed][Zero Hedge]]
+*** [[https://blog.system76.com/rss.xml][System76 Blog]] :tech:
+*** [[https://blogs.kde.org/categories/this-week-in-kde-apps/index.xml][This Week in KDE Apps]] :tech:
+*** [[https://planet.opensuse.org/global/rss20.xml][openSUSE Planet]] :tech:
+*** [[https://static.fsf.org/fsforg/rss/news.xml][FSF News]] :tech:
+*** [[https://www.debian.org/News/news][Debian News]] :tech:
+
+** Science & Technology :science:tech:
+*** [[https://www.technologyreview.com/feed/][MIT Technology Review]]
+*** [[https://feeds.feedburner.com/IeeeSpectrum][IEEE Spectrum]]
+*** [[https://www.sciencedaily.com/rss/all.xml][Science Daily]]
+*** [[https://www.nature.com/nature.rss][Nature]]
+*** [[https://www.wired.com/feed/rss][Wired]] :tech:
+*** [[https://feeds.arstechnica.com/arstechnica/index][Arstechnica]] :tech:
+*** [[https://www.theregister.com/headlines.atom][The Register]]
+*** [[https://hackernoon.com/feed][Hackernoon]]
+
+** Linux
+*** [[http://feeds.feedburner.com/desdelinuxweb][Desde Linux]]
+*** [[https://0xda.de/blog/index.xml][0xda.de]]
+*** [[https://9to5linux.com/feed/atom][9to5Linux]]
+*** [[https://battlepenguin.com/feed.xml][BattlePenguin]]
+*** [[https://blog.ctms.me/index.xml][Dom Corriveau]]
+*** [[https://computer.rip/rss.xml][Computers Are Bad]]
+*** [[https://itsfoss.com/feed/][It's FOSS]]
+*** [[https://lwn.net/headlines/rss][LWN.net]] :linux:
+*** [[https://raphlinus.github.io/feed.xml][RaphLinus]]
+*** [[https://susam.net/feed.xml][Susam.net]]
+*** [[https://www.lifeintech.com/feed.xml][LifeinTech]]
+*** [[https://www.linuxjournal.com/node/feed][Linux Journal]] :linux:
+*** [[https://www.phoronix.com/rss.php][Phoronix]]
+*** [[https://xn--gckvb8fzb.com/index.xml][xn--gckvb8fzb]] :linux:
+
+** Emacs
+*** [[https://sachachua.com/blog/category/emacs/feed/][Sacha Chua]] :emacs:
+*** [[https://irreal.org/blog/?feed=rss2][Irreal]] :emacs:
+*** [[https://systemcrafters.net/rss/content.xml][System Crafters]] :emacs:
+*** [[https://protesilaos.com/codelog.xml][Protesilaos Stavrou]] :emacs:
+*** [[https://with-emacs.com/rss.xml][With Emacs]] :emacs:
+*** [[https://emacsredux.com/atom.xml][Emacs Redux]] :emacs:
+
+** Programming
+*** [[https://jvns.ca/atom.xml][Julia Evans]]
+*** [[https://blog.pragmaticengineer.com/rss/][The Pragmatic Engineer]]
+*** [[https://martinfowler.com/feed.atom][Martin Fowler]]
+*** [[https://www.joelonsoftware.com/feed/][Joel on Software]]
+*** [[https://eli.thegreenplace.net/feeds/all.atom.xml][Eli Bendersky]]
+
+** Privacy and Security
+*** [[https://krebsonsecurity.com/feed/][Krebs on Security]]
+*** [[https://www.schneier.com/feed/atom/][Schneier on Security]]
+*** [[https://portswigger.net/daily-swig/rss][The Daily Swig]]
+*** [[https://www.darkreading.com/rss.xml][Dark Reading]]
+*** [[https://threatpost.com/feed/][ThreatPost]]
+*** [[https://www.eff.org/rss/updates.xml][EFF]]
+*** [[https://www.privacytools.io/feed.xml][Privacy Tools]]
+*** [[https://www.privateinternetaccess.com/blog/feed/][Private Internet Access]]
+
+** Blogs :blog:
+*** [[http://flower.codes/feed.xml][Flower Codes]]
+*** [[http://www.geero.net/feed][Geero]]
+*** [[https://100r.co/links/rss.xml][100r]]
+*** [[https://12bytes.org/feed.xml][12bytes]]
+*** [[https://adactio.com/rss/][Jeremy Keith]] :tech:indieweb:
+*** [[https://ameyama.com/blog/rss.xml][Ameyama]]
+*** [[https://ar.al/index.xml][Aral Balkan]]
+*** [[https://astralcodexten.substack.com/feed][Astral Codex Ten]] :meta:
+*** [[https://blog-un-dev-mas-7f0869.gitlab.io/index.xml][Un Dev Más]]
+*** [[https://blog.burntsushi.net/index.xml][BurntSushi]]
+*** [[https://blog.jim-nielsen.com/feed.xml][Jim Nielsen]]
+*** [[https://danluu.com/atom.xml][Dan Luu]] :tech:
+*** [[https://digdeeper.neocities.org/atom.xml][Dig Deeper]] :tech:security:
+*** [[https://drewdevault.com/blog/index.xml][Drew DeVault]] :tech:
+*** [[https://feedpress.me/thetechnium][The Technium]]
+*** [[https://feeds.feedburner.com/collabfund][Collab Fund]]
+*** [[https://fs.blog/feed/][Farnam Street]] :science:
+*** [[https://hamatti.org/feed/feed.xml][Juhis]] :tech:
+*** [[https://her.st/rss.xml][her.st]] :tech:security:
+*** [[https://icyphox.sh/blog/feed.xml][Icyphox]] :tech:
+*** [[https://ijver.me/en/index.xml][Ijver]]
+*** [[https://increment.com/feed.xml][Increment]]
+*** [[https://itsfoss.com/rss/][It's FOSS]]
+*** [[https://joshblais.com/index.xml][Joshua Blais]]
+*** [[https://kevquirk.com/feed][KevQuirk]] :tech:
+*** [[https://levels.io/rss/][Levels.io]]
+*** [[https://longest.voyage/index.xml][Longest Voyage]]
+*** [[https://lukesmith.xyz/rss.xml][Luke Smith]] :tech:meta:
+*** [[https://macwright.com/rss.xml][Tom MacWright]]
+*** [[https://maggieappleton.com/rss.xml][Maggie Appleton]]
+*** [[https://marginalrevolution.com/feed][Marginal Revolution]]
+*** [[https://moxie.org/rss.xml][Moxie Marlinspike]]
+*** [[https://mrshll.com/feed.rss][Mrshll]]
+*** [[https://notrelated.xyz/rss][Not Related]] :meta:
+*** [[https://ounapuu.ee/index.xml][Ounapuu]]
+*** [[https://palomakop.tv/rss.xml][Palomakop]]
+*** [[https://paul.graham/articles.rss][Paul Graham]]
+*** [[https://pavodive.github.io/es/index.xml][Recordatorios Para Mi Yo Futuro]]
+*** [[https://randomgeekery.org/index.xml][Random Geekery]]
+*** [[https://runxiyu.org/blog/index.xml][Runxiyu]]
+*** [[https://serhack.me/index.xml][Serhack]]
+*** [[https://sive.rs/en.atom][Derek Sivers]] :tech:
+*** [[https://sizeof.cat/index.xml][Sizeof Cat]] :tech:
+*** [[https://solar.lowtechmagazine.com/feeds/all-en.atom.xml][Low Tech Magazine]] :tech:minimalism:
+*** [[https://tendigits.space/feed.xml][Ten Digits]]
+*** [[https://thelinuxcast.org/index.xml][The Linux Cast Blog]]
+*** [[https://thelinuxexp.com/feed.xml][The Linux Experiment Blog]]
+*** [[https://thomasorus.com/feed.xml][Thomasorus]]
+*** [[https://tynan.com/feed/][Tynan]]
+*** [[https://unixdigest.com/feed.rss][Unix Digest]] :tech:
+*** [[https://waitbutwhy.com/feed][Wait But Why]]
+*** [[https://wiki.xxiivv.com/links/rss.xml][XXIIVV]]
+*** [[https://wolfmd.me/feed.xml][Wolf MD]]
+*** [[https://writings.stephenwolfram.com/feed/][Stephen Wolfram]]
+*** [[https://wrongthink.link/posts/index.xml][Wrong Think]] :tech:security:
+*** [[https://www.gwern.net/atom.xml][Gwern]]
+*** [[https://www.lesswrong.com/feed.xml?view=curated-rss][Less Wrong]]
+*** [[https://www.madewithtea.com/rss.xml][Made with Tea]]
+*** [[https://www.muylinux.com/feed/][MuyLinux]]
+*** [[https://www.paritybit.ca/feed.xml][Parity Bit]]
+*** [[https://www.ribbonfarm.com/feed/][Ribbonfarm]]
+*** [[https://www.rousette.org.uk/index.xml][Rousette]]
+*** [[https://www.ssp.sh/index.xml][Simon Späti]]
+*** [[https://xenodium.com/rss][Xenodium]]
+
+** YouTube :youtube:
+*** Technology :tech:
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC04nROIJrY22Gl2aFqKcdqQ][Sylvan Franklin]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC0uTPqBCFIpZxlz_Lv1tk_g][Protesilaos]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC1tV5SjRyejRGeHAaMGYSsQ][Joshua Blais]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC2WHjPDvbE6O328n17ZGcfg][Forrest Knight]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC2eYFnH61tmytImy1mTYvhA][Luke Smith]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC3yDP9DLJI7rPqPovQaOJMg][GioCode]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC6biysICWOJ-C3P4Tyeggzg][Low Level]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC7YOGHUfC1Tb6E4pudI9STA][MentalOutlaw]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC8ENHE5xdFSwx71u3fDH5Xw][ThePrimegean]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC9-y-6csu5WGm29I7JiwpnA][Computerphile]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC9x0AN7BWHpCDHSm9NiJFJQ][Network Chuck]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCBKM3HATRILZyG9jGNJKGXQ][Software Engineering Daily]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCC_NjLEb2Sley94py4vSYTA][Andreas Vidoza]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCEEVcDuBRDiwxfXAgQjLGug][Dreams of Autonomy]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCFFLP0dKesrKWccYscdAr9A][The urban pinguin]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCOk-gHyjcWZNj3Br4oxwh0A][Techno Tim]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCRYOj4DmyxhBVrdvbsUwmAA][optimum]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCTjPBE9BNsmv44wgxWEy2zw][Will Kwan]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCUyeluBRhGPCW4rPe_UvBZQ][ThePrimeTime]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCVls1GmFKf6WlTraIb_IaJg][DistroTube]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCWQaM7SpSECp9FELz-cHzuQ][Dreams of Code]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCWr0mx597DnSGLFk1WfvSkQ][Hallden]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCX9NJ471o7Wie1DQe94RVIg][Fazt]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCYeiozh-4QwuC1sjgCmB92w][Devops Toolbox]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCZ1y-iH9Hsp83vh6graA7Zw][Josh Medeski]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCZXW8E1__d5tZb-wLFOt8TQ][Bog]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCa-lsDvCuyK6ZmkRLDlnzsg][LinuxChad]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCbDmEdLs-SB3FjrDFQJ4TDg][Reysu]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCcAy1o8VUCkdowxRYbc0XRw][Sebi's random tech]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCfzlCWGWYyIQ0aLC5w48gBQ][sentdex]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCg6gPGh8HU2U01vaFCAsvmQ][Chris Titus Tech]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCgErca6xmDIcaHDnVghHk6w][Nos gusta Linux]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCgTNupxATBfWmfehv21ym-g][Null Byte]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCl2mFZoRqjw_ELax4Yisf6w][Louis Rossmann]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UClb90NQQcskPUGDIXsQEz5Q][Developedbyed]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UClb90NQQcskPUGDIXsQEz5Q][Developedbyed]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCngn7SVujlvskHRvRKc1cTw][Bugswriter]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCoryWpk4QVYKFCJul9KBdyw][Switched to Linux]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCovagaiL6pBYWfvThaXVniA][Samuel Nam]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCr613nJgA50o8DUUT00qHvw][Wulff Den]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCrBzBOMcUVV8ryyAU_c6P5g][Pelado Nerd]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCrUL8K81R4VBzm-KOYwrcxQ][Engineerman]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCrqM0Ym_NbK1fqeQG2VIohg][Tsoding]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCsBjURrPoezykLs9EqgamOA][FireShip]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCsBjURrPoezykLs9EqgamOA][Fireship]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCsnGwSIHyoYN0kiINAGUKxg][Wolfgang]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCwHwDuNd9lCdA7chyyquDXw][BreadOnPenguins]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCwgKmJM4ZJQRJ-U5NjvR2dg][George Hotz]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCxsYJ_S4jVayHx828AtQjig][Nathan Laundry]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCylGUf9BvQooEFjgdNudoQg][The Linux Cast]]
+
+*** Cooking :cooking:
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC5qRAYQmCLx8hFGIiTWSQvA][Aaron and Claire]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCPzFLpOblZEaIx2lpym1l1A][Alex]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCMb0O2CdPBNi-QqPk5T3gsQ][James Hoffman]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCDq5v10l4wkV5-ZBIJJFbzQ][Ethan Chelbowski]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC9UVsA7HAL9OQekyxmu_Ctg][The Weedy Garden]]
+
+*** Chess :chess:
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCvXxdkt1d8Uu08NAQP2IUTw][chessbrah]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCQHX6ViZmPsWiYSFAyS0a3Q][gothamchess]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCweCc7bSMX5J4jEH7HFImng][GMHikaru]]
+
+*** Fitness :fitness:
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC68TLK0mAEzUyHx5x5k-S1Q][Jeff Nippard]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC_7lEuEKvFt63jtvZYwlHMQ][Eugene Teo]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCzGLDaTu81nJDtWK10MniGg][Mike Thurston]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCoR7CHkMETs3ByOv74OAbFw][More plates more dates]]
+
+** PeerTube :peertube:
+*** [[https://fediverse.tv/feeds/videos.xml?videoChannelId=45][Gnuxero Rikylinux]]
+*** [[https://video.hardlimit.com/feeds/videos.xml?videoChannelId=8840][Houman]]
+*** [[https://tilvids.com/feeds/videos.xml?videoChannelId=4776][Linux User Space]]
+*** [[https://tilvids.com/feeds/videos.xml?videoChannelId=47][The Linux Experiment]]
+*** [[https://tilvids.com/feeds/videos.xml?videoChannelId=7933][Veronica Explains]]
