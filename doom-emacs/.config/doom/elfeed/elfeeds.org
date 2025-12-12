@@ -7,7 +7,6 @@
 *** [[http://feeds.feedburner.com/zerohedge/feed][Zero Hedge]]
 *** [[https://blog.system76.com/rss.xml][System76 Blog]] :tech:
 *** [[https://blogs.kde.org/categories/this-week-in-kde-apps/index.xml][This Week in KDE Apps]] :tech:
-*** [[https://planet.opensuse.org/global/rss20.xml][openSUSE Planet]] :tech:
 *** [[https://static.fsf.org/fsforg/rss/news.xml][FSF News]] :tech:
 *** [[https://www.debian.org/News/news][Debian News]] :tech:
 
@@ -15,10 +14,6 @@
 *** [[https://www.technologyreview.com/feed/][MIT Technology Review]]
 *** [[https://feeds.feedburner.com/IeeeSpectrum][IEEE Spectrum]]
 *** [[https://www.sciencedaily.com/rss/all.xml][Science Daily]]
-*** [[https://www.nature.com/nature.rss][Nature]]
-*** [[https://www.wired.com/feed/rss][Wired]] :tech:
-*** [[https://feeds.arstechnica.com/arstechnica/index][Arstechnica]] :tech:
-*** [[https://www.theregister.com/headlines.atom][The Register]]
 *** [[https://hackernoon.com/feed][Hackernoon]]
 
 ** Linux
@@ -30,11 +25,12 @@
 *** [[https://computer.rip/rss.xml][Computers Are Bad]]
 *** [[https://itsfoss.com/feed/][It's FOSS]]
 *** [[https://lwn.net/headlines/rss][LWN.net]] :linux:
+*** [[https://nixos.org/blog/newsletters-rss.xml][NixOS Newsletter]]
+*** [[https://nixos.org/blog/announcements-rss.xml][NixOS Announcements]]
 *** [[https://raphlinus.github.io/feed.xml][RaphLinus]]
 *** [[https://susam.net/feed.xml][Susam.net]]
 *** [[https://www.lifeintech.com/feed.xml][LifeinTech]]
 *** [[https://www.linuxjournal.com/node/feed][Linux Journal]] :linux:
-*** [[https://www.phoronix.com/rss.php][Phoronix]]
 *** [[https://xn--gckvb8fzb.com/index.xml][xn--gckvb8fzb]] :linux:
 
 ** Emacs
@@ -56,7 +52,6 @@
 *** [[https://krebsonsecurity.com/feed/][Krebs on Security]]
 *** [[https://www.schneier.com/feed/atom/][Schneier on Security]]
 *** [[https://portswigger.net/daily-swig/rss][The Daily Swig]]
-*** [[https://www.darkreading.com/rss.xml][Dark Reading]]
 *** [[https://threatpost.com/feed/][ThreatPost]]
 *** [[https://www.eff.org/rss/updates.xml][EFF]]
 *** [[https://www.privacytools.io/feed.xml][Privacy Tools]]
@@ -85,7 +80,6 @@
 *** [[https://icyphox.sh/blog/feed.xml][Icyphox]] :tech:
 *** [[https://ijver.me/en/index.xml][Ijver]]
 *** [[https://increment.com/feed.xml][Increment]]
-*** [[https://itsfoss.com/rss/][It's FOSS]]
 *** [[https://joshblais.com/index.xml][Joshua Blais]]
 *** [[https://kevquirk.com/feed][KevQuirk]] :tech:
 *** [[https://levels.io/rss/][Levels.io]]
