@@ -98,7 +98,7 @@
        lookup ; navigate your code and its documentation
        ;; (lsp +eglot)                            ; M-x vscode
        (lsp +peek +ui)                            ; M-x vscode
-       ;; (magit +blame +forge)                                  ; a git porcelain for Emacs
+       (magit +blame +forge)                                  ; a git porcelain for Emacs
        magit                                   ; a git porcelain for Emacs
        make                                   ; run make tasks from Emacs
        pass                                   ; password manager for nerds
@@ -152,7 +152,7 @@
        ;; lua               ; one-based indices? one-based indices
        (markdown +tree-sitter) ; writing docs for people to ignore
        ;; nim               ; python + lisp at the speed of c
-       nix               ; I hereby declare "nix geht mehr!"
+       (nix +tree-sitter +lsp) ; I hereby declare "nix geht mehr!"
        ;; ocaml             ; an objective camel
        (org +latex
             +habit
