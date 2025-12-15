@@ -1094,6 +1094,8 @@
          ("F" . elfeed-tube-fetch)
          ([remap save-buffer] . elfeed-tube-save)))
 
+(setq elfeed-tube-mpv-mpv-options '("--force-window=yes"))
+
 ;; Lectura de los feeds
 (setq-default fill-column 120)
 (setq visual-fill-column-width 120
