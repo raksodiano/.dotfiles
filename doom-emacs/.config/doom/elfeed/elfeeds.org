@@ -36,9 +36,7 @@
 ** Emacs
 *** [[https://sachachua.com/blog/category/emacs/feed/][Sacha Chua]] :emacs:
 *** [[https://irreal.org/blog/?feed=rss2][Irreal]] :emacs:
-*** [[https://systemcrafters.net/rss/content.xml][System Crafters]] :emacs:
 *** [[https://protesilaos.com/codelog.xml][Protesilaos Stavrou]] :emacs:
-*** [[https://with-emacs.com/rss.xml][With Emacs]] :emacs:
 *** [[https://emacsredux.com/atom.xml][Emacs Redux]] :emacs:
 
 ** Programming
@@ -51,11 +49,8 @@
 ** Privacy and Security
 *** [[https://krebsonsecurity.com/feed/][Krebs on Security]]
 *** [[https://www.schneier.com/feed/atom/][Schneier on Security]]
-*** [[https://portswigger.net/daily-swig/rss][The Daily Swig]]
 *** [[https://threatpost.com/feed/][ThreatPost]]
 *** [[https://www.eff.org/rss/updates.xml][EFF]]
-*** [[https://www.privacytools.io/feed.xml][Privacy Tools]]
-*** [[https://www.privateinternetaccess.com/blog/feed/][Private Internet Access]]
 
 ** Blogs :blog:
 *** [[http://flower.codes/feed.xml][Flower Codes]]
@@ -63,7 +58,6 @@
 *** [[https://100r.co/links/rss.xml][100r]]
 *** [[https://12bytes.org/feed.xml][12bytes]]
 *** [[https://adactio.com/rss/][Jeremy Keith]] :tech:indieweb:
-*** [[https://ameyama.com/blog/rss.xml][Ameyama]]
 *** [[https://ar.al/index.xml][Aral Balkan]]
 *** [[https://astralcodexten.substack.com/feed][Astral Codex Ten]] :meta:
 *** [[https://blog-un-dev-mas-7f0869.gitlab.io/index.xml][Un Dev Más]]
@@ -88,12 +82,10 @@
 *** [[https://macwright.com/rss.xml][Tom MacWright]]
 *** [[https://maggieappleton.com/rss.xml][Maggie Appleton]]
 *** [[https://marginalrevolution.com/feed][Marginal Revolution]]
-*** [[https://moxie.org/rss.xml][Moxie Marlinspike]]
 *** [[https://mrshll.com/feed.rss][Mrshll]]
 *** [[https://notrelated.xyz/rss][Not Related]] :meta:
 *** [[https://ounapuu.ee/index.xml][Ounapuu]]
 *** [[https://palomakop.tv/rss.xml][Palomakop]]
-*** [[https://paul.graham/articles.rss][Paul Graham]]
 *** [[https://pavodive.github.io/es/index.xml][Recordatorios Para Mi Yo Futuro]]
 *** [[https://randomgeekery.org/index.xml][Random Geekery]]
 *** [[https://runxiyu.org/blog/index.xml][Runxiyu]]
@@ -108,11 +100,9 @@
 *** [[https://tynan.com/feed/][Tynan]]
 *** [[https://unixdigest.com/feed.rss][Unix Digest]] :tech:
 *** [[https://waitbutwhy.com/feed][Wait But Why]]
-*** [[https://wiki.xxiivv.com/links/rss.xml][XXIIVV]]
 *** [[https://wolfmd.me/feed.xml][Wolf MD]]
 *** [[https://writings.stephenwolfram.com/feed/][Stephen Wolfram]]
 *** [[https://wrongthink.link/posts/index.xml][Wrong Think]] :tech:security:
-*** [[https://www.gwern.net/atom.xml][Gwern]]
 *** [[https://www.lesswrong.com/feed.xml?view=curated-rss][Less Wrong]]
 *** [[https://www.madewithtea.com/rss.xml][Made with Tea]]
 *** [[https://www.muylinux.com/feed/][MuyLinux]]
