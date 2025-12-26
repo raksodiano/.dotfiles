@@ -62,6 +62,7 @@
 *** [[https://astralcodexten.substack.com/feed][Astral Codex Ten]] :meta:
 *** [[https://blog-un-dev-mas-7f0869.gitlab.io/index.xml][Un Dev Más]]
 *** [[https://blog.burntsushi.net/index.xml][BurntSushi]]
+*** [[https://codedude.xyz/feed.xml][CodeDude]]
 *** [[https://blog.jim-nielsen.com/feed.xml][Jim Nielsen]]
 *** [[https://danluu.com/atom.xml][Dan Luu]] :tech:
 *** [[https://digdeeper.neocities.org/atom.xml][Dig Deeper]] :tech:security:
