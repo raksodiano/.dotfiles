@@ -459,7 +459,7 @@
         "fontFixed": "JetBrainsMono Nerd Font Mono",
         "fontFixedScale": 1,
         "panelBackgroundOpacity": 0.4,
-        "panelsAttachedToBar": false,
+        "panelsAttachedToBar": true,
         "settingsPanelMode": "centered",
         "tooltipsEnabled": true
     },
