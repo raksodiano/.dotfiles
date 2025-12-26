@@ -78,3 +78,93 @@ You can now install any configurations you wish to copy using GNU Stow:
   # Uninstall the htop config
   stow -D htop
   #+END_SRC
+
+* Installation Script
+
+** Usage
+
+#+begin_src bash
+# Default installation (uses paru as AUR helper)
+./install.sh
+
+# Use paru explicitly
+./install.sh --paru
+
+# Use yay as AUR helper
+./install.sh --yay
+
+# Alternative syntax
+./install.sh --aur-helper paru
+./install.sh --aur-helper yay
+#+end_src
+
+** Script Structure
+
+*** =install.sh=
+
+Main installation script that:
+
+- Verifies the system is Arch Linux
+- Updates the system with =pacman -Syu=
+- Installs Git if not present
+- Installs the selected AUR helper (paru or yay)
+- Installs all packages from =packages.conf=
+- Enables system and user services
+- Configures all dotfiles using GNU Stow
+
+*** =scripts/packages.conf=
+
+Configuration file containing all packages organized in arrays:
+
+| Array           | Description                              |
+|-----------------+------------------------------------------|
+| =SYSTEM_UTILS=  | System monitoring, file utilities, etc.  |
+| =DEV_TOOLS=     | Editors, compilers, languages, LaTeX     |
+| =VIRTUALIZATION=| Docker, QEMU, libvirt, virt-manager      |
+| =MAINTENANCE=   | System maintenance tools                 |
+| =DESKTOP=       | Window manager, terminals, browsers      |
+| =OFFICE=        | Office suite                             |
+| =MEDIA=         | Media players and tools                  |
+| =CODECS=        | Audio/video codecs                       |
+| =FONTS=         | Nerd Fonts and other fonts               |
+| =SERVICES=      | System services (systemd)                |
+| =SERVICES_USER= | User services (systemd --user)           |
+
+*** =scripts/dotfiles/default.sh=
+
+Functions to configure each dotfile using GNU Stow:
+
+| Function              | Dotfile               |
+|-----------------------+-----------------------|
+| =install_alacritty=   | Alacritty terminal    |
+| =install_kitty=       | Kitty terminal        |
+| =install_zsh=         | Zsh + Oh My Zsh       |
+| =install_starship=    | Starship prompt       |
+| =install_tmux=        | Tmux multiplexer      |
+| =install_doom=        | Doom Emacs            |
+| =install_htop=        | htop config           |
+| =install_bat=         | bat config            |
+| =install_fastfetch=   | Fastfetch config      |
+| =install_paru=        | Paru AUR helper       |
+| =install_rmpc=        | rmpc MPD client       |
+| =install_niri=        | Niri compositor       |
+| =install_noctalia=    | Noctalia Shell        |
+| =install_all_dotfiles=| Install all at once   |
+
+** Available Dotfiles
+
+| Directory       | Description            |
+|-----------------+------------------------|
+| =alacritty/=    | Alacritty terminal     |
+| =bat/=          | bat (cat replacement)  |
+| =doom/=         | Doom Emacs config      |
+| =fastfetch/=    | System info fetcher    |
+| =htop/=         | Process viewer         |
+| =kitty/=        | Kitty terminal         |
+| =niri/=         | Niri Wayland compositor|
+| =noctalia/=     | Noctalia Shell         |
+| =paru/=         | Paru AUR helper        |
+| =rmpc/=         | MPD client             |
+| =starship/=     | Cross-shell prompt     |
+| =tmux/=         | Terminal multiplexer   |
+| =zsh/=          | Zsh shell config       |
