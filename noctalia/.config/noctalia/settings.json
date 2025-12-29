@@ -415,7 +415,7 @@
     "settingsVersion": 32,
     "systemMonitor": {
         "cpuCriticalThreshold": 80,
-        "cpuPollingInterval": 3000,
+        "cpuPollingInterval": 2750,
         "cpuWarningThreshold": 80,
         "criticalColor": "",
         "diskCriticalThreshold": 90,
@@ -469,7 +469,7 @@
         "fontDefaultScale": 1,
         "fontFixed": "JetBrainsMono Nerd Font Mono",
         "fontFixedScale": 1,
-        "panelBackgroundOpacity": 0.4,
+        "panelBackgroundOpacity": 0.8500000000000001,
         "panelsAttachedToBar": true,
         "settingsPanelMode": "centered",
         "tooltipsEnabled": true,
