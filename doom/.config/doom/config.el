@@ -35,7 +35,7 @@
 (remove-hook 'doom-after-init-hook #'doom-load-packages-incrementally-h)
 
 ;; Start emacs maximized
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Setup custom splashscreen
@@ -49,10 +49,11 @@
 
 ;; Theme
 ;; (setq doom-theme 'doom-nord)
-(setq doom-theme 'catppuccin
-      catppuccin-flavor 'mocha)
+(setq doom-theme 'doom-gruvbox)
+;; (setq doom-theme 'catppuccin
+;;       catppuccin-flavor 'mocha)
 
-(load-theme 'catppuccin t)
+;; (load-theme 'catppuccin t)
 ;; (load-theme 'noctalia t)
 
 ;; Maintain terminal transparency in Doom Emacs
@@ -64,8 +65,8 @@
 (add-to-list 'default-frame-alist '(undecorated . t))
 
 ;; Transparency
-(set-frame-parameter (selected-frame) 'alpha '(92 . 95))
-(add-to-list 'default-frame-alist '(alpha . (92 . 95)))
+(set-frame-parameter (selected-frame) 'alpha '(94 . 97))
+(add-to-list 'default-frame-alist '(alpha . (94 . 97)))
 
 ;; Evil-escape sequence
 (setq-default evil-escape-key-sequence "kj")
@@ -83,6 +84,10 @@
 (add-hook 'prog-mode-hook #'hl-line-mode)
 
 ;; Line model and fonts
+(setq doom-font (font-spec :family "GeistMono Nerd Font" :size 15)
+      doom-variable-pitch-font (font-spec :family "Alegreya" :size 18)
+      doom-big-font (font-spec :family "GeistMono Nerd Font" :size 22))
+
 (custom-set-faces!
     '(mode-line :height 90 :inherit 'variable-pitch)
     '(mode-line-inactive :height 80 :inherit 'variable-pitch))
