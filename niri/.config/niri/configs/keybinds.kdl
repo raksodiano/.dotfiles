@@ -355,83 +355,83 @@ binds {
 
     //Workspace binds
     Mod+1 {
-        focus-workspace "🌍 WWW"
+        focus-workspace "I"
     }
 
     Mod+2 {
-        focus-workspace "🖳 TERM"
+        focus-workspace "II"
     }
     
     Mod+3 {
-        focus-workspace "🗒️ JOT"
+        focus-workspace "III"
     }
 
     Mod+4 {
-        focus-workspace "𝓔 EMACS"
+        focus-workspace "IV"
     }
 
     Mod+5 {
-        focus-workspace "📦 MISC"
+        focus-workspace "V"
     }
 
     Mod+6 {
-        focus-workspace "📂 FILE"
+        focus-workspace "VI"
     }
 
     Mod+7 {
-        focus-workspace "✎ NOTE"
+        focus-workspace "VII"
     }
 
     Mod+8 {
-        focus-workspace "♫ SONG"
+        focus-workspace "VIII"
     }
 
     Mod+9 {
-        focus-workspace "💬 CHAT"
+        focus-workspace "IX"
     }
 
     Mod+0 {
-        focus-workspace "🎮 GAME"
+        focus-workspace "X"
     }
 
     Mod+Shift+1 {
-        move-column-to-workspace "🌍 WWW"
+        move-column-to-workspace "I"
     }
 
     Mod+Shift+2 {
-        move-column-to-workspace "🖳 TERM"
+        move-column-to-workspace "II"
     }
 
     Mod+Shift+3 {
-        move-column-to-workspace "🗒️ JOT"
+        move-column-to-workspace "III"
     }
 
     Mod+Shift+4 {
-        move-column-to-workspace "𝓔 EMACS"
+        move-column-to-workspace "IV"
     }
 
     Mod+Shift+5 {
-        move-column-to-workspace "📦 MISC"
+        move-column-to-workspace "V"
     }
 
     Mod+Shift+6 {
-        move-column-to-workspace "📂 FILE"
+        move-column-to-workspace "VI"
     }
 
     Mod+Shift+7 {
-        move-column-to-workspace "✎ NOTE"
+        move-column-to-workspace "VII"
     }
 
     Mod+Shift+8 {
-        move-column-to-workspace "♫ SONG"
+        move-column-to-workspace "VIII"
     }
 
     Mod+Shift+9 {
-        move-column-to-workspace "💬 CHAT"
+        move-column-to-workspace "IX"
     }
 
     Mod+Shift+0 {
-        move-column-to-workspace "🎮 GAME"
+        move-column-to-workspace "X"
     }
 
     // The following binds move the focused window in and out of a column.

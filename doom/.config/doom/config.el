@@ -173,14 +173,6 @@
 ;; Mostrar el entorno de lsp y checker si están activos
 (setq doom-modeline-lsp t)
 
-;; Mostrar hora
-(setq display-time-format "%H:%M"
-      display-time-default-load-average nil)
-(display-time-mode 1)
-
-;; Mostrar batería
-(display-battery-mode 1)
-
 ;; Mostrar el workspace
 (setq doom-modeline-workspace-name t)
 
