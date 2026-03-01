@@ -2,11 +2,6 @@
 ;;; $DOOMDIR/packages.el
 
 ;; -----------------------------------
-;; Theme
-;; -----------------------------------
-(package! catppuccin-theme)
-
-;; -----------------------------------
 ;; Editing and utilities
 ;; -----------------------------------
 (package! dotenv-mode)
@@ -84,3 +79,9 @@
 ;; -----------------------------------
 (package! markdown-soma)
 (package! kdl-mode)
+
+;; -----------------------------------
+;; Javascript / Typescript
+;; -----------------------------------
+;; (package! astro-ts-mode)
+
