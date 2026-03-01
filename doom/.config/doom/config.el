@@ -48,13 +48,8 @@
 (blink-cursor-mode 1)
 
 ;; Theme
-;; (setq doom-theme 'doom-nord)
-(setq doom-theme 'doom-gruvbox)
-;; (setq doom-theme 'catppuccin
-;;       catppuccin-flavor 'mocha)
-
-;; (load-theme 'catppuccin t)
-;; (load-theme 'noctalia t)
+(setq doom-theme 'doom-nord)
+;; (setq doom-theme 'doom-gruvbox)
 
 ;; Maintain terminal transparency in Doom Emacs
 (after! doom-themes
@@ -102,7 +97,7 @@
 
 (centaur-tabs-mode t)
 
-;; Folding para lenguajes sin soporte nativo
+;; Folding for languages without native support
 (add-hook 'sh-mode-hook #'outline-minor-mode)
 (add-hook 'markdown-mode-hook #'outline-minor-mode)
 (setq hs-isearch-open t)
@@ -163,37 +158,37 @@
 ;; Show icons
 (setq doom-modeline-icon t)
 
-;; Mostrar el nombre del proyecto y del archivo
+;; Show project and file name
 ;; (setq doom-modeline-project-detection 'auto)
 (setq doom-modeline-buffer-file-name-style 'truncate-with-project)
 
-;; Mostrar posición en el buffer
+;; Show position in buffer
 (setq doom-modeline-percent-position t)
 
-;; Mostrar el entorno de lsp y checker si están activos
+;; Show lsp and checker environment if active
 (setq doom-modeline-lsp t)
 
-;; Mostrar el workspace
+;; Show workspace
 (setq doom-modeline-workspace-name t)
 
 ;; -------------------------------
-;; Configuración de diccionarios
+;; Dictionaries configuration
 ;; -------------------------------
 
-;; Función para cambiar el diccionario de Flyspell
+;; Function to change Flyspell dictionary
 (defun my/change-ispell-dictionary (lang)
-  "Cambia el diccionario de Flyspell a LANG."
-  (interactive "sIdioma (por ejemplo, es_ES o en_US): ")
+  "Change Flyspell dictionary to LANG."
+  (interactive "sLanguage (e.g., es_ES or en_US): ")
   (setq ispell-dictionary lang)
   (ispell-change-dictionary lang)
-  (message "Diccionario cambiado a %s" lang))
+  (message "Dictionary changed to %s" lang))
 
-;; Añadir un atajo de teclado para cambiar de diccionario fácilmente
+;; Add keyboard shortcut to easily change dictionary
 (map! :leader
-      :desc "Cambiar diccionario Flyspell" "l d" #'my/change-ispell-dictionary)
+      :desc "Change Flyspell dictionary" "l d" #'my/change-ispell-dictionary)
 
 ;; -------------------------------
-;; Configuración de directorios
+;; Directories configuration
 ;; -------------------------------
 
 (setq my/directories '("~/Org"
@@ -224,7 +219,7 @@
     (make-directory directory t)))
 
 ;; -------------------------------
-;; Configuración de lisp
+;; Lisp configuration
 ;; -------------------------------
 
 (setq inferior-lisp-program "sbcl")
@@ -241,7 +236,7 @@
 (setq lisp-indent-function 'common-lisp-indent-function)
 
 ;; -------------------------------
-;; Configuración de escritura
+;; Writing configuration
 ;; -------------------------------
 
 (use-package! lorem-ipsum
@@ -259,7 +254,7 @@
     (setq flyspell-lazy-idle-seconds 0.3))
 
 ;; -------------------------------
-;; Configuración de Modo Zen
+;; Zen Mode configuration
 ;; -------------------------------
 
 ;; Setup writeroom width and appearance
@@ -393,7 +388,7 @@
   (advice-add 'end-of-buffer :after #'ellama-enable-scroll))
 
 ;; -------------------------------
-;; Configuración de LSP para todos los lenguajes
+;; LSP configuration for all languages
 ;; -------------------------------
 
 ;; LSP Performance optimizations and settings
@@ -427,15 +422,15 @@
         lsp-ui-peek-enable t))
 
 ;; LSP general
-(setq lsp-ui-sideline-enable t                ; Información en barra lateral
-      lsp-headerline-breadcrumb-enable t      ; Ruta del archivo en headerline
+(setq lsp-ui-sideline-enable t                ; Information in sidebar
+      lsp-headerline-breadcrumb-enable t      ; File path in headerline
       company-minimum-prefix-length 1
       company-idle-delay 0.1)
 
-;; Activar auto-completado y acciones de código
-(setq lsp-enable-suggest-server-download t  ; Descargar LSP si no está instalado
-      lsp-auto-execute-action t             ; Ejecutar acciones automáticamente (opcional)
-      lsp-completion-enable t)               ; Integrar con company-mode
+;; Enable auto-completion and code actions
+(setq lsp-enable-suggest-server-download t  ; Download LSP if not installed
+      lsp-auto-execute-action t             ; Execute actions automatically (optional)
+      lsp-completion-enable t)               ; Integrate with company-mode
                                         ;
 ;; Python (pyright)
 (setq python-shell-interpreter "python3"
@@ -454,7 +449,7 @@
 ;; Shell Script
 (setq lsp-bash-language-server-path "~/.volta/bin/bash-language-server")
 
-;; Usar el entorno virtual para Python
+;; Use virtual environment for Python
 (setq lsp-pyright-venv-path "~/.emacs-lsp-venv")
 (setq python-shell-interpreter "~/.emacs-lsp-venv/bin/python3")
 
@@ -466,18 +461,18 @@
                          "--single-quote" "true"))
 
 ;; Shell (shfmt)
-(setq shfmt-arguments "-i=2"  ; Sangría de 2 espacios
+(setq shfmt-arguments "-i=2"  ; 2-space indentation
       shfmt-path "~/.go/bin/shfmt")
 
-;; Lisp (indentación estándar de Emacs)
-(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)  ; Soporte de documentación
+;; Lisp (standard Emacs indentation)
+(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)  ; Documentation support
 
-;; Activar formateo automático al guardar
+;; Enable auto-format on save
 (setq +format-on-save-enabled-modes
       '(python-mode js-mode typescript-mode c-mode c++-mode sh-mode lua-mode))
 
 (defun install-lsp-servers ()
-  "Instala todos los servidores LSP requeridos"
+  "Install all required LSP servers"
   (interactive)
 
   ;; Python LSP
@@ -501,24 +496,24 @@
   (unless (executable-find "bash-language-server")
     (shell-command "npm install -g bash-language-server")))
 
-;; Ejecutar después de cargar Doom
+;; Execute after loading Doom
 (add-hook 'doom-after-init-hook #'install-lsp-servers)
 
 ;; -------------------------------
-;; Configuración de magit
+;; Magit configuration
 ;; -------------------------------
 
-(setq magit-blame-heading-format "%-20a %C %s\n") ; Formato de autor/fecha
+(setq magit-blame-heading-format "%-20a %C %s\n") ; Author/date format
 (setq magit-refresh-status-buffer t)
 
 (custom-set-faces
- '(magit-blame-hash ((t (:foreground "#7F7F7F"))))) ; Color del hash
+ '(magit-blame-hash ((t (:foreground "#7F7F7F"))))) ; Hash color
 
-;; (add-hook 'magit-post-push-hook 'magit-refresh-all)
-;; (add-hook 'magit-post-commit-hook 'magit-refresh-all)
-;; (add-hook 'magit-post-merge-hook 'magit-refresh-all)
-;; (add-hook 'magit-post-checkout-hook 'magit-refresh-all)
-;; (add-hook 'magit-post-fetch-hook 'magit-refresh-all)
+ (add-hook 'magit-post-push-hook 'magit-refresh-all)
+ (add-hook 'magit-post-commit-hook 'magit-refresh-all)
+ (add-hook 'magit-post-merge-hook 'magit-refresh-all)
+ (add-hook 'magit-post-checkout-hook 'magit-refresh-all)
+ (add-hook 'magit-post-fetch-hook 'magit-refresh-all)
 
 (use-package! magit-delta
   :hook (magit-mode . magit-delta-mode)
@@ -547,7 +542,7 @@
       (magit-delta-mode +1))))
 
 ;; -------------------------------
-;; Configuración de org-mode
+;; Org-mode configuration
 ;; -------------------------------
 
 (setq org-directory "~/Org"
@@ -556,7 +551,6 @@
       org-startup-indented t)
 
 (use-package org
-  :ensure nil
   :custom (org-modules '(org-habit)))
 
 (after! org
@@ -594,7 +588,7 @@
   (org-journal-enable-agenda-integration t))
 
 (defun my/org-journal-open-work ()
-  "Abrir o crear la entrada de diario laboral para hoy."
+  "Open or create today's work journal entry."
   (let ((org-journal-dir "~/Org/journal/work/")
         (org-journal-file-format "%Y-%m-%d.org")
         (org-journal-date-format "%A, %d %B %Y")
@@ -604,8 +598,8 @@
 
 (map! :leader
       (:prefix ("n j" . "journal")
-       :desc "Abrir diario personal" "p" #'org-journal-new-entry
-       :desc "Abrir diario laboral"  "w" #'my/org-journal-open-work))
+       :desc "Open personal journal" "p" #'org-journal-new-entry
+       :desc "Open work journal"  "w" #'my/org-journal-open-work))
 
 (setq org-agenda-files
       (append
@@ -620,10 +614,10 @@
          ((agenda "" ((org-agenda-files (directory-files-recursively "~/Org/notes/work" "\\.org$"))))
           (todo "" ((org-agenda-files (directory-files-recursively "~/Org/notes/work" "\\.org$"))))))))
 
-;; Ajustar sangría
+;; Adjust indentation
 (setq org-edit-src-content-indentation 2)
 
-;; Presentamos siempre el contenido en el centro con un máximo de 120 caracteres
+;; Always present content centered with max 120 characters
 (after! org
     (setq-default fill-column 120)
   (setq visual-fill-column-width 120
@@ -631,7 +625,7 @@
   (add-hook 'org-mode-hook #'visual-fill-column-mode))
 
 (after! org
-  ;; Definir caras personalizadas
+  ;; Define custom faces
   (defface +org-todo-wait
       '((t (:inherit (bold warning org-todo))))
     "Face for WAIT tasks.")
@@ -648,20 +642,20 @@
       '((t (:inherit (shadow org-done))))
     "Face for CANCELLED tasks."))
 
-;; Definir keywords y asociarles las caras
+;; Define keywords and associate faces
 (setq org-todo-keywords
       '((sequence
-         "TODO(t)"    ;; Tarea pendiente
-         "NEXT(n)"    ;; Siguiente tarea a hacer
-         "PROJ(p)"    ;; Proyecto en progreso
-         "WAIT(w)"    ;; En espera
-         "IDEA(i)"    ;; Idea, aún no definida
-         "EVENT(e)"   ;; Evento programado
+         "TODO(t)"    ;; Pending task
+         "NEXT(n)"    ;; Next task to do
+         "PROJ(p)"    ;; Project in progress
+         "WAIT(w)"    ;; On hold
+         "IDEA(i)"    ;; Idea, not yet defined
+         "EVENT(e)"   ;; Scheduled event
          "|"
-         "DONE(d)"    ;; Finalizado
-         "CANCELLED(c)"))) ;; Cancelado
+         "DONE(d)"    ;; Finished
+         "CANCELLED(c)"))) ;; Cancelled
 
-;; Asignar caras (colores y estilos) a las keywords TODO
+;; Assign faces (colors and styles) to TODO keywords
 (setq org-todo-keyword-faces
       '(("TODO"      . +org-todo-active)
         ("NEXT"      . +org-todo-active)
@@ -673,14 +667,14 @@
         ("CANCELLED" . +org-todo-cancel)))
 
 (defun my/org-notas-trabajo-file ()
-  "Devuelve una ruta de archivo basada en la fecha actual para notas de trabajo."
+  "Returns a file path based on current date for work notes."
   (let* ((fecha (format-time-string "%Y/%m/%d-note.org"))
          (ruta (expand-file-name fecha "~/Org/notes/work/")))
-    ;; Crear directorio si no existe
+    ;; Create directory if it doesn't exist
     (make-directory (file-name-directory ruta) t)
     ruta))
 
-;; Plantillas de captura
+;; Capture templates
 (after! org
   (setq org-capture-templates
     `(
@@ -691,7 +685,7 @@
        "* TODO %?\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:"
        :empty-lines 1 :mkdir t)
 
-      ;; Tareas generales
+       ;; General tasks
       ("t" "General Task" entry
        (file+headline "~/Org/notes/taks.org" "General Task")
        "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
@@ -780,11 +774,11 @@
           "xelatex -interaction nonstopmode -output-directory %o %f")))
 
 ;; -------------------------------
-;; Configuración de blogging
+;; Blogging configuration
 ;; -------------------------------
 
 (after! ox-hugo
-  ;; Ruta base del sitio Hugo
+  ;; Hugo site base path
   (setq org-hugo-base-dir "~/Workspace/blog"
     org-hugo-content-directory "content-org"
     org-hugo-section "posts"
@@ -794,46 +788,46 @@
     org-hugo-allow-spaces-in-tags t
     org-hugo-paired-shortcodes "note,warning,tip,details"
 
-    ;; Taxonomías
+    ;; Taxonomies
     org-hugo-taxonomy-tags "tags"
     org-hugo-taxonomy-categories "categories"
 
-    ;; Archivos estáticos válidos
+    ;; Valid static files
     org-hugo-static-file-extensions
     '("png" "jpg" "jpeg" "gif" "svg" "pdf" "css" "js" "woff" "woff2" "ttf")
 
-    ;; Idiomas configurados para Hugo multilingüe
+    ;; Configured languages for multilingual Hugo
     org-hugo-languages '(("es" . "Spanish")
                          ("en" . "English"))))
 
 ;; -------------------------------
-;; Configuración de LaTeX
+;; LaTeX configuration
 ;; -------------------------------
 
 (after! tex
-  ;; Generar siempre PDF en lugar de DVI
+  ;; Always generate PDF instead of DVI
   (setq TeX-PDF-mode t)
 
-  ;; Habilitar shell-escape para TikZ, minted, etc.
+  ;; Enable shell-escape for TikZ, minted, etc.
   (setq TeX-command-extra-options "-shell-escape")
 
-  ;; Limpiar archivos auxiliares después de compilar
+  ;; Clean auxiliary files after compiling
   (add-hook 'TeX-after-TeX-file-run-hook #'TeX-clean)
 
-  ;; Usar `latexmk` como comando por defecto
+  ;; Use `latexmk` as default command
   (setq TeX-command-default "LatexMk")
 
-  ;; Activar modo visual-line y flyspell cuando estés en LaTeX
+  ;; Enable visual-line mode and flyspell when in LaTeX
   (add-hook 'TeX-mode-hook #'visual-line-mode)
   (add-hook 'TeX-mode-hook #'flyspell-mode)
 
-  ;; Ver automáticamente el PDF tras la compilación
+  ;; Automatically view PDF after compilation
   (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
         TeX-source-correlate-mode t
         TeX-source-correlate-start-server t))
 
 ;; -------------------------------
-;; Configuración de Typescript (NestJS)
+;; Typescript (NestJS) configuration
 ;; -------------------------------
 
 (add-to-list 'exec-path "~/.volta/bin")
@@ -841,42 +835,42 @@
 (use-package! typescript-mode
   :hook (typescript-mode . lsp-deferred)
   :config
-  (setq lsp-clients-typescript-auto-install-server t  ; Instalar automáticamente
-        lsp-clients-typescript-log-verbosity "debug"  ; Logs detallados
+  (setq lsp-clients-typescript-auto-install-server t  ; Install automatically
+        lsp-clients-typescript-log-verbosity "debug"  ; Detailed logs
         lsp-completion-enable-auto-import t           ; Auto-imports
-        lsp-tsserver-plugins-path "~/node_modules"))    ; Ruta de plugins de TS
+        lsp-tsserver-plugins-path "~/node_modules"))    ; TS plugins path
 
 (setq lsp-clients-typescript-init-opts '(:plugins ["@nestjs/swagger-plugin"]
                                          :compilerOptions {:experimentalDecorators t}))
 
 (setq prettier-js-args '("--trailing-comma" "all"
                          "--single-quote" "true")
-      eslintd-fix-mode t)  ; Corregir errores al guardar
+      eslintd-fix-mode t)  ; Fix errors on save
 
 ;; -------------------------------
-;; Configuración Contenedores
+;; Containers configuration
 ;; -------------------------------
 
-;; Asociar archivos docker-compose.yml o docker-compose.yaml con yaml-mode
+;; Associate docker-compose.yml or docker-compose.yaml files with yaml-mode
 (add-to-list 'auto-mode-alist
              '("docker-compose[.-]?\\(yml\\|yaml\\)\\'" . yaml-mode))
 
 ;; -------------------------------
-;; Configuración de dired
+;; Dired configuration
 ;; -------------------------------
 
-;; Activar modos ocultos y asincrónicos en dired
+;; Enable hidden and asynchronous modes in dired
 (add-hook! dired-mode
   (dired-hide-details-mode)
   (dired-async-mode))
 
-;; Configurar dired-subtree
+;; Configure dired-subtree
 (use-package! dired-subtree
   :after dired)
 
-;; Configurar dired cuando esté cargado
+;; Configure dired when loaded
 (after! dired
-  ;; Atajos personalizados para operaciones asincrónicas
+  ;; Custom shortcuts for asynchronous operations
   (map! :map dired-mode-map
         :n "N" #'dired-create-empty-file
         :n "R" #'dired-async-do-rename
@@ -884,23 +878,23 @@
         :n "S" #'dired-async-do-symlink
         :n "H" #'dired-async-do-hardlink)
 
-  ;; Activar destino inteligente basado en archivos recientes
+  ;; Enable smart target based on recent files
   (setq dired-dwim-target #'dired-dwim-target-recent))
 
-;; Configurar dirvish
+;; Configure dirvish
 (after! dirvish
   (setq dirvish-default-layout '(0 0 0.4)
         dirvish-layout-recipes '((1 0.11 0.55)
                                  (0 0    0.40)))
-  ;; Asegurar que 'file-size esté en los atributos
+  ;; Ensure 'file-size' is in attributes
   (pushnew! dirvish-attributes 'file-size))
 
-;; Atajo para abrir Dired desde el líder
+;; Shortcut to open Dired from leader
 (map! :leader
       :desc "Dired" "o -" #'dired-jump)
 
 ;; -------------------------------
-;; Configuración de markdown
+;; Markdown configuration
 ;; -------------------------------
 
 (use-package! markdown-mode
@@ -909,13 +903,13 @@
   (setq markdown-command "pandoc"))
 
 ;; -------------------------------
-;; Configuración de kdl
+;; KDL configuration
 ;; -------------------------------
 
 (use-package! kdl-mode
   :mode "\\.kdl\\'")
 ;; -------------------------------
-;; Configuración de company
+;; Company configuration
 ;; -------------------------------
 
 (after! company
@@ -956,7 +950,7 @@
     (setq consult-projectile-use-projectile-switch-project t))
 
 ;; -------------------------------
-;; Configuración de buffers
+;; Buffers configuration
 ;; -------------------------------
 
 (use-package! cus-edit
@@ -969,37 +963,37 @@
 (setq uniquify-buffer-name-style 'forward)
 
 ;; -------------------------------
-;; Configuración de detached
+;; Detached configuration
 ;; -------------------------------
 
 (use-package! detached
   :after-call (compile dired dired-rsync embark-act eshell org-mode projectile-mode shell vterm)
   :init
-  ;; Inicializar Detached al cargar
+  ;; Initialize Detached on load
   (add-hook! 'doom-first-buffer-hook #'detached-init)
   :custom
-  ;; Notificaciones adaptadas a OS
+  ;; OS-adapted notifications
   (detached-notification-function
    (if IS-LINUX
        #'detached-state-transition-notifications-message
      #'detached-extra-alert-notification))
-  ;; Directorios base
+  ;; Base directories
   (detached-db-directory doom-cache-dir)
   (detached-session-directory (temporary-file-directory))
-  ;; Bloquear auto-init para algunos modos
+  ;; Block auto-init for some modes
   (detached-init-block-list '(dired-rsync dired))
   :config
-  ;; Atajo directo para ejecutar comandos desacoplados
+  ;; Direct shortcut to execute detached commands
   (map! :g "M-&" #'detached-shell-command))
 
-;; Consult UI para Detached
+;; Consult UI for Detached
 (use-package! detached-consult
   :defer t
   :init
   (map! :leader
         :desc "Detached Sessions" :g "o s" #'detached-consult-session))
 
-;; Compilaciones desacopladas
+;; Detached compilations
 (use-package! detached-compile
   :defer t
   :init
@@ -1007,18 +1001,18 @@
         :desc "Compile (Detached)"   :g "c c" #'detached-compile
         :desc "Recompile (Detached)" :g "c C" #'detached-compile-recompile))
 
-;; Lista de sesiones activas
+;; Active sessions list
 (use-package! detached-list
   :defer t
   :init
   (map! :leader
         :desc "Detached Manage Sessions" :g "o S" #'detached-list-sessions)
   :config
-  ;; Emacs state para lista de sesiones (evitar modo Evil)
+  ;; Emacs state for sessions list (avoid Evil mode)
   (evil-set-initial-state 'detached-list-mode 'emacs))
 
 ;; -----------------------------------
-;; Configuración archivos grandes
+;; Large files configuration
 ;; -----------------------------------
 
 (use-package! vlf
@@ -1032,11 +1026,11 @@
 (after! so-long
   (add-to-list 'so-long-mode-preserved-variables 'vlf-mode))
 
-;; Activar word wrap global
+;; Enable global word wrap
 (add-hook! 'doom-first-buffer-hook #'+global-word-wrap-mode)
 
 ;; -------------------------------
-;; Configuración de RSS
+;; RSS configuration
 ;; -------------------------------
 
 (add-hook! 'elfeed-search-mode-hook #'elfeed-update)
@@ -1093,7 +1087,7 @@
 
 (setq elfeed-tube-mpv-mpv-options '("--force-window=yes"))
 
-;; Lectura de los feeds
+;; Reading the feeds
 (setq-default fill-column 120)
 (setq visual-fill-column-width 120
       visual-fill-column-center-text t)
@@ -1111,7 +1105,7 @@
        ))
 
 ;; -------------------------------
-;; Configuración de pdfs
+;; PDFs configuration
 ;; -------------------------------
 
 (use-package! pdf-tools
@@ -1131,7 +1125,7 @@
                                         (doom-modeline-mode -1)))
 
 ;; -------------------------------
-;; Configuración de Emms
+;; Emms configuration
 ;; -------------------------------
 
 (emms-all)
@@ -1188,14 +1182,14 @@
 (defvar my/emms-default-cover "~/.config/doom/images/kmix.svg")
 
 (defun my/emms-extract-cover (track)
-  "Extrae la carátula embebida del TRACK a un archivo temporal, si existe. Devuelve la ruta o nil."
+  "Extract embedded cover art from TRACK to a temporary file, if it exists. Returns path or nil."
   (let ((file (emms-track-get track 'name))
         (output (make-temp-file "emms-cover-" nil ".jpg")))
     (when (and file (string-match-p "\\.mp3\\|\\.flac\\|\\.m4a" file))
       (let ((exit-code (call-process "ffmpeg" nil nil nil
-                                     "-y"                     ; sobrescribe
+                                     "-y"                     ; Overwrite
                                      "-i" file
-                                     "-an"                    ; sin audio
+                                     "-an"                    ; No audio
                                      "-vcodec" "copy"
                                      output)))
         (if (and (file-exists-p output)
@@ -1204,7 +1198,7 @@
           nil)))))
 
 (defun my/emms-show-alert ()
-  "Muestra una alerta con metadatos musicales y portada si está disponible."
+  "Show alert with music metadata and cover if available."
   (when-let* ((track (emms-playlist-current-selected-track))
               (artist (emms-track-get track 'info-artist))
               (title (emms-track-get track 'info-title))
@@ -1219,24 +1213,24 @@
 (add-hook 'emms-player-started-hook #'my/emms-show-alert)
 
 ;; -------------------------------
-;; Configuración de deft
+;; Deft configuration
 ;; -------------------------------
 
-;; Configurar directorio de notas
-(setq deft-directory "~/Org/")  ; Ruta donde se guardan las notas
+;; Configure notes directory
+(setq deft-directory "~/Org/")  ; Path where notes are saved
 
-;; Buscamos en subdirectorios
+;; Search in subdirectories
 (setq deft-recursive t)
 
-;; Usar extensión .org por defecto
-(setq deft-extensions '("org" "md" "txt"))  ; Formatos permitidos
-(setq deft-default-extension "org")         ; Extensión predeterminada
+;; Use .org extension by default
+(setq deft-extensions '("org" "md" "txt"))  ; Allowed formats
+(setq deft-default-extension "org")         ; Default extension
 
-;; Ignorar ciertos archivos (ej: archivos temporales de Org)
+;; Ignore certain files (e.g., Org temporary files)
 (setq deft-ignore-file-regexp "\\.#\\|~$")
 
 ;; -------------------------------
-;; Configuración de readers
+;; Readers configuration
 ;; -------------------------------
 
 (setq nov-unzip-program (executable-find "bsdtar")
@@ -1265,7 +1259,7 @@
         :n "q" #'calibredb-search-quit))
 
 ;; -------------------------------
-;; Configuración de notificaciones
+;; Notifications configuration
 ;; -------------------------------
 
 (after! alert
@@ -1292,11 +1286,11 @@
             (alert "Welcome, Master" :title "Doom Emacs Awaits" :severity 'normal)))
 
 (defun my/org-export-pdf-alert (&rest _args)
-  (alert "Exportación de Org a PDF completada" :title "Org Export" :severity 'normal))
+  (alert "Org to PDF export completed" :title "Org Export" :severity 'normal))
 
 (advice-add 'org-latex-export-to-pdf :after #'my/org-export-pdf-alert)
 
 (defun my/latex-compilation-alert (filename)
-  (alert "Compilación de LaTeX a PDF completada" :title "Latex Compile" :severity 'normal))
+  (alert "LaTeX to PDF compilation completed" :title "Latex Compile" :severity 'normal))
 
 (add-hook 'TeX-after-compilation-finished-functions #'my/latex-compilation-alert)
