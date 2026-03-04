@@ -96,15 +96,15 @@
        (eval +overlay)             ; run code, run (also, repls)
        ;; (lookup +docsets +dictionary +offline) ; navigate your code and its documentation
        lookup ; navigate your code and its documentation
-       ;; (lsp +eglot)                            ; M-x vscode
        (lsp +peek +ui)                            ; M-x vscode
-       (magit +blame +forge)                                  ; a git porcelain for Emacs
+       (magit +forge)                                  ; a git porcelain for Emacs
        make                                   ; run make tasks from Emacs
        pass                                   ; password manager for nerds
        pdf                                    ; pdf enhancements
        ;; prodigy            ; FIXME managing external services & code builders
-       ;; terraform          ; infrastructure as code
-       tmux              ; an API for interacting with tmux
+       rgb
+       terraform          ; infrastructure as code
+       ;; tmux              ; an API for interacting with tmux
        tree-sitter                    ; syntax and parsing, sitting in a tree...
        upload                         ; map local to remote projects via ssh/ftp
 
@@ -156,7 +156,7 @@
        (org +latex
             +habit
             +pretty
-            +roam2
+            +roam
             +hugo
             +noter
             +dragndrop

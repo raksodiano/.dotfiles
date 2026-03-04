@@ -482,7 +482,11 @@
 
   ;; JavaScript/TypeScript
   (unless (executable-find "typescript-language-server")
-    (shell-command "npm install -g typescript-language-server vscode-langservers-extracted"))
+    (shell-command "npm install -g typescript-language-server vscode-langservers-extracted typescript"))
+
+  ;; Astro LSP requires TypeScript
+  (unless (executable-find "tsc")
+    (shell-command "npm install -g typescript"))
 
   ;; Docker
   (unless (executable-find "docker-langserver")
@@ -494,7 +498,11 @@
 
   ;; Shell Script
   (unless (executable-find "bash-language-server")
-    (shell-command "npm install -g bash-language-server")))
+    (shell-command "npm install -g bash-language-server"))
+
+  ;; Astro
+  (unless (executable-find "astro-ls")
+    (shell-command "npm install -g @astrojs/language-server")))
 
 ;; Execute after loading Doom
 (add-hook 'doom-after-init-hook #'install-lsp-servers)
@@ -903,11 +911,21 @@
   (setq markdown-command "pandoc"))
 
 ;; -------------------------------
+;; Web configuration
+;; -------------------------------
+(add-to-list 'auto-mode-alist '("\\.astro\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.svelte\\'" . web-mode))
+
+(set-file-template! "\\.astro$" :trigger "__astro" :mode 'web-mode)
+(set-file-template! "\\.svelte$" :trigger "__svelte" :mode 'web-mode)
+
+;; -------------------------------
 ;; KDL configuration
 ;; -------------------------------
 
 (use-package! kdl-mode
   :mode "\\.kdl\\'")
+
 ;; -------------------------------
 ;; Company configuration
 ;; -------------------------------
