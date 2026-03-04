@@ -83,5 +83,5 @@
 ;; -----------------------------------
 ;; Javascript / Typescript
 ;; -----------------------------------
-;; (package! astro-ts-mode)
+(package! web-mode)
 
