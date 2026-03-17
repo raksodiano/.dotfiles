@@ -20,17 +20,11 @@ few command lines.
 
 * List of configurations:
 
-- alacritty ➔ GPU-accelerated terminal emulator
 - bat ➔ A cat(1) clone with wings
-- daemon-emacs ➔ Emacs daemon configuration
-- doom-emacs ➔ Doom Emacs configuration framework
+- doom ➔ Doom Emacs configuration framework
 - fastfetch ➔ Fast system information tool
 - htop ➔ Interactive process viewer
-- kitty ➔ GPU-based terminal emulator
-- niri ➔ Scrollable-tiling Wayland compositor
-- noctalia ➔ Personal theme configuration
 - paru ➔ Feature-packed AUR helper
-- rmpc ➔ Rust Music Player Client (MPD)
 - starship ➔ Cross-shell prompt
 - tmux ➔ Terminal multiplexer
 - zsh ➔ Customizable shell
@@ -120,7 +114,7 @@ Configuration file containing all packages organized in arrays:
 |-----------------+------------------------------------------|
 | =SYSTEM_UTILS=  | System monitoring, file utilities, etc.  |
 | =DEV_TOOLS=     | Editors, compilers, languages, LaTeX     |
-| =VIRTUALIZATION=| Docker, QEMU, libvirt, virt-manager      |
+| =VIRTUALIZATION= | Docker, QEMU, libvirt, virt-manager      |
 | =MAINTENANCE=   | System maintenance tools                 |
 | =DESKTOP=       | Window manager, terminals, browsers      |
 | =OFFICE=        | Office suite                             |
