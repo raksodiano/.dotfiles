@@ -571,7 +571,7 @@
 (use-package! org-alert
   :after org
   :config
-  (setq org-alert-notification-title "🔔 Recordatorio Org"
+  (setq org-alert-notification-title "🔔 Org Reminder"
         org-alert-notify-cutoff 15
         org-alert-notify-after-event-cutoff 5
         org-alert-interval 300
@@ -618,7 +618,7 @@
       (directory-files-recursively "~/Org/notes/work" "\\.org$"))
 
 (setq org-agenda-custom-commands
-      '(("w" "Agenda Trabajo"
+      '(("w" "Work Agenda"
          ((agenda "" ((org-agenda-files (directory-files-recursively "~/Org/notes/work" "\\.org$"))))
           (todo "" ((org-agenda-files (directory-files-recursively "~/Org/notes/work" "\\.org$"))))))))
 
