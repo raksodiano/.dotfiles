@@ -14,14 +14,19 @@
 (setq auto-save-default t)
 
 ;; Performance optimizations
-(setq gc-cons-threshold (* 256 1024 1024))
+(setq gc-cons-threshold (* 16 1024 1024))
 (setq read-process-output-max (* 4 1024 1024))
 (setq comp-deferred-compilation t)
 (setq comp-async-jobs-number 8)
 
 ;; Garbage collector optimization
 (setq gcmh-idle-delay 5)
-(setq gcmh-high-cons-threshold (* 1024 1024 1024))
+(setq gcmh-high-cons-threshold (* 256 1024 1024))
+
+;; Restore gc threshold after startup for better memory recovery
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq gc-cons-threshold (* 64 1024 1024))))
 
 ;; Version control optimization
 (setq vc-handled-backends '(Git))
@@ -504,8 +509,12 @@
   (unless (executable-find "astro-ls")
     (shell-command "npm install -g @astrojs/language-server")))
 
-;; Execute after loading Doom
-(add-hook 'doom-after-init-hook #'install-lsp-servers)
+;; Execute after loading Doom (only once)
+(add-hook 'doom-after-init-hook
+          (defun run-install-lsp-servers-once ()
+            (unless (file-exists-p (expand-file-name ".lsp-installed" doom-cache-dir))
+              (install-lsp-servers)
+              (write-region "" nil (expand-file-name ".lsp-installed" doom-cache-dir)))))
 
 ;; -------------------------------
 ;; Magit configuration
@@ -1083,13 +1092,6 @@
 
 ;; Update hourly
 (run-at-time nil (* 60 60) #'elfeed-update)
-
-;; Load elfeed-download package
-(after! elfeed
-  (load! "lisp/elfeed-download")
-  (require 'elfeed-org)
-  (elfeed-org)
-  (elfeed-download-setup))
 
 ;; Elfeed-tube configuration
 (use-package! elfeed-tube
