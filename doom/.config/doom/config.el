@@ -398,9 +398,11 @@
 
 ;; LSP Performance optimizations and settings
 (after! lsp-mode
-  (setq lsp-idle-delay 0.1
+  (setq lsp-idle-delay 0.3
         lsp-log-io nil
         lsp-completion-provider :capf
+        lsp-auto-configure nil
+        lsp-auto-library-setup nil
         lsp-enable-file-watchers nil
         lsp-enable-folding nil
         lsp-enable-text-document-color nil
@@ -475,6 +477,15 @@
 ;; Enable auto-format on save
 (setq +format-on-save-enabled-modes
       '(python-mode js-mode typescript-mode c-mode c++-mode sh-mode lua-mode))
+
+;; LSP deferred for faster startup (carga solo al escribir)
+(add-hook 'python-mode-hook #'lsp-deferred)
+(add-hook 'js-mode-hook #'lsp-deferred)
+(add-hook 'go-mode-hook #'lsp-deferred)
+(add-hook 'rust-mode-hook #'lsp-deferred)
+(add-hook 'yaml-mode-hook #'lsp-deferred)
+(add-hook 'json-mode-hook #'lsp-deferred)
+(add-hook 'web-mode-hook #'lsp-deferred)
 
 (defun install-lsp-servers ()
   "Install all required LSP servers"
@@ -606,6 +617,7 @@
 
 (defun my/org-journal-open-work ()
   "Open or create today's work journal entry."
+  (interactive)
   (let ((org-journal-dir "~/Org/journal/work/")
         (org-journal-file-format "%Y-%m-%d.org")
         (org-journal-date-format "%A, %d %B %Y")
@@ -903,7 +915,6 @@
   (setq dirvish-default-layout '(0 0 0.4)
         dirvish-layout-recipes '((1 0.11 0.55)
                                  (0 0    0.40)))
-  ;; Ensure 'file-size' is in attributes
   (pushnew! dirvish-attributes 'file-size))
 
 ;; Shortcut to open Dired from leader
