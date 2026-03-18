@@ -12,8 +12,6 @@
 ** Science & Technology :science:tech:
 *** [[https://www.technologyreview.com/feed/][MIT Technology Review]]
 *** [[https://feeds.feedburner.com/IeeeSpectrum][IEEE Spectrum]]
-*** [[https://www.sciencedaily.com/rss/all.xml][Science Daily]]
-*** [[https://hackernoon.com/feed][Hackernoon]]
 
 ** Linux
 *** [[http://feeds.feedburner.com/desdelinuxweb][Desde Linux]]
