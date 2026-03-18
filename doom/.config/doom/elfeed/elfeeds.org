@@ -4,7 +4,6 @@
 
 * Feeds :elfeed:
 ** News
-*** [[http://feeds.feedburner.com/zerohedge/feed][Zero Hedge]]
 *** [[https://blog.system76.com/rss.xml][System76 Blog]] :tech:
 *** [[https://blogs.kde.org/categories/this-week-in-kde-apps/index.xml][This Week in KDE Apps]] :tech:
 *** [[https://static.fsf.org/fsforg/rss/news.xml][FSF News]] :tech:
@@ -59,7 +58,6 @@
 *** [[https://12bytes.org/feed.xml][12bytes]]
 *** [[https://adactio.com/rss/][Jeremy Keith]] :tech:indieweb:
 *** [[https://ar.al/index.xml][Aral Balkan]]
-*** [[https://astralcodexten.substack.com/feed][Astral Codex Ten]] :meta:
 *** [[https://blog-un-dev-mas-7f0869.gitlab.io/index.xml][Un Dev Más]]
 *** [[https://blog.burntsushi.net/index.xml][BurntSushi]]
 *** [[https://codedude.xyz/feed.xml][CodeDude]]
@@ -82,9 +80,7 @@
 *** [[https://lukesmith.xyz/rss.xml][Luke Smith]] :tech:meta:
 *** [[https://macwright.com/rss.xml][Tom MacWright]]
 *** [[https://maggieappleton.com/rss.xml][Maggie Appleton]]
-*** [[https://marginalrevolution.com/feed][Marginal Revolution]]
 *** [[https://mrshll.com/feed.rss][Mrshll]]
-*** [[https://notrelated.xyz/rss][Not Related]] :meta:
 *** [[https://ounapuu.ee/index.xml][Ounapuu]]
 *** [[https://palomakop.tv/rss.xml][Palomakop]]
 *** [[https://pavodive.github.io/es/index.xml][Recordatorios Para Mi Yo Futuro]]
@@ -100,11 +96,9 @@
 *** [[https://thomasorus.com/feed.xml][Thomasorus]]
 *** [[https://tynan.com/feed/][Tynan]]
 *** [[https://unixdigest.com/feed.rss][Unix Digest]] :tech:
-*** [[https://waitbutwhy.com/feed][Wait But Why]]
 *** [[https://wolfmd.me/feed.xml][Wolf MD]]
 *** [[https://writings.stephenwolfram.com/feed/][Stephen Wolfram]]
 *** [[https://wrongthink.link/posts/index.xml][Wrong Think]] :tech:security:
-*** [[https://www.lesswrong.com/feed.xml?view=curated-rss][Less Wrong]]
 *** [[https://www.madewithtea.com/rss.xml][Made with Tea]]
 *** [[https://www.muylinux.com/feed/][MuyLinux]]
 *** [[https://www.paritybit.ca/feed.xml][Parity Bit]]
