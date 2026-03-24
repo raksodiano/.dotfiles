@@ -410,12 +410,54 @@
         lsp-enable-snippet nil
         lsp-enable-symbol-highlighting nil
         lsp-enable-links nil
+        lsp-warn-no-matched-clients nil
 
         ;; Register custom gopls settings
         lsp-gopls-completeUnimported t
         lsp-gopls-staticcheck t
         lsp-gopls-analyses '((unusedparams . t)
-                             (unusedwrite . t))))
+                             (unusedwrite . t)))
+
+  ;; Language ID para web-mode (astro/svelte)
+  (add-to-list 'lsp-language-id-configuration
+               '(web-mode . (lambda ()
+                             (cond ((string-match-p "\\.astro\\'" (buffer-file-name)) "astro")
+                                    ((string-match-p "\\.svelte\\'" (buffer-file-name)) "svelte")
+                                    (t "html")))))
+
+  (defun my/find-tsdk ()
+    "Find TypeScript tsdk path dynamically."
+    (or (when (executable-find "tsc")
+          (let ((tsc-dir (file-name-directory (directory-file-name (file-name-directory (executable-find "tsc"))))))
+            (when tsc-dir
+              (expand-file-name "lib/node_modules/typescript/lib" tsc-dir))))
+        (when (executable-find "typescript-language-server")
+          (let* ((dir (file-name-directory (executable-find "typescript-language-server")))
+                 (node-modules (expand-file-name "../../lib/node_modules" dir)))
+            (when (file-directory-p node-modules)
+              (expand-file-name "typescript/lib" node-modules)))))))
+
+  (let ((tsdk (my/find-tsdk)))
+    (when tsdk
+      ;; Cliente LSP para Astro
+      (lsp-register-client
+       (make-lsp-client :new-connection (lsp-stdio-connection (list (executable-find "astro-ls") "--stdio"))
+                       :server-id 'astro-ls
+                       :major-modes '(web-mode)
+                       :activation-fn (lambda (filename _mode)
+                                       (string-match-p "\\.astro\\'" filename))
+                       :init-params (format "{\"typescript\": {\"tsdk\": \"%s\"}}" tsdk)))
+
+      ;; Cliente LSP para Svelte
+      (lsp-register-client
+       (make-lsp-client :new-connection (lsp-stdio-connection (list (executable-find "svelte-language-server") "--stdio"))
+                       :server-id 'svelte-ls
+                       :major-modes '(web-mode)
+                       :activation-fn (lambda (filename _mode)
+                                       (string-match-p "\\.svelte\\'" filename))
+                       :init-params (format "{\"typescript\": {\"tsdk\": \"%s\"}}" tsdk)))
+
+      (setq lsp-clients-typescript-tsdk tsdk)))
 
 ;; LSP UI settings for better performance
 (after! lsp-ui
@@ -518,7 +560,11 @@
 
   ;; Astro
   (unless (executable-find "astro-ls")
-    (shell-command "npm install -g @astrojs/language-server")))
+    (shell-command "npm install -g @astrojs/language-server"))
+
+  ;; Svelte
+  (unless (executable-find "svelte-language-server")
+    (shell-command "npm install -g svelte-language-server")))
 
 ;; Execute after loading Doom (only once)
 (add-hook 'doom-after-init-hook
