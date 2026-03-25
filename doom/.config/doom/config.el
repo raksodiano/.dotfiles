@@ -401,8 +401,8 @@
   (setq lsp-idle-delay 0.3
         lsp-log-io nil
         lsp-completion-provider :capf
-        lsp-auto-configure nil
-        lsp-auto-library-setup nil
+        ;; lsp-auto-configure nil
+        ;; lsp-auto-library-setup nil
         lsp-enable-file-watchers nil
         lsp-enable-folding nil
         lsp-enable-text-document-color nil
@@ -418,57 +418,46 @@
         lsp-gopls-analyses '((unusedparams . t)
                              (unusedwrite . t)))
 
-  ;; Language ID para web-mode (astro/svelte)
-  (add-to-list 'lsp-language-id-configuration
-               '(web-mode . (lambda ()
-                             (cond ((string-match-p "\\.astro\\'" (buffer-file-name)) "astro")
-                                    ((string-match-p "\\.svelte\\'" (buffer-file-name)) "svelte")
-                                    (t "html")))))
+        ;; Language ID para web-mode (astro/svelte) - ahora maneja LSP automáticamente
 
-  (defun my/find-tsdk ()
-    "Find TypeScript tsdk path dynamically."
-    (or (when (executable-find "tsc")
-          (let ((tsc-dir (file-name-directory (directory-file-name (file-name-directory (executable-find "tsc"))))))
-            (when tsc-dir
-              (expand-file-name "lib/node_modules/typescript/lib" tsc-dir))))
-        (when (executable-find "typescript-language-server")
-          (let* ((dir (file-name-directory (executable-find "typescript-language-server")))
-                 (node-modules (expand-file-name "../../lib/node_modules" dir)))
-            (when (file-directory-p node-modules)
-              (expand-file-name "typescript/lib" node-modules)))))))
+        (defun my/find-tsdk ()
+          "Find TypeScript tsdk path dynamically."
+          (or (when (executable-find "tsc")
+                (let ((tsc-dir (file-name-directory (directory-file-name (file-name-directory (executable-find "tsc"))))))
+                  (when tsc-dir
+                    (expand-file-name "lib/node_modules/typescript/lib" tsc-dir))))
+              (when (executable-find "typescript-language-server")
+                (let* ((dir (file-name-directory (executable-find "typescript-language-server")))
+                       (node-modules (expand-file-name "../../lib/node_modules" dir)))
+                  (when (file-directory-p node-modules)
+                    (expand-file-name "typescript/lib" node-modules))))))
 
-  (let ((tsdk (my/find-tsdk)))
-    (when tsdk
-      ;; Cliente LSP para Astro
-      (lsp-register-client
-       (make-lsp-client :new-connection (lsp-stdio-connection (list (executable-find "astro-ls") "--stdio"))
-                       :server-id 'astro-ls
-                       :major-modes '(web-mode)
-                       :activation-fn (lambda (filename _mode)
-                                       (string-match-p "\\.astro\\'" filename))
-                       :init-params (format "{\"typescript\": {\"tsdk\": \"%s\"}}" tsdk)))
+        (when (executable-find "astro-ls")
+          (lsp-register-client
+           (make-lsp-client :new-connection (lsp-stdio-connection "astro-ls")
+                           :server-id 'astro-ls
+                           :major-modes '(web-mode)
+                           :activation-fn (lambda (filename _mode)
+                                           (string-match-p "\\.astro\\'" filename)))))
 
-      ;; Cliente LSP para Svelte
-      (lsp-register-client
-       (make-lsp-client :new-connection (lsp-stdio-connection (list (executable-find "svelte-language-server") "--stdio"))
-                       :server-id 'svelte-ls
-                       :major-modes '(web-mode)
-                       :activation-fn (lambda (filename _mode)
-                                       (string-match-p "\\.svelte\\'" filename))
-                       :init-params (format "{\"typescript\": {\"tsdk\": \"%s\"}}" tsdk)))
+        (when (executable-find "svelte-language-server")
+          (lsp-register-client
+           (make-lsp-client :new-connection (lsp-stdio-connection "svelte-language-server")
+                           :server-id 'svelte-ls
+                           :major-modes '(web-mode)
+                           :activation-fn (lambda (filename _mode)
+                                           (string-match-p "\\.svelte\\'" filename))))))
 
-      (setq lsp-clients-typescript-tsdk tsdk)))
-
-;; LSP UI settings for better performance
-(after! lsp-ui
-  (setq lsp-ui-doc-enable t
-        lsp-ui-doc-position 'at-point
-        lsp-ui-doc-max-height 8
-        lsp-ui-doc-max-width 72
-        lsp-ui-doc-show-with-cursor t
-        lsp-ui-doc-delay 0.5
-        lsp-ui-sideline-enable nil
-        lsp-ui-peek-enable t))
+  ;; LSP UI settings for better performance
+  (after! lsp-ui
+    (setq lsp-ui-doc-enable t
+          lsp-ui-doc-position 'at-point
+          lsp-ui-doc-max-height 8
+          lsp-ui-doc-max-width 72
+          lsp-ui-doc-show-with-cursor t
+          lsp-ui-doc-delay 0.5
+           lsp-ui-sideline-enable nil
+           lsp-ui-peek-enable t))
 
 ;; LSP general
 (setq lsp-ui-sideline-enable t                ; Information in sidebar
