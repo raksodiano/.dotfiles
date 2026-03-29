@@ -46,6 +46,43 @@
 ;; Setup custom splashscreen
 (setq fancy-splash-image "~/.config/doom/images/gnu_color.png")
 
+(defvar +my/lsp-servers-to-install
+  '(;; Python
+    (python-mode . ("pylsp" "pyright"))
+    ;; JavaScript/TypeScript
+    (js-mode . ("typescript-language-server" "typescript"))
+    (typescript-mode . ("typescript-language-server" "typescript"))
+    ;; Go
+    (go-mode . ("gopls" "gofmt"))
+    ;; Rust
+    (rust-mode . ("rust-analyzer" "rustfmt"))
+    ;; JSON
+    (json-mode . ("vscode-json-languageserver"))
+    ;; YAML
+    (yaml-mode . ("yaml-language-server"))
+    ;; Web (Astro, Svelte)
+    (web-mode . ("astro-ls" "svelte-language-server" "typescript-language-server"))
+    ;; Nix
+    (nix-mode . ("nil"))
+    ;; Bash/Shell
+    (sh-mode . ("bash-language-server"))
+    ;; Docker
+    (dockerfile-mode . ("docker-langserver"))
+    ;; LaTeX
+    (tex-mode . ("texlab"))
+    ;; Markdown
+    (markdown-mode . ("marksman")))
+  "List of modes and their corresponding LSP servers.")
+
+(defvar +my/treesit-grammars-to-install
+  '(python javascript typescript go rust json yaml markdown php html css toml)
+  "List of tree-sitter grammars to install.")
+
+(defun +my/get-all-lsp-servers ()
+  "Returns list of all configured LSP servers."
+  (cl-loop for entry in +my/lsp-servers-to-install
+           append (cdr entry)))
+
 (add-hook! '+doom-dashboard-functions :append
   (insert "\n" (+doom-dashboard--center +doom-dashboard--width "Welcome Home, Master.")))
 
@@ -177,10 +214,11 @@
 (setq doom-modeline-workspace-name t)
 
 ;; -------------------------------
-;; Dictionaries configuration
+;; Dictionary configuration
 ;; -------------------------------
 
-;; Function to change Flyspell dictionary
+(setq flyspell-lazy-idle-seconds 0.3)
+
 (defun my/change-ispell-dictionary (lang)
   "Change Flyspell dictionary to LANG."
   (interactive "sLanguage (e.g., es_ES or en_US): ")
@@ -188,9 +226,14 @@
   (ispell-change-dictionary lang)
   (message "Dictionary changed to %s" lang))
 
-;; Add keyboard shortcut to easily change dictionary
 (map! :leader
-      :desc "Change Flyspell dictionary" "l d" #'my/change-ispell-dictionary)
+      (:prefix ("D" . "dictionary")
+       :desc "Change dictionary"         "c" #'my/change-ispell-dictionary
+       :desc "Check word at point"     "w" #'ispell-word
+       :desc "Toggle flyspell"          "s" #'flyspell-mode
+       :desc "Check buffer"             "b" #'flyspell-buffer
+       :desc "Next error"              "n" #'flyspell-goto-next-error
+       :desc "Add word to dictionary"   "a" #'+spell/add-word))
 
 ;; -------------------------------
 ;; Directories configuration
@@ -561,6 +604,163 @@
             (unless (file-exists-p (expand-file-name ".lsp-installed" doom-cache-dir))
               (install-lsp-servers)
               (write-region "" nil (expand-file-name ".lsp-installed" doom-cache-dir)))))
+
+;; -------------------------------
+;; LSP & Tree-sitter Management
+;; -------------------------------
+
+;; Tree-sitter auto-install configuration
+(after! treesit
+  (setq treesit-auto-install t
+        treesit-font-lock-level 4))
+
+(defun +my/install-lsp-for-current-mode ()
+  "Install LSP server for current mode."
+  (interactive)
+  (let* ((mode major-mode)
+         (servers (cdr (assoc mode +my/lsp-servers-to-install))))
+    (if servers
+        (dolist (server servers)
+          (message "LSP server %s: %s"
+                   (if (executable-find server) "installed" "not found")))
+      (message "No LSP server configured for %s" mode))))
+
+(defun +my/install-all-lsp-servers ()
+  "Install all configured LSP servers."
+  (interactive)
+  (let ((servers (+my/get-all-lsp-servers)))
+    (message "Configured LSP servers: %s" (string-join servers ", "))
+    (dolist (server servers)
+      (unless (executable-find server)
+        (message "[!] %s not found - install manually" server)))
+    (message "Check missing servers with SPC l l")))
+
+(defun +my/list-lsp-servers ()
+  "List installed and active LSP servers."
+  (interactive)
+  (let ((buffer (get-buffer-create "*LSP Servers*")))
+    (with-current-buffer buffer
+      (erase-buffer)
+      (insert "Installed LSP servers:\n\n")
+      (let ((servers (delete-dups (+my/get-all-lsp-servers))))
+        (dolist (server servers)
+          (insert (format "[%s] %s\n"
+                         (if (executable-find server) "x" "-")
+                         server))))
+      (insert "\nActive LSP session:\n\n")
+      (if (and (featurep 'lsp-mode) (boundp 'lsp-session) lsp-session)
+          (insert "Active session detected. Use M-x lsp-describe-session for details.\n")
+        (insert "No active LSP session.\n"))
+      (insert "\nConfiguration by mode:\n")
+      (dolist (entry +my/lsp-servers-to-install)
+        (insert (format "  %s: %s\n"
+                       (car entry)
+                       (string-join (cdr entry) ", ")))))
+    (pop-to-buffer buffer)))
+
+(defun +my/install-all-treesit-grammars ()
+  "Install all configured tree-sitter grammars."
+  (interactive)
+  (message "Installing tree-sitter grammars...")
+  (dolist (lang +my/treesit-grammars-to-install)
+    (treesit-install-language-grammar lang))
+  (message "Tree-sitter grammar installation started."))
+
+(defun +my/list-treesit-grammars ()
+  "List installed tree-sitter grammars."
+  (interactive)
+  (let ((buffer (get-buffer-create "*Tree-sitter Grammars*")))
+    (with-current-buffer buffer
+      (erase-buffer)
+      (insert "Tree-sitter grammars:\n\n")
+      (insert "Configured grammars:\n")
+      (dolist (lang +my/treesit-grammars-to-install)
+        (insert (format "  - %s\n" lang)))
+      (insert "\nInstallation status:\n")
+      (dolist (lang +my/treesit-grammars-to-install)
+        (let ((installed (treesit-language-available-p lang)))
+          (insert (format "[%s] %s\n"
+                         (if installed "x" "-")
+                          lang)))))
+    (pop-to-buffer buffer)))
+
+(defun +my/show-lsp-status ()
+  "Show LSP and tree-sitter status in minibuffer."
+  (interactive)
+  (let ((lsp-active (if (and (boundp 'lsp-mode) lsp-mode) "Active" "Inactive"))
+        (ts-active (if (and (boundp 'treesit-mode) treesit-mode) "Active" "Inactive")))
+    (message "LSP: %s | Tree-sitter: %s" lsp-active ts-active)))
+
+(defun +my/lsp-treesit-doctor ()
+  "Check LSP and tree-sitter health status."
+  (interactive)
+  (let ((buffer (get-buffer-create "*LSP & Tree-sitter Doctor*")))
+    (with-current-buffer buffer
+      (erase-buffer)
+      (insert "Doctor: LSP and Tree-sitter Status\n\n")
+      
+      ;; Tree-sitter status
+      (insert "Tree-sitter:\n\n")
+      (dolist (lang +my/treesit-grammars-to-install)
+        (let ((available (treesit-language-available-p lang)))
+          (insert (format "[%s] %s\n"
+                         (if available "x" "-")
+                          lang))))
+      
+      ;; LSP status
+      (insert "\nLSP servers:\n\n")
+      (let ((servers (delete-dups (+my/get-all-lsp-servers))))
+        (dolist (server servers)
+          (insert (format "[%s] %s\n"
+                         (if (executable-find server) "x" "-")
+                          server))))
+      
+      ;; Recommendations
+      (insert "\nRecommendations:\n\n")
+      (let ((missing-ts (cl-loop for lang in +my/treesit-grammars-to-install
+                                 unless (treesit-language-available-p lang)
+                                 collect lang))
+            (missing-lsp (cl-loop for server in (delete-dups (+my/get-all-lsp-servers))
+                                  unless (executable-find server)
+                                  collect server)))
+        (if missing-ts
+            (insert "Missing tree-sitter grammars:\n"
+                    (mapconcat (lambda (x) (format "  M-x treesit-install-language-grammar RET %s" x))
+                               missing-ts "\n") "\n")
+          (insert "All tree-sitter grammars installed [x]\n"))
+        (if missing-lsp
+            (insert "\nMissing LSP servers (install with npm/pip/etc):\n"
+                    (mapconcat (lambda (x) (format "  - %s" x)) missing-lsp "\n"))
+          (insert "\nAll LSP servers in PATH [x]\n"))))
+    (pop-to-buffer buffer)))
+
+;; Auto-install LSP servers on file open (on demand)
+(add-hook 'find-file-hook
+          (defun +my/lsp-auto-install-on-find-file-h ()
+            "Install LSP server automatically when opening a file."
+            (when (and (boundp 'lsp-mode) lsp-mode
+                       (not (lsp-session)))
+              (let* ((mode major-mode)
+                     (servers (cdr (assoc mode +my/lsp-servers-to-install))))
+                (when servers
+                  (dolist (server servers)
+                    (unless (executable-find server)
+                      (message "[!] LSP server %s not found. Install with 'SPC l i'" server))))))))
+
+;; Keybindings for LSP and Tree-sitter
+(map! :leader
+      (:prefix ("l" . "lsp")
+       :desc "Install LSP for current mode" "+" #'+my/install-lsp-for-current-mode
+       :desc "Install all LSP servers"     "i" #'+my/install-all-lsp-servers
+       :desc "List LSP servers"            "l" #'+my/list-lsp-servers
+       :desc "Show LSP status"             "s" #'+my/show-lsp-status
+       :desc "Doctor (check health)"       "d" #'+my/lsp-treesit-doctor
+       
+       (:prefix ("t" . "tree-sitter")
+        :desc "Install all grammars"       "i" #'+my/install-all-treesit-grammars
+        :desc "List grammars"              "l" #'+my/list-treesit-grammars
+        :desc "Ensure current installed"   "e" #'treesit-ensure-installed
+        :desc "Doctor"                      "d" #'+my/lsp-treesit-doctor)))
 
 ;; -------------------------------
 ;; Magit configuration
