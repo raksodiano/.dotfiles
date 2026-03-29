@@ -188,8 +188,8 @@
        (yaml +tree-sitter)                      ; JSON, but readable
        ;; zig               ; C, but simpler
 
-       :email
-       (mu4e +org +gmail)
+        :email
+        ;; (mu4e +org +gmail)
        ;; notmuch
        ;; (wanderlust +gmail)
 
