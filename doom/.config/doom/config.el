@@ -194,7 +194,6 @@
 ;; -------------------------------
 
 (setq my/directories '("~/Org"
-                       "~/Org/rss"
                        "~/Org/journal"
                        "~/Org/journal/personal"
                        "~/Org/journal/work"
