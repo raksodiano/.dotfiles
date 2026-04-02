@@ -611,31 +611,18 @@
 ;; -------------------------------
 
 (add-hook! 'elfeed-search-mode-hook #'elfeed-update)
-(make-directory "~/.elfeed" t)
-
-(after! elfeed
-    (setq elfeed-search-filter "@7-days-ago +unread")
-  (setq elfeed-org-allow-http-feeds t))
 
 ;; Set org feed file
 (setq rmh-elfeed-org-files '("~/.config/doom/elfeed/elfeeds.org"))
 
-;; Load elfeed-download package
 (after! elfeed
+  (setq elfeed-search-filter "@7-days-ago +unread")
+  (setq elfeed-org-allow-http-feeds t)
+  (setq elfeed-db-directory "~/.elfeed")
   (load! "lisp/elfeed-download")
   (require 'elfeed-org)
   (elfeed-org)
-  (elfeed-download-setup))
-
-;; Configure elfeed - consolidate all elfeed config in one after! block
-(after! elfeed
-  (setq elfeed-db-directory "~/.elfeed")
-  (setq elfeed-search-filter "@1-week-ago +unread")
-
-  ;; Set up elfeed-download
   (elfeed-download-setup)
-
-  ;; Key bindings
   (map! :map elfeed-search-mode-map
         :n "d" #'elfeed-download-current-entry
         :n "O" #'elfeed-search-browse-url))
