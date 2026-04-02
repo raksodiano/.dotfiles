@@ -207,17 +207,6 @@
         '("xelatex -interaction nonstopmode -output-directory %o %f"
           "xelatex -interaction nonstopmode -output-directory %o %f")))
 
-(after! tex
-  (setq TeX-PDF-mode t)
-  (setq TeX-command-extra-options "-shell-escape")
-  (add-hook 'TeX-after-TeX-file-run-hook #'TeX-clean)
-  (setq TeX-command-default "LatexMk")
-  (add-hook 'TeX-mode-hook #'visual-line-mode)
-  (add-hook 'TeX-mode-hook #'flyspell-mode)
-  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-        TeX-source-correlate-mode t
-        TeX-source-correlate-start-server t))
-
 (after! ox-hugo
   (setq org-hugo-base-dir "~/Workspace/blog"
         org-hugo-content-directory "content-org"
