@@ -26,7 +26,7 @@
    (cons 'low "~/.config/doom/sounds/dialog-information.wav")
    (cons 'normal "~/.config/doom/sounds/bell.wav")
    (cons 'moderate "~/.config/doom/sounds/message-new-instant.wav"))
-  "Sound files mapped by severity level.")
+   "Sound files mapped by severity level.")
 
 (defun my/get-org-item-severity ()
   "Get severity from current org item property."
@@ -37,11 +37,16 @@
 (defun my/play-sound-by-severity (&optional severity)
   "Play notification sound based on SEVERITY level."
   (let* ((sev (or severity 'normal))
-         (sound-file (cdr (assoc sev my/sound-files))))
-    (unless sound-file
-      (setq sound-file (cdr (assoc 'normal my/sound-files))))
-    (when sound-file
-      (start-process-shell-command "notification-sound" nil (format "aplay -q %s" sound-file)))))
+         (sound-file (expand-file-name (cdr (assoc sev my/sound-files)) "~/.config/doom")))
+    (unless (file-exists-p sound-file)
+      (setq sound-file (expand-file-name (cdr (assoc 'normal my/sound-files)) "~/.config/doom")))
+    (when (file-exists-p sound-file)
+      (start-process-shell-command "play-sound" nil (format "aplay -q %s" sound-file)))))
+
+(defun my/play-notification-sound (severity)
+  "Play notification sound with SEVERITY for visual notification."
+  (message "Calling play-notification-sound with severity: %s" severity)
+  (my/play-sound-by-severity severity))
 
 (use-package! org-alert
   :after org
@@ -51,16 +56,36 @@
   :config
   (setq org-alert-notification-title "Org Reminder"
         org-alert-interval 60
-        alert-default-style 'libnotify
-        alert-sound-enabled t)
+        alert-default-style 'libnotify)
   (org-alert-enable))
+
+(defvar my/org-alert-notification-count 0)
+
+(advice-add #'org-alert-check :before
+            (lambda (&rest _)
+              (setq my/org-alert-notification-count 0)))
+
+(defvar my/alert-called nil)
+
+(advice-add #'alert :around
+            (lambda (orig-fun &rest args)
+              (setq my/alert-called t)
+              (apply orig-fun args)))
 
 (advice-add #'org-alert--dispatch :after
             (lambda (&rest _)
-              (let ((sev (my/get-org-item-severity)))
-                (my/play-sound-by-severity (or sev 'high)))))
+              (when my/alert-called
+                (setq my/org-alert-notification-count (1+ my/org-alert-notification-count)
+                      my/alert-called nil))))
 
-(setq alert-sound-play-command "aplay -q %s")
+(advice-add #'org-alert-check :after
+            (lambda (&rest _)
+              (when (> my/org-alert-notification-count 0)
+                (my/play-sound-by-severity 'high))))
+
+;; (setq alert-sound-play-command "aplay -q %s")
+
+;; (setq alert-sound-play-command "aplay -q %s")
 
 (use-package! org-journal
   :defer t
