@@ -33,8 +33,6 @@
 (setq frame-inhibit-implied-resize t)
 (setq focus-follows-mouse nil)
 
-
-
 ;; Start emacs maximized
 ;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
