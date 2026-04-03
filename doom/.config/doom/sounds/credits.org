@@ -1,1 +1,12 @@
-Fm bell synth 02.wav by .Andre_Onate -- https://freesound.org/s/484665/ -- License: Creative Commons 0
+Sonidos freedesktop.org - Licencia: CC0 (Public Domain)
+https://freedesktop.org/wiki/Specifications/sound-theme-spec
+
+Fuentes:
+- bell.oga
+- dialog-information.oga
+- dialog-warning.oga
+- dialog-error.oga
+- complete.oga
+- message-new-instant.oga
+- window-attention.oga
+- alarm-clock-elapsed.oga

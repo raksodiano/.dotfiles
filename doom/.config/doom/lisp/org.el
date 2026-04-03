@@ -15,22 +15,52 @@
 
 (setq org-clock-sound "~/.config/doom/sounds/bell.wav")
 
+(defvar my/sounds-dir (expand-file-name "~/.config/doom/sounds/")
+  "Directory containing notification sound files.")
+
+(defvar my/sound-files
+  (list
+   (cons 'urgent "~/.config/doom/sounds/alarm-clock-elapsed.wav")
+   (cons 'high "~/.config/doom/sounds/window-attention.wav")
+   (cons 'medium "~/.config/doom/sounds/dialog-warning.wav")
+   (cons 'low "~/.config/doom/sounds/dialog-information.wav")
+   (cons 'normal "~/.config/doom/sounds/bell.wav")
+   (cons 'moderate "~/.config/doom/sounds/message-new-instant.wav"))
+  "Sound files mapped by severity level.")
+
+(defun my/get-org-item-severity ()
+  "Get severity from current org item property."
+  (let* ((sev-str (org-entry-get (point) "NOTIFY_SEVERITY" t))
+         (sev (when sev-str (intern sev-str))))
+    sev))
+
+(defun my/play-sound-by-severity (&optional severity)
+  "Play notification sound based on SEVERITY level."
+  (let* ((sev (or severity 'normal))
+         (sound-file (cdr (assoc sev my/sound-files))))
+    (unless sound-file
+      (setq sound-file (cdr (assoc 'normal my/sound-files))))
+    (when sound-file
+      (start-process-shell-command "notification-sound" nil (format "aplay -q %s" sound-file)))))
+
 (use-package! org-alert
   :after org
+  :preface
+  (setq org-alert-notify-cutoff 1
+        org-alert-notify-after-event-cutoff 2)
   :config
   (setq org-alert-notification-title "Org Reminder"
-        org-alert-notify-cutoff 15
-        org-alert-notify-after-event-cutoff 5
-        org-alert-interval 300
-        alert-default-style 'libnotify)
-
+        org-alert-interval 60
+        alert-default-style 'libnotify
+        alert-sound-enabled t)
   (org-alert-enable))
 
-(after! org-alert
-  (defun my/org-alert--force-high-severity (orig-fn message &rest args)
-    (apply orig-fn message
-           (plist-put args :severity 'high)))
-  (advice-add 'org-alert--notify :around #'my/org-alert--force-high-severity))
+(advice-add #'org-alert--dispatch :after
+            (lambda (&rest _)
+              (let ((sev (my/get-org-item-severity)))
+                (my/play-sound-by-severity (or sev 'high)))))
+
+(setq alert-sound-play-command "aplay -q %s")
 
 (use-package! org-journal
   :defer t
