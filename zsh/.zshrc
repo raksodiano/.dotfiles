@@ -124,6 +124,8 @@ alias doom='~/.config/emacs/bin/doom'
 
 eval "$(starship init zsh)"
 
+# commands
+export PATH="$HOME/bin:$PATH"
 
 # opencode
 export PATH=/home/raksodiano/.opencode/bin:$PATH
