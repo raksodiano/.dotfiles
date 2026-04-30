@@ -1,8 +1,0 @@
-include "configs/input.kdl"
-include "configs/monitor.kdl"
-include "configs/layout.kdl"
-include "configs/animations.kdl"
-include "configs/rules.kdl"
-include "configs/keybinds.kdl"
-include "configs/execs.kdl"
-include "configs/environment.kdl"
