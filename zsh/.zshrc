@@ -113,8 +113,8 @@ source $ZSH/oh-my-zsh.sh
 
 export PATH="$HOME/.volta/bin:$PATH"
 
-alias cat='bat --theme="Catppuccin Mocha"'
-alias ls='eza --icons'
+alias cat='bat'
+alias ls='eza'
 alias l='ls -l'
 alias la='ls -a'
 alias lla='ls -la'
@@ -122,10 +122,10 @@ alias lt='ls --tree'
 
 alias doom='~/.config/emacs/bin/doom'
 
-eval "$(starship init zsh)"
-
 # commands
 export PATH="$HOME/bin:$PATH"
 
 # opencode
-export PATH=/home/raksodiano/.opencode/bin:$PATH
+export PATH="$HOME/.opencode/bin:$PATH"
+
+eval "$(starship init zsh)"

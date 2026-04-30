@@ -1,6 +1,23 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 ;; -------------------------------
+;; Encoding configuration
+;; -------------------------------
+
+(prefer-coding-system 'utf-8-unix)
+(set-default-coding-systems 'utf-8-unix)
+(setq-default buffer-file-coding-system 'utf-8-unix)
+
+(setq highlight-escape-sequences nil)
+
+(add-hook 'after-change-major-mode-hook
+          (lambda ()
+            (when (boundp 'show-trailing-whitespace)
+              (setq show-trailing-whitespace nil))
+            (when (boundp 'whitespace-mode)
+              (whitespace-mode -1))))
+
+;; -------------------------------
 ;; Visual configuration and performance
 ;; -------------------------------
 
@@ -37,8 +54,11 @@
 ;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
+(defvar +my/doom-dir (expand-file-name "~/.config/doom")
+  "Doom configuration directory.")
+
 ;; Setup custom splashscreen
-(setq fancy-splash-image "~/.config/doom/images/gnu_color.png")
+(setq fancy-splash-image (expand-file-name "images/gnu_color.png" +my/doom-dir))
 
 (add-hook! '+doom-dashboard-functions :append
   (insert "\n" (+doom-dashboard--center +doom-dashboard--width "Welcome Home, Master.")))
@@ -46,9 +66,12 @@
 ;; Blink cursor
 (blink-cursor-mode 1)
 
-;; Theme
-(setq doom-theme 'doom-nord)
-;; (setq doom-theme 'doom-gruvbox)
+;; -------------------------------
+;; Theme configuration
+;; -------------------------------
+
+(setq doom-theme 'doom-gruvbox)
+;; (setq doom-theme 'doom-dracula)
 
 ;; Maintain terminal transparency in Doom Emacs
 (after! doom-themes
@@ -191,27 +214,50 @@
 ;; Directories configuration (lazy creation)
 ;; -------------------------------
 
-(setq my/directories '("~/Org"
-                       "~/Org/journal"
-                       "~/Org/journal/personal"
-                       "~/Org/journal/work"
-                       "~/Org/agenda"
-                       "~/Org/notes"
-                       "~/Org/notes/blog"
-                       "~/Org/notes/book"
-                       "~/Org/notes/personal"
-                       "~/Org/notes/work"
-                       "~/Org/notes/games"
-                       "~/Library"
-                       "~/Workspace"
-                       "~/Workspace/Books"
-                       "~/Workspace/Books/latex"
-                       "~/Workspace/Books/org"
-                       "~/Workspace/Blog"
-                       "~/Workspace/Personal"
-                       "~/Workspace/Scripts"
-                       "~/Workspace/Work"
-                       "~/Workspace/Games"))
+(defvar +my/org-base-dir (expand-file-name "~/Org")
+  "Base directory for Org files.")
+
+(defvar +my/org-notes-dir (expand-file-name "notes" +my/org-base-dir)
+  "Directory for Org notes.")
+
+(defvar +my/org-agenda-dir (expand-file-name "agenda" +my/org-base-dir)
+  "Directory for Org agenda files.")
+
+(defvar +my/org-work-dir (expand-file-name "work" +my/org-notes-dir)
+  "Directory for work-related notes.")
+
+(defvar +my/org-journal-dir (expand-file-name "journal" +my/org-base-dir)
+  "Directory for Org journal.")
+
+(defvar +my/workspace-dir (expand-file-name "~/Workspace")
+  "Workspace base directory.")
+
+(defvar +my/library-dir (expand-file-name "~/Library")
+  "Library base directory.")
+
+(setq my/directories
+      (append
+       (list +my/org-base-dir
+             (expand-file-name "journal" +my/org-base-dir)
+             (expand-file-name "journal/personal" +my/org-base-dir)
+             (expand-file-name "journal/work" +my/org-base-dir)
+             +my/org-agenda-dir
+             +my/org-notes-dir
+             (expand-file-name "notes/blog" +my/org-notes-dir)
+             (expand-file-name "notes/book" +my/org-notes-dir)
+             (expand-file-name "notes/personal" +my/org-notes-dir)
+             +my/org-work-dir
+             (expand-file-name "notes/games" +my/org-notes-dir))
+       (list +my/library-dir
+             +my/workspace-dir
+             (expand-file-name "Books" +my/workspace-dir)
+             (expand-file-name "Books/latex" +my/workspace-dir)
+             (expand-file-name "Books/org" +my/workspace-dir)
+             (expand-file-name "Blog" +my/workspace-dir)
+             (expand-file-name "Personal" +my/workspace-dir)
+             (expand-file-name "Scripts" +my/workspace-dir)
+             (expand-file-name "Work" +my/workspace-dir)
+             (expand-file-name "Games" +my/workspace-dir))))
 
 (defun +my/create-directories (&optional force)
   "Create configured directories. With FORCE, create even if exist."
@@ -396,22 +442,24 @@
 ;; Typescript (NestJS) configuration
 ;; -------------------------------
 
-(add-to-list 'exec-path "~/.volta/bin")
+(add-to-list 'exec-path (expand-file-name "~/.volta/bin"))
 
 (use-package! typescript-mode
-  :hook (typescript-mode . lsp-deferred)
+  :init
+  (setq lsp-clients-typescript-auto-install-server t
+        lsp-clients-typescript-log-verbosity "debug"
+        lsp-completion-enable-auto-import t
+        lsp-clients-typescript-init-opts '(:plugins ["@nestjs/swagger-plugin"]
+                                          :compilerOptions {:experimentalDecorators t})
+        lsp-tsserver-plugins-path (expand-file-name "~/node_modules"))
+  :hook (typescript-mode . lsp-deferred))
+
+(use-package! prettier-js
+  :init
+  (setq prettier-js-args '("--trailing-comma" "all"
+                          "--single-quote" "true"))
   :config
-  (setq lsp-clients-typescript-auto-install-server t  ; Install automatically
-        lsp-clients-typescript-log-verbosity "debug"  ; Detailed logs
-        lsp-completion-enable-auto-import t           ; Auto-imports
-        lsp-tsserver-plugins-path "~/node_modules"))    ; TS plugins path
-
-(setq lsp-clients-typescript-init-opts '(:plugins ["@nestjs/swagger-plugin"]
-                                         :compilerOptions {:experimentalDecorators t}))
-
-(setq prettier-js-args '("--trailing-comma" "all"
-                         "--single-quote" "true")
-      eslintd-fix-mode t)  ; Fix errors on save
+  (setq eslintd-fix-mode t))
 
 ;; -------------------------------
 ;; Containers configuration
@@ -608,15 +656,13 @@
 ;; RSS configuration
 ;; -------------------------------
 
-(add-hook! 'elfeed-search-mode-hook #'elfeed-update)
-
 ;; Set org feed file
-(setq rmh-elfeed-org-files '("~/.config/doom/elfeed/elfeeds.org"))
+(setq rmh-elfeed-org-files (list (expand-file-name "elfeed/elfeeds.org" +my/doom-dir)))
 
 (after! elfeed
   (setq elfeed-search-filter "@7-days-ago +unread")
   (setq elfeed-org-allow-http-feeds t)
-  (setq elfeed-db-directory "~/.elfeed")
+  (setq elfeed-db-directory (expand-file-name "~/.elfeed"))
   (load! "lisp/elfeed-download")
   (require 'elfeed-org)
   (elfeed-org)

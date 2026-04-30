@@ -18,10 +18,14 @@
 ;; Magit
 ;; -----------------------------------
 (package! magit-delta)
-(package! glab)
-(package! gtea)
-(package! gogs)
-(package! buck)
+(package! glab
+  :recipe (:host github :repo "magit/ghub" :files ("glab.el")))
+(package! gtea
+  :recipe (:host github :repo "emacsattic/gtea" :files ("*.el")))
+(package! gogs
+  :recipe (:host github :repo "emacsattic/gogs" :files ("*.el")))
+(package! buck
+  :recipe (:host github :repo "emacsattic/buck" :files ("*.el")))
 
 ;; -----------------------------------
 ;; Notifications

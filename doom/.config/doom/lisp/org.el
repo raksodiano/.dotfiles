@@ -1,8 +1,11 @@
 ;;; org.el --- Org-mode, LaTeX and Hugo configuration  -*- lexical-binding: t; -*-
 
-(setq org-directory "~/Org"
-      org-roam-directory "~/Org/notes"
-      org-journal-dir "~/Org/journal"
+(defvar +my/doom-dir (expand-file-name "~/.config/doom")
+  "Doom configuration directory.")
+
+(setq org-directory +my/org-base-dir
+      org-roam-directory +my/org-notes-dir
+      org-journal-dir (expand-file-name "personal" +my/org-journal-dir)
       org-startup-indented t)
 
 (use-package org
@@ -13,20 +16,20 @@
         :n "<M-left>" #'org-do-promote
         :n "<M-right>" #'org-do-demote))
 
-(setq org-clock-sound "~/.config/doom/sounds/bell.wav")
+(setq org-clock-sound (expand-file-name "sounds/bell.wav" +my/doom-dir))
 
-(defvar my/sounds-dir (expand-file-name "~/.config/doom/sounds/")
+(defvar my/sounds-dir (expand-file-name "sounds/" +my/doom-dir)
   "Directory containing notification sound files.")
 
 (defvar my/sound-files
   (list
-   (cons 'urgent "~/.config/doom/sounds/alarm-clock-elapsed.wav")
-   (cons 'high "~/.config/doom/sounds/window-attention.wav")
-   (cons 'medium "~/.config/doom/sounds/dialog-warning.wav")
-   (cons 'low "~/.config/doom/sounds/dialog-information.wav")
-   (cons 'normal "~/.config/doom/sounds/bell.wav")
-   (cons 'moderate "~/.config/doom/sounds/message-new-instant.wav"))
-   "Sound files mapped by severity level.")
+   (cons 'urgent (expand-file-name "alarm-clock-elapsed.wav" my/sounds-dir))
+   (cons 'high (expand-file-name "window-attention.wav" my/sounds-dir))
+   (cons 'medium (expand-file-name "dialog-warning.wav" my/sounds-dir))
+   (cons 'low (expand-file-name "dialog-information.wav" my/sounds-dir))
+   (cons 'normal (expand-file-name "bell.wav" my/sounds-dir))
+   (cons 'moderate (expand-file-name "message-new-instant.wav" my/sounds-dir)))
+  "Sound files mapped by severity level.")
 
 (defun my/get-org-item-severity ()
   "Get severity from current org item property."
@@ -37,9 +40,10 @@
 (defun my/play-sound-by-severity (&optional severity)
   "Play notification sound based on SEVERITY level."
   (let* ((sev (or severity 'normal))
-         (sound-file (expand-file-name (cdr (assoc sev my/sound-files)) "~/.config/doom")))
+         (sound-file (expand-file-name (cdr (assoc sev my/sound-files)) +my/doom-dir))
+         (fallback (expand-file-name (cdr (assoc 'normal my/sound-files)) +my/doom-dir)))
     (unless (file-exists-p sound-file)
-      (setq sound-file (expand-file-name (cdr (assoc 'normal my/sound-files)) "~/.config/doom")))
+      (setq sound-file fallback))
     (when (file-exists-p sound-file)
       (start-process-shell-command "play-sound" nil (format "aplay -q %s" sound-file)))))
 
@@ -83,24 +87,25 @@
               (when (> my/org-alert-notification-count 0)
                 (my/play-sound-by-severity 'high))))
 
-;; (setq alert-sound-play-command "aplay -q %s")
-
-;; (setq alert-sound-play-command "aplay -q %s")
+;; Configure org alerts
 
 (use-package! org-journal
   :defer t
   :custom
-  (org-journal-dir "~/Org/journal/personal/")
+  (org-journal-dir (expand-file-name "personal" +my/org-journal-dir))
   (org-journal-file-format "%Y-%m-%d.org")
   (org-journal-date-format "%A, %d %B %Y")
   (org-journal-date-prefix "#+TITLE: ")
   (org-journal-time-format "")
   (org-journal-enable-agenda-integration t))
 
+(defvar +my/org-journal-work-dir (expand-file-name "work" +my/org-journal-dir)
+  "Directory for work journal entries.")
+
 (defun my/org-journal-open-work ()
   "Open or create today's work journal entry."
   (interactive)
-  (let ((org-journal-dir "~/Org/journal/work/")
+  (let ((org-journal-dir +my/org-journal-work-dir)
         (org-journal-file-format "%Y-%m-%d.org")
         (org-journal-date-format "%A, %d %B %Y")
         (org-journal-date-prefix "#+TITLE: ")
@@ -112,18 +117,21 @@
        :desc "Open personal journal" "p" #'org-journal-new-entry
        :desc "Open work journal"  "w" #'my/org-journal-open-work))
 
+(defvar +my/org-work-dir (expand-file-name "work" +my/org-notes-dir)
+  "Directory for work-related notes.")
+
 (setq org-agenda-files
       (append
-       (directory-files-recursively "~/Org/agenda" "\\.org$")
-       (directory-files-recursively "~/Org/notes" "\\.org$")))
+       (directory-files-recursively +my/org-agenda-dir "\\.org$")
+       (directory-files-recursively +my/org-notes-dir "\\.org$")))
 
 (setq org-agenda-files-work
-      (directory-files-recursively "~/Org/notes/work" "\\.org$"))
+      (directory-files-recursively +my/org-work-dir "\\.org$"))
 
 (setq org-agenda-custom-commands
       '(("w" "Work Agenda"
-         ((agenda "" ((org-agenda-files (directory-files-recursively "~/Org/notes/work" "\\.org$"))))
-          (todo "" ((org-agenda-files (directory-files-recursively "~/Org/notes/work" "\\.org$"))))))))
+         ((agenda "" ((org-agenda-files org-agenda-files-work)))
+          (todo "" ((org-agenda-files org-agenda-files-work)))))))
 
 (setq org-edit-src-content-indentation 2)
 
@@ -173,33 +181,33 @@
 (defun my/org-notas-trabajo-file ()
   "Returns a file path based on current date for work notes."
   (let* ((fecha (format-time-string "%Y/%m/%d-note.org"))
-         (ruta (expand-file-name fecha "~/Org/notes/work/")))
+         (ruta (expand-file-name fecha +my/org-work-dir)))
     (make-directory (file-name-directory ruta) t)
     ruta))
 
-(setq org-capture-templates
+(defvar +my/org-capture-paths
   `(("a" "Events" entry
-     (file+headline "~/Org/agenda/agenda.org" "Events")
+     (file+headline ,(expand-file-name "agenda.org" +my/org-agenda-dir) "Events")
      "* TODO %?\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:"
      :empty-lines 1 :mkdir t)
 
     ("t" "General Task" entry
-     (file+headline "~/Org/notes/taks.org" "General Task")
+     (file+headline ,(expand-file-name "tasks.org" +my/org-notes-dir) "General Task")
      "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
      :empty-lines 1 :mkdir t)
 
     ("p" "Personal Notes" entry
-     (file+headline "~/Org/notes/personal/notes.org" "Personal Notes")
+     (file+headline ,(expand-file-name "personal/notes.org" +my/org-notes-dir) "Personal Notes")
      "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
      :empty-lines 1 :mkdir t)
 
     ("b" "Book Ideas" entry
-     (file+headline "~/Org/notes/book/ideas.org" "Book Ideas")
+     (file+headline ,(expand-file-name "book/ideas.org" +my/org-notes-dir) "Book Ideas")
      "* IDEA %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
      :empty-lines 1 :mkdir t)
 
     ("h" "Blog Ideas" entry
-     (file+headline "~/Org/notes/blog/posts.org" "Blog Ideas")
+     (file+headline ,(expand-file-name "blog/posts.org" +my/org-notes-dir) "Blog Ideas")
      "* IDEA %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
      :empty-lines 1 :mkdir t)
 
@@ -211,14 +219,17 @@
     ("g" "Games")
 
     ("gg" "Game's Notes" entry
-     (file+headline "~/Org/notes/games/notes.org" "Game's Notes")
+     (file+headline ,(expand-file-name "games/notes.org" +my/org-notes-dir) "Game's Notes")
      "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
      :empty-lines 1 :mkdir t)
 
     ("gi" "Game ideas" entry
-     (file+headline "~/Org/notes/games/ideas.org" "Game ideas")
+     (file+headline ,(expand-file-name "games/ideas.org" +my/org-notes-dir) "Game ideas")
      "* IDEA %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
-     :empty-lines 1 :mkdir t)))
+     :empty-lines 1 :mkdir t))
+  "Org capture templates with dynamic paths.")
+
+(setq org-capture-templates +my/org-capture-paths)
 
 (defun my/org-mode-set-language ()
   "Sets the Hunspell dictionary according to the #+LANGUAGE option of the Org buffer."
@@ -231,57 +242,49 @@
 
 (after! ox-latex
   (let* ((class-dir (expand-file-name "latex-classes/" doom-user-dir))
-         (themes
-          '(("report-custom" . "report.cls")
-            ("poem" . "poem.cls"))))
+         (themes '(("report-custom" . "report.cls")
+                   ("poem" . "poem.cls"))))
 
     (dolist (theme themes)
-      (let* ((name  (car theme))
-             (file  (cdr theme))
-             (path  (expand-file-name file class-dir)))
+      (let* ((name (car theme))
+             (file (cdr theme))
+             (path (expand-file-name file class-dir)))
         (when (file-exists-p path)
-          (let ((class-str (with-temp-buffer
-                             (insert-file-contents path)
-                             (buffer-string))))
-            (add-to-list 'org-latex-classes
-                         `(,name
-                           ,class-str
-                           ("\\section{%s}"       . "\\section*{%s}")
-                           ("\\subsection{%s}"    . "\\subsection*{%s}")
-                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                           ("\\paragraph{%s}"     . "\\paragraph*{%s}")
-                           ("\\subparagraph{%s}"  . "\\subparagraph*{%s}"))
-                         t))))))
+          (with-temp-buffer
+            (insert-file-contents path)
+            (let ((class-str (buffer-string)))
+              (add-to-list 'org-latex-classes
+                           (list name class-str
+                                 '("\\section{%s}" . "\\section*{%s}")
+                                 '("\\subsection{%s}" . "\\subsection*{%s}")
+                                 '("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                                 '("\\paragraph{%s}" . "\\paragraph*{%s}")
+                                 '("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+                           t)))))
 
-  (let ((styles-dir (expand-file-name "latex-classes/styles/" doom-user-dir)))
-    (setenv "TEXINPUTS"
-            (concat styles-dir ":" (getenv "TEXINPUTS"))))
+    (let ((styles-dir (expand-file-name "latex-classes/styles/" doom-user-dir)))
+      (setenv "TEXINPUTS" (concat styles-dir ":" (getenv "TEXINPUTS"))))
 
-  (setq org-latex-compiler "xelatex"
-        org-latex-pdf-process
-        '("xelatex -interaction nonstopmode -output-directory %o %f"
-          "xelatex -interaction nonstopmode -output-directory %o %f")))
+    (setq org-latex-compiler "xelatex"
+          org-latex-pdf-process '("xelatex -interaction nonstopmode -output-directory %o %f"
+                                  "xelatex -interaction nonstopmode -output-directory %o %f"))))
 
 (after! ox-hugo
-  (setq org-hugo-base-dir "~/Workspace/blog"
-        org-hugo-content-directory "content-org"
-        org-hugo-section "posts"
-        org-hugo-preserve-filing 'force
-        org-hugo-auto-set-lastmod t
-        org-hugo-export-with-toc nil
-        org-hugo-allow-spaces-in-tags t
-        org-hugo-paired-shortcodes "note,warning,tip,details"
+  (let ((blog-dir (expand-file-name "~/Workspace/blog")))
+    (setq org-hugo-base-dir blog-dir
+          org-hugo-content-directory "content-org"
+          org-hugo-section "posts"
+          org-hugo-preserve-filing 'force
+          org-hugo-auto-set-lastmod t
+          org-hugo-export-with-toc nil
+          org-hugo-allow-spaces-in-tags t
+          org-hugo-paired-shortcodes "note,warning,tip,details"
+          org-hugo-taxonomy-tags "tags"
+          org-hugo-taxonomy-categories "categories"
+          org-hugo-static-file-extensions '("png" "jpg" "jpeg" "gif" "svg" "pdf" "css" "js" "woff" "woff2" "ttf")
+          org-hugo-languages '(("es" . "Spanish") ("en" . "English"))))))
 
-        org-hugo-taxonomy-tags "tags"
-        org-hugo-taxonomy-categories "categories"
-
-        org-hugo-static-file-extensions
-        '("png" "jpg" "jpeg" "gif" "svg" "pdf" "css" "js" "woff" "woff2" "ttf")
-
-        org-hugo-languages '(("es" . "Spanish")
-                             ("en" . "English"))))
-
-(setq deft-directory "~/Org/")
+(setq deft-directory +my/org-base-dir)
 (setq deft-recursive t)
 (setq deft-extensions '("org" "md" "txt"))
 (setq deft-default-extension "org")

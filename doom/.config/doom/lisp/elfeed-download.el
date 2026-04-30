@@ -8,7 +8,7 @@
 
 (require 'elfeed)
 
-(defvar elfeed-download-base-dir "~/Downloads/Elfeed/"
+(defvar elfeed-download-base-dir (expand-file-name "~/Downloads/Elfeed/")
   "Base directory for downloaded content.")
 
 (defvar elfeed-download-youtube-dir "youtube/"
@@ -19,6 +19,9 @@
 
 (defvar elfeed-download-node-script-path (expand-file-name "~/.config/scripts/save-article.js")
   "Path to the Node.js Playwright script for saving articles as PDFs.")
+
+(defvar elfeed-download-scripts-dir (expand-file-name "~/.config/scripts")
+  "Directory containing helper scripts.")
 
 ;;; Helper Functions
 (defun elfeed-download--ensure-directory (dir)

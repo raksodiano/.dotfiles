@@ -30,15 +30,15 @@
   :defer t
   :commands calibredb
   :config
-  (setq calibredb-root-dir "~/Library"
+  (setq calibredb-root-dir (expand-file-name "~/Library")
         calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir)
-        calibredb-library-alist '(("~/Library"))
+        calibredb-library-alist (list (expand-file-name "~/Library"))
         calibredb-format-all-the-icons t))
 
 (use-package! emms
   :commands emms
   :init
-  (setq emms-source-file-default-directory "~/Music")
+  (setq emms-source-file-default-directory (expand-file-name "~/Music"))
   :config
   (emms-all)
   (emms-default-players)
@@ -76,7 +76,7 @@
       (when cover-files
         (concat dir (car cover-files)))))
 
-  (defvar my/emms-default-cover "~/.config/doom/images/kmix.svg")
+  (defvar my/emms-default-cover (expand-file-name "~/.config/doom/images/kmix.svg"))
 
   (defun my/emms-extract-cover (track)
     "Extract embedded cover art from TRACK to a temporary file, if it exists. Returns path or nil."
