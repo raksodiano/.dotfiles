@@ -23,8 +23,6 @@ few command lines.
 - bat ➔ A cat(1) clone with wings
 - doom ➔ Doom Emacs configuration framework
 - fastfetch ➔ Fast system information tool
-- htop ➔ Interactive process viewer
-- paru ➔ Feature-packed AUR helper
 - starship ➔ Cross-shell prompt
 - tmux ➔ Terminal multiplexer
 - zsh ➔ Customizable shell
@@ -73,7 +71,7 @@ You can now install any configurations you wish to copy using GNU Stow:
   stow -D htop
   #+END_SRC
 
-* Installation Script
+* Installation Script (discontinued)
 
 ** Usage
 
@@ -149,16 +147,9 @@ Functions to configure each dotfile using GNU Stow:
 
 | Directory       | Description            |
 |-----------------+------------------------|
-| =alacritty/=    | Alacritty terminal     |
 | =bat/=          | bat (cat replacement)  |
 | =doom/=         | Doom Emacs config      |
 | =fastfetch/=    | System info fetcher    |
-| =htop/=         | Process viewer         |
-| =kitty/=        | Kitty terminal         |
-| =niri/=         | Niri Wayland compositor|
-| =noctalia/=     | Noctalia Shell         |
-| =paru/=         | Paru AUR helper        |
-| =rmpc/=         | MPD client             |
 | =starship/=     | Cross-shell prompt     |
 | =tmux/=         | Terminal multiplexer   |
 | =zsh/=          | Zsh shell config       |
