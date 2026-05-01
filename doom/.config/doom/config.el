@@ -380,11 +380,11 @@
 (custom-set-faces
  '(magit-blame-hash ((t (:foreground "#7F7F7F"))))) ; Hash color
 
- (add-hook 'magit-post-push-hook 'magit-refresh-all)
- (add-hook 'magit-post-commit-hook 'magit-refresh-all)
- (add-hook 'magit-post-merge-hook 'magit-refresh-all)
- (add-hook 'magit-post-checkout-hook 'magit-refresh-all)
- (add-hook 'magit-post-fetch-hook 'magit-refresh-all)
+(add-hook 'magit-post-push-hook 'magit-refresh-all)
+(add-hook 'magit-post-commit-hook 'magit-refresh-all)
+(add-hook 'magit-post-merge-hook 'magit-refresh-all)
+(add-hook 'magit-post-checkout-hook 'magit-refresh-all)
+(add-hook 'magit-post-fetch-hook 'magit-refresh-all)
 
 (use-package! magit-delta
   :hook (magit-mode . magit-delta-mode)
@@ -500,7 +500,7 @@
   (setq dirvish-default-layout '(0 0 0.4)
         dirvish-layout-recipes '((1 0.11 0.55)
                                  (0 0    0.40)))
-  (pushnew! dirvish-attributes 'file-size))
+  (add-to-list dirvish-attributes 'file-size))
 
 ;; Shortcut to open Dired from leader
 (map! :leader
@@ -598,8 +598,8 @@
   ;; OS-adapted notifications
   (detached-notification-function
    (if IS-LINUX
-       #'detached-state-transition-notifications-message
-     #'detached-extra-alert-notification))
+      #'detached-state-transition-notifications-message
+      #'detached-extra-alert-notification))
   ;; Base directories
   (detached-db-directory doom-cache-dir)
   (detached-session-directory (temporary-file-directory))
