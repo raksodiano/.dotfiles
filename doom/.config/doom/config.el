@@ -499,8 +499,8 @@
 (after! dirvish
   (setq dirvish-default-layout '(0 0 0.4)
         dirvish-layout-recipes '((1 0.11 0.55)
-                                 (0 0    0.40)))
-  (add-to-list dirvish-attributes 'file-size))
+                                 (0 0    0.40))
+        dirvish-attributes '(vc-state subtree-state nerd-icons file-size)))
 
 ;; Shortcut to open Dired from leader
 (map! :leader
