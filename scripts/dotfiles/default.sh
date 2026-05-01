@@ -19,18 +19,6 @@ install_dotfile() {
 }
 
 # ============================================
-# TERMINAL EMULATORS
-# ============================================
-
-install_alacritty() {
-  install_dotfile "alacritty" "Alacritty"
-}
-
-install_kitty() {
-  install_dotfile "kitty" "Kitty"
-}
-
-# ============================================
 # SHELL & PROMPT
 # ============================================
 
@@ -48,24 +36,18 @@ install_zsh() {
   if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
     echo "$INFO Installing zsh-autosuggestions plugin..."
     git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
-  else
-    echo "$INFO zsh-autosuggestions already installed"
   fi
   
   # zsh-history-substring-search
   if [ ! -d "$ZSH_CUSTOM/plugins/zsh-history-substring-search" ]; then
     echo "$INFO Installing zsh-history-substring-search plugin..."
     git clone https://github.com/zsh-users/zsh-history-substring-search "$ZSH_CUSTOM/plugins/zsh-history-substring-search"
-  else
-    echo "$INFO zsh-history-substring-search already installed"
   fi
   
   # zsh-syntax-highlighting
   if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
     echo "$INFO Installing zsh-syntax-highlighting plugin..."
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
-  else
-    echo "$INFO zsh-syntax-highlighting already installed"
   fi
 
   install_dotfile "zsh" "Zsh"
@@ -107,17 +89,9 @@ install_doom() {
   echo "$OK Doom installation completed!"
 }
 
-install_daemon_emacs() {
-  install_dotfile "daemon-emacs" "Emacs Daemon"
-}
-
 # ============================================
 # SYSTEM TOOLS
 # ============================================
-
-install_htop() {
-  install_dotfile "htop" "htop"
-}
 
 install_bat() {
   install_dotfile "bat" "bat"
@@ -125,26 +99,6 @@ install_bat() {
 
 install_fastfetch() {
   install_dotfile "fastfetch" "Fastfetch"
-}
-
-install_paru() {
-  install_dotfile "paru" "Paru"
-}
-
-install_rmpc() {
-  install_dotfile "rmpc" "rmpc (MPD client)"
-}
-
-# ============================================
-# WINDOW MANAGER / COMPOSITOR
-# ============================================
-
-install_niri() {
-  install_dotfile "niri" "Niri"
-}
-
-install_noctalia() {
-  install_dotfile "noctalia" "Noctalia Shell"
 }
 
 # ============================================
@@ -155,29 +109,17 @@ install_all_dotfiles() {
   echo "$INFO Installing all dotfiles..."
   echo "-----"
   
-  # Terminal emulators
-  install_alacritty
-  install_kitty
-  
   # Shell & prompt
   install_zsh
   install_starship
   install_tmux
   
   # System tools
-  install_htop
   install_bat
   install_fastfetch
-  install_paru
-  install_rmpc
-  
-  # Window manager
-  install_niri
-  install_noctalia
   
   # Editors
   install_doom
-  # install_daemon_emacs
 
   echo "-----"
   echo "$OK All dotfiles configured!"
