@@ -1,0 +1,116 @@
+#+TITLE: Fedora System Setup Installation Script
+
+* Fedora System Setup Installation Script
+
+Automates the configuration of a Fedora Linux system: sets up repositories, installs packages, enables services, and deploys dotfiles using GNU Stow.
+
+** Prerequisites
+
+- Fedora Linux
+- =sudo= privileges
+- =git= installed
+- Existing configuration files:
+  - =scripts/packages.conf=
+  - =scripts/dotfiles/default.sh=
+
+** Usage
+
+Run the script from the =.dotfiles= directory:
+
+#+begin_src bash
+./install.sh
+#+end_src
+
+With custom hostname:
+
+#+begin_src bash
+./install.sh --hostname mi-equipo
+#+end_src
+
+Or using the short form:
+
+#+begin_src bash
+./install.sh -H mi-equipo
+#+end_src
+
+*Note:* The script will prompt for your =sudo= password **once** at the beginning. It then caches the credentials for the entire session, so you will not be asked again even if operations (like =dnf update=) take a long time.
+
+** Script Structure
+
+*** =install.sh=
+
+Main installation script that handles the full setup flow:
+
+1. *Caches sudo credentials* (prompted once, refreshed every 4 minutes in background)
+2. *Sets hostname* (if =--hostname= or =-H= flag is provided)
+3. *Configures DNF options* (=fastestmirror=, =max_parallel_downloads=, =deltarpm=)
+4. *Applies system optimizations*:
+   - Sets =vm.swappiness=10= in =/etc/sysctl.conf=
+   - Enables =MESA_GLTHREAD=true= in =~/.profile=
+   - Masks =tracker-miner-fs-3.service= for user
+   - Configures MAC randomization via NetworkManager
+5. *Updates the system* (with validation to avoid re-updating)
+6. *Installs plugins* (=dnf-plugins-core=, =core= group) with validation
+7. *Adds repositories*:
+   - Fedora Workstation repositories
+   - RPM Fusion (free and nonfree)
+   - Terra repository
+   - Brave browser repository
+   - Librewolf repository
+   - VSCodium repository
+   - Antigravity repository
+   - Nerd Fonts (COPR)
+   - Docker repository
+8. *Sets up Flatpak* and Flathub (system and user)
+9. *Installs firmware updates* via =fwupdmgr= (refreshes only if metadata older than 1 day)
+10. *Installs multimedia codecs* with validation (multimedia group, ffmpeg, sound-and-video, etc.)
+11. *Installs packages* from =scripts/packages.conf= (only if not already installed)
+12. *Enables system and user services* (with =NOTE= if already enabled)
+13. *Deploys dotfiles* using GNU Stow via =scripts/dotfiles/default.sh=
+14. *Configures GNOME settings*:
+    - Installs =gnome-tweaks= and Extension Manager (flatpak)
+    - Display scaling, keyboard layout (EU), 24h time format
+    - Window buttons, dark theme, disable animations
+    - Lock screen delay (15 min), Nautilus sort order
+    - Enables AppIndicator extension
+    - Configures Ctrl+Alt+T shortcut for ptyxis terminal
+
+*** =scripts/packages.conf=
+
+Configuration file containing all packages organized in arrays:
+
+| Array          | Description                             |
+|----------------+-----------------------------------------|
+| =SYSTEM_UTILS=   | System monitoring, file utilities, etc. |
+| =DEV_TOOLS=      | Editors, compilers, languages, LaTeX    |
+| =VIRTUALIZATION= | Docker, QEMU, libvirt, virt-manager     |
+| =MAINTENANCE=    | System maintenance tools                |
+| =DESKTOP=        | Window manager, terminals, browsers     |
+| =OFFICE=         | Office suite                            |
+| =MEDIA=          | Media players and tools                 |
+| =CODECS=         | Audio/video codecs                      |
+| =FONTS=          | Nerd Fonts and other fonts              |
+| =SERVICES=       | System services (systemd)               |
+| =SERVICES_USER=  | User services (systemd --user)          |
+
+*** =scripts/dotfiles/default.sh=
+
+Functions to configure each dotfile using GNU Stow:
+
+| Function             | Dotfile             |
+|----------------------+---------------------|
+| =install_zsh=          | Zsh + Oh My Zsh     |
+| =install_starship=     | Starship prompt     |
+| =install_tmux=         | Tmux multiplexer    |
+| =install_doom=         | Doom Emacs          |
+| =install_bat=          | bat config          |
+| =install_fastfetch=    | Fastfetch config    |
+| =install_all_dotfiles= | Install all at once |
+
+** Key Features
+
+- *Idempotent:* Only installs or enables items if they are not already present on the system.
+- *Path Handling:* Uses =SCRIPT_DIR= to allow running the script from any directory, not just the =.dotfiles= folder.
+- *Sudo Caching:* Validates =sudo= credentials once and refreshes the cache in the background to prevent re-prompting.
+- *Error Handling:* Exits immediately on any error and reports the exact line number where the failure occurred.
+- *Clean Output:* Uses colored status messages (=INFO=, =OK=, =ERROR=, =WARN=) for readable output.
