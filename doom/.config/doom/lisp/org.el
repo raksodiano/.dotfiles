@@ -9,12 +9,12 @@
       org-startup-indented t)
 
 (use-package org
-  :custom (org-modules '(org-habit)))
+    :custom (org-modules '(org-habit)))
 
 (after! org
-  (map! :map org-mode-map
-        :n "<M-left>" #'org-do-promote
-        :n "<M-right>" #'org-do-demote))
+    (map! :map org-mode-map
+     :n "<M-left>" #'org-do-promote
+     :n "<M-right>" #'org-do-demote))
 
 (setq org-clock-sound (expand-file-name "sounds/bell.wav" +my/doom-dir))
 
@@ -138,7 +138,7 @@
 (setq-default fill-column 120)
 (setq visual-fill-column-width 120
       visual-fill-column-center-text t)
-(add-hook 'org-mode-hook #'visual-fill-column-mode)
+;; (add-hook 'org-mode-hook #'visual-fill-column-mode)
 
 (defface +org-todo-wait
     '((t (:inherit (bold warning org-todo))))
@@ -192,41 +192,41 @@
      :empty-lines 1 :mkdir t)
 
     ("t" "General Task" entry
-     (file+headline ,(expand-file-name "tasks.org" +my/org-notes-dir) "General Task")
-     "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
-     :empty-lines 1 :mkdir t)
+         (file+headline ,(expand-file-name "tasks.org" +my/org-notes-dir) "General Task")
+         "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+         :empty-lines 1 :mkdir t)
 
     ("p" "Personal Notes" entry
-     (file+headline ,(expand-file-name "personal/notes.org" +my/org-notes-dir) "Personal Notes")
-     "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
-     :empty-lines 1 :mkdir t)
+         (file+headline ,(expand-file-name "personal/notes.org" +my/org-notes-dir) "Personal Notes")
+         "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+         :empty-lines 1 :mkdir t)
 
     ("b" "Book Ideas" entry
-     (file+headline ,(expand-file-name "book/ideas.org" +my/org-notes-dir) "Book Ideas")
-     "* IDEA %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
-     :empty-lines 1 :mkdir t)
+         (file+headline ,(expand-file-name "book/ideas.org" +my/org-notes-dir) "Book Ideas")
+         "* IDEA %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+         :empty-lines 1 :mkdir t)
 
     ("h" "Blog Ideas" entry
-     (file+headline ,(expand-file-name "blog/posts.org" +my/org-notes-dir) "Blog Ideas")
-     "* IDEA %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
-     :empty-lines 1 :mkdir t)
+         (file+headline ,(expand-file-name "blog/posts.org" +my/org-notes-dir) "Blog Ideas")
+         "* IDEA %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+         :empty-lines 1 :mkdir t)
 
     ("w" "Work Notes" entry
-     (file+headline ,(my/org-notas-trabajo-file) "Work Notes")
-     "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
-     :empty-lines 1)
+         (file+headline ,(my/org-notas-trabajo-file) "Work Notes")
+         "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+         :empty-lines 1)
 
     ("g" "Games")
 
     ("gg" "Game's Notes" entry
-     (file+headline ,(expand-file-name "games/notes.org" +my/org-notes-dir) "Game's Notes")
-     "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
-     :empty-lines 1 :mkdir t)
+          (file+headline ,(expand-file-name "games/notes.org" +my/org-notes-dir) "Game's Notes")
+          "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+          :empty-lines 1 :mkdir t)
 
     ("gi" "Game ideas" entry
-     (file+headline ,(expand-file-name "games/ideas.org" +my/org-notes-dir) "Game ideas")
-     "* IDEA %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
-     :empty-lines 1 :mkdir t))
+          (file+headline ,(expand-file-name "games/ideas.org" +my/org-notes-dir) "Game ideas")
+          "* IDEA %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
+          :empty-lines 1 :mkdir t))
   "Org capture templates with dynamic paths.")
 
 (setq org-capture-templates +my/org-capture-paths)
@@ -241,48 +241,48 @@
 (add-hook 'org-mode-hook #'my/org-mode-set-language)
 
 (after! ox-latex
-  (let* ((class-dir (expand-file-name "latex-classes/" doom-user-dir))
-         (themes '(("report-custom" . "report.cls")
-                   ("poem" . "poem.cls"))))
+    (let* ((class-dir (expand-file-name "latex-classes/" doom-user-dir))
+           (themes '(("report-custom" . "report.cls")
+                     ("poem" . "poem.cls"))))
 
-    (dolist (theme themes)
-      (let* ((name (car theme))
-             (file (cdr theme))
-             (path (expand-file-name file class-dir)))
-        (when (file-exists-p path)
-          (with-temp-buffer
-            (insert-file-contents path)
-            (let ((class-str (buffer-string)))
-              (add-to-list 'org-latex-classes
-                           (list name class-str
-                                 '("\\section{%s}" . "\\section*{%s}")
-                                 '("\\subsection{%s}" . "\\subsection*{%s}")
-                                 '("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                                 '("\\paragraph{%s}" . "\\paragraph*{%s}")
-                                 '("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
-                           t)))))
+      (dolist (theme themes)
+        (let* ((name (car theme))
+               (file (cdr theme))
+               (path (expand-file-name file class-dir)))
+          (when (file-exists-p path)
+            (with-temp-buffer
+              (insert-file-contents path)
+              (let ((class-str (buffer-string)))
+                (add-to-list 'org-latex-classes
+                             (list name class-str
+                                   '("\\section{%s}" . "\\section*{%s}")
+                                   '("\\subsection{%s}" . "\\subsection*{%s}")
+                                   '("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                                   '("\\paragraph{%s}" . "\\paragraph*{%s}")
+                                   '("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+                             t)))))
 
-    (let ((styles-dir (expand-file-name "latex-classes/styles/" doom-user-dir)))
-      (setenv "TEXINPUTS" (concat styles-dir ":" (getenv "TEXINPUTS"))))
+        (let ((styles-dir (expand-file-name "latex-classes/styles/" doom-user-dir)))
+          (setenv "TEXINPUTS" (concat styles-dir ":" (getenv "TEXINPUTS"))))
 
-    (setq org-latex-compiler "xelatex"
-          org-latex-pdf-process '("xelatex -interaction nonstopmode -output-directory %o %f"
-                                  "xelatex -interaction nonstopmode -output-directory %o %f"))))
+        (setq org-latex-compiler "xelatex"
+              org-latex-pdf-process '("xelatex -interaction nonstopmode -output-directory %o %f"
+                                      "xelatex -interaction nonstopmode -output-directory %o %f"))))
 
-(after! ox-hugo
-  (let ((blog-dir (expand-file-name "~/Workspace/blog")))
-    (setq org-hugo-base-dir blog-dir
-          org-hugo-content-directory "content-org"
-          org-hugo-section "posts"
-          org-hugo-preserve-filing 'force
-          org-hugo-auto-set-lastmod t
-          org-hugo-export-with-toc nil
-          org-hugo-allow-spaces-in-tags t
-          org-hugo-paired-shortcodes "note,warning,tip,details"
-          org-hugo-taxonomy-tags "tags"
-          org-hugo-taxonomy-categories "categories"
-          org-hugo-static-file-extensions '("png" "jpg" "jpeg" "gif" "svg" "pdf" "css" "js" "woff" "woff2" "ttf")
-          org-hugo-languages '(("es" . "Spanish") ("en" . "English"))))))
+  (after! ox-hugo
+      (let ((blog-dir (expand-file-name "~/Workspace/blog")))
+        (setq org-hugo-base-dir blog-dir
+              org-hugo-content-directory "content-org"
+              org-hugo-section "posts"
+              org-hugo-preserve-filing 'force
+              org-hugo-auto-set-lastmod t
+              org-hugo-export-with-toc nil
+              org-hugo-allow-spaces-in-tags t
+              org-hugo-paired-shortcodes "note,warning,tip,details"
+              org-hugo-taxonomy-tags "tags"
+              org-hugo-taxonomy-categories "categories"
+              org-hugo-static-file-extensions '("png" "jpg" "jpeg" "gif" "svg" "pdf" "css" "js" "woff" "woff2" "ttf")
+              org-hugo-languages '(("es" . "Spanish") ("en" . "English"))))))
 
 (setq deft-directory +my/org-base-dir)
 (setq deft-recursive t)
