@@ -64,7 +64,31 @@ install_starship() {
 }
 
 install_tmux() {
+  # Install TPM (Tmux Plugin Manager) if not present
+  if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    echo "$INFO Installing TPM (Tmux Plugin Manager)..."
+    git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+  fi
+
+  # Stow tmux configuration
   install_dotfile "tmux" "Tmux"
+
+  # Install all plugins via TPM 
+  if command -v tmux &> /dev/null; then
+    echo "$INFO Installing Tmux plugins..."
+    local TPM_SOCKET="tpm_install_$$"
+    # Start temporary tmux server to avoid conflicts with existing sessions
+    tmux -L "$TPM_SOCKET" new-session -d -s tpm_install 2>/dev/null
+    # Source tmux config to load plugin list and initialize TPM
+    tmux -L "$TPM_SOCKET" source-file ~/.config/tmux/tmux.conf 2>/dev/null
+    # Run TPM's plugin installation script
+    tmux -L "$TPM_SOCKET" run-shell ~/.tmux/plugins/tpm/scripts/install_plugins.sh 2>/dev/null
+    # Clean up temporary tmux server
+    tmux -L "$TPM_SOCKET" kill-server 2>/dev/null
+    echo "$OK Tmux plugins installed and ready to use!"
+  else
+    echo "$WARN Tmux is not installed, skipping plugin installation."
+  fi
 }
 
 # ============================================
