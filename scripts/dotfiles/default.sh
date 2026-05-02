@@ -126,6 +126,22 @@ install_fastfetch() {
 }
 
 # ============================================
+# USER TOOLS
+# ============================================
+
+install_tridactyl() {
+  install_dotfile "tridactyl" "Tridactyl"
+}
+
+install_zathura() {
+  install_dotfile "zathura" "Zathura"
+}
+
+install_ytdlp() {
+  install_dotfile "yt-dlp" "yt-dlp"
+}
+
+# ============================================
 # INSTALL ALL DOTFILES
 # ============================================
 
@@ -144,6 +160,11 @@ install_all_dotfiles() {
   
   # Editors
   install_doom
+
+  # User tools
+  install_tridactyl
+  install_zathura
+  install_ytdlp
 
   echo "-----"
   echo "$OK All dotfiles configured!"
