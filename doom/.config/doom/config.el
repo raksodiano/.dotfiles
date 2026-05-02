@@ -112,7 +112,7 @@
 
 ;; IDE stile tabs (Centaur Tabs)
 (setq centaur-tabs-style "alternate"
-      centaur-tabs-height 32
+      centaur-tabs-height 28
       centaur-tabs-set-bar 'under)
 
 (centaur-tabs-mode t)
