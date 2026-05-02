@@ -88,6 +88,7 @@
 
 ;; Don't move cursor back when exiting insert mode
 (setq evil-move-cursor-back nil)
+
 ;; granular undo with evil mode
 (setq evil-want-fine-undo t)
 
@@ -103,8 +104,8 @@
       doom-big-font (font-spec :family "GeistMono Nerd Font" :size 22))
 
 (custom-set-faces!
-    '(mode-line :height 90 :inherit 'variable-pitch)
-    '(mode-line-inactive :height 80 :inherit 'variable-pitch))
+    '(mode-line :height 130 :inherit 'variable-pitch)
+    '(mode-line-inactive :height 120 :inherit 'variable-pitch))
 
 (after! all-the-icons
     (setq all-the-icons-scale-factor 1.5))
