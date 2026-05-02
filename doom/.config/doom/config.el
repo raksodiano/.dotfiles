@@ -70,9 +70,6 @@
 ;; Theme configuration
 ;; -------------------------------
 
-(setq doom-theme 'doom-gruvbox)
-;; (setq doom-theme 'doom-dracula)
-
 ;; Maintain terminal transparency in Doom Emacs
 (after! doom-themes
   (unless (display-graphic-p)
@@ -82,8 +79,8 @@
 (add-to-list 'default-frame-alist '(undecorated . t))
 
 ;; Transparency
-(set-frame-parameter (selected-frame) 'alpha '(94 . 97))
-(add-to-list 'default-frame-alist '(alpha . (94 . 97)))
+;; (set-frame-parameter (selected-frame) 'alpha '(94 . 97))
+;; (add-to-list 'default-frame-alist '(alpha . (94 . 97)))
 
 ;; Evil-escape sequence
 (setq-default evil-escape-key-sequence "kj")
