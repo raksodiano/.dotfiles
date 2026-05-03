@@ -138,7 +138,6 @@
 (setq-default fill-column 120)
 (setq visual-fill-column-width 120
       visual-fill-column-center-text t)
-;; (add-hook 'org-mode-hook #'visual-fill-column-mode)
 
 (defface +org-todo-wait
     '((t (:inherit (bold warning org-todo))))
@@ -241,43 +240,44 @@
 (add-hook 'org-mode-hook #'my/org-mode-set-language)
 
 (after! ox-latex
-  (let ((class-dir (expand-file-name "latex-classes/" doom-user-dir)))
-    ;; Recursively load all .cls files in latex-classes/ and all subdirectories
-    (dolist (cls-file (directory-files-recursively class-dir "\\.cls\\'"))
-      (with-temp-buffer
-        (insert-file-contents cls-file)
-        (goto-char (point-min))
-        (let* ((file-name (file-name-nondirectory cls-file))
-               (class-name (or (when (re-search-forward "\\\\ProvidesClass{\\([^}]+\\)}" nil t)
-                               (match-string 1))
-                             (file-name-sans-extension file-name))))
-          (add-to-list 'org-latex-classes
-                       (list class-name (buffer-string)
-                             '("\\section{%s}" . "\\section*{%s}")
-                             '("\\subsection{%s}" . "\\subsection*{%s}")
-                             '("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                             '("\\paragraph{%s}" . "\\paragraph*{%s}")
-                             '("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
-                       t))))
-    ;; Configure LaTeX compiler and PDF generation process
-    (setq org-latex-compiler "xelatex"
-          org-latex-pdf-process '("xelatex -interaction nonstopmode -output-directory %o %f"
-                                  "xelatex -interaction nonstopmode -output-directory %o %f"))))
+    (let ((class-dir (expand-file-name "latex-classes/" doom-user-dir)))
+      ;; Buscar directorios que contengan main.cls (paquetes de clase)
+      (dolist (entry (directory-files-recursively class-dir ".*" t))
+        (when (file-directory-p entry)
+          (let ((main-cls (expand-file-name "main.cls" entry)))
+            (when (file-exists-p main-cls)
+              (let ((class-name (file-name-nondirectory entry)))
+                (with-temp-buffer
+                  (insert-file-contents main-cls)
+                  (add-to-list 'org-latex-classes
+                               (list class-name (buffer-string)
+                                     '("\\section{%s}" . "\\section*{%s}")
+                                     '("\\subsection{%s}" . "\\subsection*{%s}")
+                                     '("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                                     '("\\paragraph{%s}" . "\\paragraph*{%s}")
+                                     '("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+                               t)))))))
+      ;; Configurar compilador y añadir latex-classes/ al path de TeX
+      (setq org-latex-compiler "xelatex"
+            org-latex-pdf-process
+            (let ((texinputs (concat class-dir ":")))
+              (list (concat "TEXINPUTS=" texinputs " xelatex -interaction nonstopmode -output-directory %o %f")
+                    (concat "TEXINPUTS=" texinputs " xelatex -interaction nonstopmode -output-directory %o %f"))))))
 
 (after! ox-hugo
-  (let ((blog-dir (expand-file-name "~/Workspace/blog")))
-    (setq org-hugo-base-dir blog-dir
-          org-hugo-content-directory "content-org"
-          org-hugo-section "posts"
-          org-hugo-preserve-filing 'force
-          org-hugo-auto-set-lastmod t
-          org-hugo-export-with-toc nil
-          org-hugo-allow-spaces-in-tags t
-          org-hugo-paired-shortcodes "note,warning,tip,details"
-          org-hugo-taxonomy-tags "tags"
-          org-hugo-taxonomy-categories "categories"
-          org-hugo-static-file-extensions '("png" "jpg" "jpeg" "gif" "svg" "pdf" "css" "js" "woff" "woff2" "ttf")
-          org-hugo-languages '(("es" . "Spanish") ("en" . "English")))))
+    (let ((blog-dir (expand-file-name "~/Workspace/blog")))
+      (setq org-hugo-base-dir blog-dir
+            org-hugo-content-directory "content-org"
+            org-hugo-section "posts"
+            org-hugo-preserve-filing 'force
+            org-hugo-auto-set-lastmod t
+            org-hugo-export-with-toc nil
+            org-hugo-allow-spaces-in-tags t
+            org-hugo-paired-shortcodes "note,warning,tip,details"
+            org-hugo-taxonomy-tags "tags"
+            org-hugo-taxonomy-categories "categories"
+            org-hugo-static-file-extensions '("png" "jpg" "jpeg" "gif" "svg" "pdf" "css" "js" "woff" "woff2" "ttf")
+            org-hugo-languages '(("es" . "Spanish") ("en" . "English")))))
 
 (setq deft-directory +my/org-base-dir)
 (setq deft-recursive t)
