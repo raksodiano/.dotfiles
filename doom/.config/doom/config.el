@@ -705,5 +705,6 @@
 ;;; Load external configuration files
 (load! "lisp/lsp")
 (load! "lisp/org")
+(load! "lisp/writer")
 (load! "lisp/media")
 (load! "lisp/ia")
