@@ -5,7 +5,7 @@
 \LoadClass[12pt]{article}
 
 % SETUP: -----------------------------------------------------------------------
-\RequirePackage[basics, formatting, header, headings, metadata, ornaments, size]{poem/styles/lix}
+\RequirePackage[basics, formatting, header, headings, metadata, ornaments, size]{styles/lix}
 \RequirePackage{miama}
 
 % OVERRIDES: -------------------------------------------------------------------
