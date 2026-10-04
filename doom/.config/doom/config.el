@@ -99,9 +99,9 @@
 (add-hook 'prog-mode-hook #'hl-line-mode)
 
 ;; Line model and fonts
-(setq doom-font (font-spec :family "GeistMono Nerd Font" :size 15)
+(setq doom-font (font-spec :family "Cascadia Mono NF" :size 15)
       doom-variable-pitch-font (font-spec :family "Alegreya" :size 18)
-      doom-big-font (font-spec :family "GeistMono Nerd Font" :size 22))
+      doom-big-font (font-spec :family "Cascadia Mono NF" :size 22))
 
 (custom-set-faces!
     '(mode-line :height 130 :inherit 'variable-pitch)
