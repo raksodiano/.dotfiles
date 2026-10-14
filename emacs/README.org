@@ -1,0 +1,84 @@
+#+TITLE: Emacs configuration
+#+OPTIONS: toc:2 num:t ^:{}
+#+STARTUP: overview
+#+LANGUAGE: en
+
+Vanilla Emacs configuration migrated from Doom Emacs, managed with GNU Stow.
+
+* Installation
+#+begin_src bash
+# 1. Dependencies (CachyOS / Arch)
+paru -S emacs git-delta ripgrep fd
+
+# 2. Link the configuration into ~/.config/emacs
+cd ~/.dotfiles && stow emacs
+
+# 3. First launch: packages are installed automatically
+emacs
+#+end_src
+
+* Layout
+#+begin_quote
+~/.config/emacs/
+├── early-init.el       archives, native compilation, GC tuning
+├── init.el             the load order, then loads init.d/
+├── init.d/
+│   ├── core/           the foundation: everything else depends on it
+│   │   ├── defaults.el   encoding, performance, directory scaffolding
+│   │   ├── keys.el       evil, leader keymap, which-key
+│   │   ├── ui.el         theme, modeline, tabs, workspaces, fonts
+│   │   ├── buffers.el    completion, dired, dirvish, large files
+│   │   └── editing.el    snippets, cursors, formatting, tree-sitter
+│   └── modules/        one directory per optional domain
+│       ├── git/          magit, magit-delta, vc-git
+│       ├── langs/        LSP and tree-sitter                (phase 2)
+│       ├── org/          org, capture, journal, latex, hugo,
+│       │                 roam, writer, alerts               (phase 3)
+│       ├── feeds/        elfeed                              (phase 4)
+│       ├── media/        pdf, books, music                  (phase 4)
+│       ├── ai/           ellama                             (phase 5)
+│       └── tools/        detached, pass                     (phase 6)
+└── assets/             sounds, images, LaTeX classes, RSS feeds
+#+end_quote
+
+Files are grouped by domain, but /the load order is decided in init.el/,
+not by the file names. That way a file can depend on anything listed
+above it without anybody having to invent a name like =02-ui.el=.
+
+* Key bindings
+| Key       | Command               |
+|-----------+-----------------------|
+| =SPC=     | leader                |
+| =SPC SPC= | consult-buffer        |
+| =SPC o -= | dired-jump            |
+| =SPC o p= | project-switch-project|
+| =SPC l t i= | install tree-sitter grammars |
+| =C-c g=   | magit-status          |
+| =C-c C-f= | dirvish-open          |
+| =kj=      | escape                |
+
+* Commands
+| Command                          | Purpose                                         |
+|----------------------------------+-------------------------------------------------|
+| =M-x my/init-status=             | which modules are loaded, pending or broken     |
+| =M-x my/install-lsp-servers=     | install the language servers the config expects |
+| =C-u M-x my/install-lsp-servers= | same, but only report what is missing           |
+
+The installer covers Python (into =~/.emacs-lsp-venv=), npm, cargo and
+go servers, and says what it could not install because the toolchain is
+missing.
+
+* Notes for this Emacs version
+- Emacs 31 no longer evaluates literal dotted pairs in argument position.
+  Quote every data table: =(my-leader '(("o -" . dired-jump)))=.
+- =elpa.elpa.org= no longer resolves; NonGNU ELPA lives at
+  =https://elpa.nongnu.org/nongnu/=.
+- Evil 1.15 has no =evil-set-default-keybindings= and no
+  =evil-mode-disable=; disabling Evil per mode goes through
+  =evil-emacs-state-modes=.
+- Window border widths must stay =0=, never =nil=: the window accessors
+  return =nil= and doom-modeline subtracts them unguarded.
+
+* Migration
+The full migration plan, the package-by-package mapping and the phase
+history live in [[file:MIGRACION-EMACS.org][MIGRACION-EMACS.org]].

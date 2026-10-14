@@ -1,1 +1,15 @@
 hyprland/.config/hypr/noctalia.lua
+
+# Emacs runtime state: the config lives here and is stowed from the repo,
+# so anything Emacs writes at runtime must stay out of git.
+emacs/.config/emacs/eln-cache/
+emacs/.config/emacs/elpa/
+emacs/.config/emacs/persp-confs/
+emacs/.config/emacs/auto-save-list/
+emacs/.config/emacs/custom.el
+emacs/.config/emacs/custom-theme.el
+emacs/.config/emacs/trans/
+emacs/.config/emacs/.emacs.d/
+emacs/.config/emacs/.tramp-history
+emacs/.config/emacs/packages.noid
+emacs/.config/emacs/org-roam.db

@@ -1,9 +1,16 @@
-;;; writer.el --- Writer mode configuration  -*- lexical-binding: t; -*-
+;;; writer.el -*- lexical-binding: t; -*-
+;;; writer.el --- Writer mode configuration (split out)
 
-(use-package! olivetti
+;;; Code:
+
+(use-package olivetti
+  :ensure nil
   :commands olivetti-mode
-  :init
-  (setq olivetti-body-width 120))
+  :custom
+  (olivetti-body-width 120))
+
+(use-package lorem-ipsum
+  :commands (lorem-ipsum-insert-sentences lorem-ipsum-insert-paragraphs))
 
 (defvar my/writer-previous-window-config nil)
 
@@ -41,14 +48,12 @@
       (my/writer-exit-focus)
     (my/writer-focus-section)))
 
-(after! org
-    (map! :map org-mode-map
-     :localleader
-     (:prefix ("W" . "writer")
-      :desc "Focus section"     "f" #'my/writer-focus-section
-      :desc "Split view"        "s" #'my/writer-split-view
-      :desc "Toggle focus"      "w" #'my/writer-mode-toggle
-      :desc "Exit focus"        "q" #'my/writer-exit-focus)))
+(with-eval-after-load 'org
+  (my-leader
+   '(("o W f" . my/writer-focus-section)
+     ("o W s" . my/writer-split-view)
+     ("o W w" . my/writer-mode-toggle)
+     ("o W q" . my/writer-exit-focus))))
 
-(provide '+my-writer)
+(provide 'my-org-writer)
 ;;; writer.el ends here

@@ -1,0 +1,529 @@
+#+TITLE: Plan de migración: Doom Emacs → Emacs vanilla + use-package
+#+OPTIONS: toc:2 num:t ^:{}
+#+STARTUP: overview
+#+LANGUAGE: es
+
+* Contexto y decisiones tomadas
+** Decisiones confirmadas
+- Destino: Emacs vanilla + ~use-package~ (se abandona Doom).
+- Formato: Elisp modular en ~init.d/~ + GNU Stow + git.
+- Teclado: se mantiene modal con ~evil~ y líder ~SPC~ (sin cambios de muscle memory).
+- Alcance: *todo* (núcleo, Org, LSP, git, RSS/media, IA, extras) + tema visual *gruvbox*.
+- Ubicación: todo dentro de ~.config~ → ~$XDG_CONFIG_HOME/emacs/~ (soportado nativamente por Emacs 31, confirmado en el manual: "XDG-compatible ~~/.config/emacs/init.el~").
+- Emacs: el 31.1 del sistema (CachyOS). Sin build propia, sin Elpaca: ~package.el~ + ~use-package~ + native-comp.
+- LSP: *lsp-mode + lsp-ui + capefy* (decisión razonada en la sección 3.1).
+- *Datos*: se conservan las rutas definidas en la config de Doom: ~/Org, ~/Workspace, ~/Library, ~/.elfeed. No se cambia ni una variable de directorio de datos.
+- *No es una config paralela*: es una *migración*. El código propio se porta 1:1 y los assets se mueven; al final ~doom/~ desaparece del repo.
+
+** Estado real de la máquina (hallazgo clave)
+= Doom *NO está instalado*: no existe ~~/.config/emacs~, ni ~~/.emacs.d~, ni ~bin/doom~.
+= Emacs 31.1 del sistema en CachyOS (Arch + paru), sesión Hyprland/KDE.
+= La config de Doom existe únicamente como *stow target* dentro del repo → la migración es "en frío": no hay entorno de producción que romper.
+= 0 archivos Org en ~~/Org~, sin ~~/Workspace~, sin ~~/Library~ → la parte de Org/RSS/media está *configurada pero nunca ejercitada* en esta máquina.
+
+** Toolchains detectados
+| Presente                        | Ausente                                                  |
+|---------------------------------+----------------------------------------------------------|
+| rustc, cargo, rust-analyzer     | node, npm                                                |
+| mpv, ffmpeg                     | go, gopls, sbcl                                          |
+| hunspell, enchant               | ollama, pandoc, xelatex, latexmk                         |
+| ripgrep, fd, git                | delta, calibre, zoxide, nvim                            |
+| cc (compilador)                 | poppler, ghostscript (pdf-tools), bash-language-server  |
+
+* 1. Evaluación de la configuración actual
+** 1.1 Perfil de uso (valoración de prioridad)
+#+begin_quote
+Base de la valoración = peso del bloque en el código + presencia de toolchain en la máquina + número de funciones propias asociadas.
+#+end_quote
+| Dominio                 | Peso en config | Toolchain | Ejercitado | Veredicto                        | Prioridad |
+|-------------------------+----------------+-----------+------------+----------------------------------+-----------|
+| Org (journal/captures/roam/agenda/latex/hugo) | ~340 líneas | parcial   | no         | complejo, mucho código propio     | *P0 alto* |
+| LSP + tree-sitter        | ~320 líneas   | solo rust | no         | sobre-configurado (18 :lang)      | *P0 alto* |
+| Núcleo (teclas/UI/buffer/archivos) | ~200 líneas | n/a | n/a | base de todo lo demás             | *P0 alto* |
+| Git (magit + delta)      | ~35 líneas    | git ✓     | sí         | simple y maduro                   | *P1*      |
+| RSS (elfeed + tube + eww)| ~50 líneas   | mpv ✓     | probable   | bien resuelto                     | *P2*      |
+| Media (pdf/nov/emms/calibredb) | ~155 líneas | parcial | no       | *emms se carga en cada arranque*  | *P2*      |
+| IA (ellama)              | ~114 líneas   | ollama ✗  | no         | bloque entero inaplicable hoy    | *P3*      |
+| Extras (detached/pass/upload/docker/terraform) |ivial | parcial | no | bajo valor, alto costo           | *P4*      |
+
+** 1.2 Deuda técnica y conflictos detectados
+1. *Doble cliente LSP en JS/TS*: ~tide~ enganchado a ~js-mode~/~typescript-mode~ (lisp/lsp.el:239-241) convive con ~lsp-deferred~ (lisp/lsp.el:261-262). Dos clientes LSP en el mismo buffer, con Peek y saltos duplicados.
+2. *emms se inicializa en cada arranque*: ~(emms-all)~ y ~(emms-default-players)~ dentro de ~:config~ sin ~:defer~ (media.el:43-45) → escaneo de ~~/Music~ + spawning de mpv al inicio.
+3. *Pin redundante*: ~(package! llm)~ (packages.el:79) fuerza una versión fuera de la resolución de el-pa, justo la dependencia que ya declara ~ellama~.
+4. *Doom ya no usa ~after!~*: la config usa ~after!~ en ~20+ lugares (deprecated desde Doom 2023); la ruta moderna es ~:custom~/~:config~ dentro de ~use-package!~.
+5. *Módulos :lang inflados*: 18 lenguajes habilitados (common-lisp, data, go, php, rest, nix, yaml...) sin ninguna toolchain instalada salvo Rust. Cada uno son paquetes + grammars.
+6. *Regex roto*: dotenv-mode con ~"\\.env\\.?.*\\'"~ (config.el:157) → la comilla simple literal nunca casa.
+7. *Hooks conflictivos*: ~format +onsave~ de Doom convive con ~(lsp-enable-on-type-formatting nil)~ y con ~+format-on-save-enabled-modes~ definido en lsp.el:258 (pertenece a config, no a lsp).
+8. *PDF duplicado*: Doom:~pdf-tools~ + ~TeX-view-program-selection 'PDF Tools'~ (config.el:435) mientras el sistema ya tiene ~zathura~ como visor org-global.
+9. *Definiciones duplicadas*: ~+my/doom-dir~ se define en config.el:57 *y* en lisp/org.el:3. Igual ~+my/org-work-dir~ (config.el:224 / org.el:120).
+10. *Macros de Doom a portar 1:1*: ~use-package!~, ~map!~, ~after!~, ~add-hook!~, ~add-transient-hook!~, ~defadvice!~, ~load!~, ~set-file-template!~, ~doom-first-input-hook~, ~doom-after-init-hook~, ~doom-cache-dir~, ~doom-user-dir~, ~IS-LINUX~, ~doom-modeline-mode~, ~+format-on-save-enabled-modes~.
+11. *Agenda estática*: ~org-agenda-files~ se calcula una sola vez con ~directory-files-recursively~ (org.el:123) → los archivos nuevos no aparecen hasta reiniciar.
+12. *~require-final-newline 'nil~* (config.el:140): valor con tipo raro (símbolo) en lugar de boolean; funciona pero es accidental.
+13. *Ruido menor*: ~go-mode-hook~ engancha lsp aunque Go no esté instalado; ~sbcl~ configurado como ~inferior-lisp-program~ sin SBCL en el sistema.
+14. *Tema a reemplazar*: ~themes/noctalia-theme.el~ (catppuccin-like, ~#1e1e2e~) será reemplazado por gruvbox + paleta Noctalia solo para el fondo si lo querés.
+
+** 1.3 Lo que hay que preservar sí o sí
+= ~SPC~ + ~SPC D c~ (diccionario), ~SPC i l~ (lorem), ~SPC e~ (elfeed), ~SPC y~ (IA), ~SPC m~ (emms), ~SPC l~ (lsp doctor), ~SPC n j~ (journal), ~SPC W~ (writer), ~SPC c c~ (detached), ~SPC o -~ (dired), ~M-&~ (detached shell).
+= Funciones propias: ~+my/create-directories~, ~my/change-ispell-dictionary~, ~my/org-journal-open-work~, ~my/writer-*~, ~my/emms-*~, ~my/play-sound-by-severity~, ~+my/lsp-treesit-doctor~, ~install-lsp-servers~.
+= Assets: ~sounds/*.wav~, ~images/gnu_color.png~, ~latex-classes/{~,poems~,reports~}, ~elfeed/elfeeds.org~ (~40+ feeds~).
+
+* 2. Arquitectura destino
+#+begin_src bash
+emacs/.config/emacs/          # stow target: stow emacs  →  ~/.config/emacs
+├── early-init.el             # paquetes, native-comp, GC tuning, performance
+├── init.el                   # define el ORDEN de carga y carga init.d/
+├── init.d/
+│   ├── core/                 # la base: todo lo demás depende de esto
+│   │   ├── defaults.el       # codificación, performance, andamiaje de directorios
+│   │   ├── keys.el           # evil, escape kj, mapa del líder, which-key
+│   │   ├── ui.el             # gruvbox, modeline, tabs, workspaces, fuentes
+│   │   ├── buffers.el        # corfu+cape, dired, dirvish, vlf, so-long
+│   │   └── editing.el        # snippets, cursores, format-on-save, tree-sitter
+│   └── modules/              # un directorio por dominio opcional
+│       ├── git/magit.el      # magit, magit-delta, vc-git
+│       ├── langs/            # treesit, lsp        (P2)
+│       ├── org/              # org, capture, journal, latex, hugo,
+│       │                     # roam, writer, alerts (P3)
+│       ├── feeds/elfeed.el   # RSS                  (P4)
+│       ├── media/            # pdf, books, music    (P4)
+│       ├── ai/ellama.el      # IA                   (P5)
+│       └── tools/            # detached, pass       (P6)
+└── assets/                   # sounds/, images/, latex-classes/, elfeeds.org
+#+end_src
+
+** Criterio de nombrado
+#+begin_quote
+~init.d/~ tiene solo dos entradas: ~core/~ es la base que todo lo demás
+consume, y ~modules/~ agrupa un directorio por dominio opcional. El *orden
+de carga* lo decide la lista ~my/init-files~ de ~init.el~, no el nombre
+del archivo.
+
+Así un archivo puede depender de cualquiera listado arriba sin obligar a
+inventar nombres como ~core/ui.el~. Los directorios dan el contexto; la
+lista da el orden; el nombre no codifica nada.
+#+end_quote
+
+** Dependencias Emacs 31 confirmadas
+- Init XDG: ~$XDG_CONFIG_HOME/emacs/init.el~ y ~early-init.el~ soportados (manual Emacs 31, "Find Init").
+- ~package-always-enable-native-comp~ para compilar paquetes en 30/31 sin Elpaca.
+- ~general~, ~which-key~ y Evil como paquetes independientes (sin el DSL de Doom).
+
+** Bootstrap de paquetes (early-init.el)
+#+begin_src emacs-lisp
+;; Emacs 30+/31: package.el instala y compila nativo de forma nativa
+(setq package-archives '(("gnu"    . "https://elpa.gnu.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")
+                         ("elpa"   . "https://elpa.elpa.org/packages/")
+                         ("nongnu" . "https://elpa.nongnu.org/packages/")))
+(setq package-always-enable-native-comp t)
+(setq use-package-always-ensure t
+      use-package-always-update-on-changelog nil)
+#+end_src
+
+** 2.1 Tabla de traducción: macros de Doom → Elisp vanilla
+Esta es la mecánica de la migración. Nada se reescribe "mejor": se traduce símbolo por símbolo.
+
+| Doom                        | Vanilla                                                          |
+|-----------------------------+------------------------------------------------------------------|
+| ~(use-package! x :init ... :config ...)~ | ~(use-package x :init ... :config ...)~ (idéntico)     |
+| ~(map! :leader :desc "x" "k" #'cmd)~  | =general-defmap= / =general-keymap=                        |
+| ~(map! :map foo-mode-map ...)~        | ~(use-package foo :bind (:map foo-mode-map ...))~           |
+| ~(after! pkg body)~                   | dentro de ~:config~ de ~use-package~, o ~with-eval-after-load~ |
+| ~(add-hook! 'hook body)~              | ~(add-hook 'hook (lambda () body))~ o ~(add-hook 'hook #'fn)~ |
+| ~(add-transient-hook! 'h f)~          | ~(add-hook 'h f nil t)~                                       |
+| ~(defadvice! nom fn args body :around g)~ | ~(defalias 'nom (lambda (&rest args) ...))~ o ~(advice-add)~ |
+| ~(load! "lisp/x")~                    | ~(load (expand-file-name "lisp/x.el" user-emacs-directory))~ |
+| ~(set-file-template! ...)~            | ~(add-hook 'find-file-hook ...)~ con ~auto-insert-alist~      |
+| ~+my/doom-dir~                        | ~my/assets-dir~ = ~~/.config/emacs/assets~                   |
+| ~doom-user-dir~                       | ~user-emacs-directory~                                        |
+| ~doom-cache-dir~                      | ~user-cache-dir~                                              |
+| ~IS-LINUX~                            | ~(eq system-type 'linux)~                                     |
+| ~doom-modeline-mode~                  | ~doom-modeline~ (paquete standalone, mismo nombre de función)  |
+| ~+format-on-save-enabled-modes~       | ~my/format-on-save-modes~ (lista propia)                     |
+| ~doom-first-input-hook~ / ~doom-after-init-hook~ | ~(emacs-startup-hook)~ / hook propio en init.el         |
+| ~doom-dashboard~                      | dashboard + la línea de bienvenida de config.el:63-64          |
+| ~(custom-set-faces! ...)~             | ~(custom-set-faces ...)~                                      |
+| ~themes/noctalia-theme.el~            | ~assets/themes/gruvbox*.el~                                   |
+
+** 2.2 Assets y datos: qué se mueve y qué no se toca
+| Elemento | Origen Doom | Destino | Nota |
+|----------|-------------|---------|------|
+| Notas Org | ~/Org | *igual* | no se mueve nada |
+| Proyectos / blog / libros | ~/Workspace | *igual* | |
+| Biblioteca calibre | ~/Library | *igual* | |
+| Base de elfeed | ~/.elfeed | *igual* | se conserva el histórico |
+| lisp/*.el (6 archivos) | doom/.config/doom/lisp/ | ~emacs/.config/emacs/init.d/modules/<dominio>/~ | se *trasladan* y se traducen macros |
+| sounds/*.wav | doom/.config/doom/sounds/ | ~assets/sounds/~ | idénticos |
+| images/*.png, *.svg | doom/.config/doom/images/ | ~assets/images/~ | idénticos |
+| latex-classes/ | doom/.config/doom/latex-classes/ | ~assets/latex-classes/~ | idénticos |
+| elfeeds.org (~40 feeds) | doom/.config/doom/elfeed/ | ~assets/elfeed/elfeeds.org~ | idéntico |
+| themes/noctalia-theme.el | doom/.config/doom/themes/ | *descartado* | lo reemplaza gruvbox |
+
+* 3. Matriz de mapeo Doom → vanilla (paquete por paquete)
+** Núcleo (UI / editor / archivos)
+| Doom                                    | Destino                                          |
+|-----------------------------------------+--------------------------------------------------|
+| ~evil +everywhere~                      | evil (+ evil-collection opcional)                 |
+| ~(deft +org)~                           | org + org-refile + ~:localleader W~ propio        |
+| ~(vertico +icons +childframe)~          | vertico, posframe, vertico-sort                   |
+| ~(company +childframe +tng)~            | =capefy= (Cape + Corfu) o ~corfu~ + ~cape~        |
+| ~(popup +defaults)~                     | posframe / transient                              |
+| ~(tabs +centaur +workspace)~            | centaur-tabs + persp-mode                         |
+| ~(workspaces +layouts)~                 | persp-mode + desktop (o tab-bar-mode)             |
+| ~hl-todo~ / ~indent-guides~ / ~ophints~ | hl-todo, highlight-indent-guides (paquetes sueltos)|
+| ~modeline~ (doom-modeline)              | doom-modeline (existe standalone)                  |
+| ~vi-tilde-fringe~ / ~zen~ / ~unicode~   | vi-frm (o skip), writeroom-mode / zen-mode        |
+| ~(fold +icons)~ / ~format +onsave~      | yascroll/hl-todo, dired-async + tree-sitter       |
+| ~snippets~ / ~multiple-cursors~ / ~word-wrap~ | yasnippet, multiple-cursors, visual-fill-column  |
+| ~electric~ / ~undo~ / ~hl-todo~         | native                                             |
+| ~(dired +icons +dirvish)~               | dired, dirvish, dired-open, dired-subtree, fd      |
+| ~(ibuffer +icons)~ / ~vc~               | native + magit                                     |
+| ~(lookup)~                              | lookup.el nativo (Emacs 29+) sin flags              |
+| ~(debugger +lsp)~                       | delve (o nada)                                     |
+| ~tty~                                   | nativa                                             |
+| ~everywhere +protocol~                  | *no migrar*: effortless (reimplementación de Magit)|
+| ~emms~                                  | emms con ~:commands~ (defer, no ~:config~ eagerly)  |
+| ~zen / writeroom~                       | writeroom-mode (ajustes de config.el:305-369)      |
+| ~workspaces~                            | persp-mode + ~worksp-key~                          |
+
+** Org
+| Doom flag                     | Destado                                        |
+|-------------------------------+------------------------------------------------|
+| ~+journal~                    | org-journal                                     |
+| ~+habit~                      | org-habit                                       |
+| ~+pretty~                     | org-super-agenda o org-modern                   |
+| ~+roam~                       | org-roam v2 (cambia la sintaxis)                |
+| ~+noter~                      | org-noter                                       |
+| ~+hugo~                       | ox-hugo                                          |
+| ~+latex~                      | ox-latex + org-latex + TeX-view (zathura)        |
+| ~+present~                    | org-present                                     |
+| ~+dragndrop~                  | org-drag-n-drop                                 |
+| ~+pandoc~                     | pandoc (requiere instalar bin)                   |
+| ~+gnuplot~                    | org-gnuplot (requieregnuplot)                    |
+| ~deft~                        | deft (misma config, org.el:282-286)              |
+| ~org-alert~ + alert + sonidos | org-alert + alert + alert-libnotify + sounds/     |
+
+** LSP / tree-sitter / lenguajes
+| Doom                     | Destino                                                    |
+|--------------------------+------------------------------------------------------------|
+| ~(lsp +peek +ui)~        | *lsp-mode + lsp-ui + capefy* (decisión en 3.1)                |
+| ~tree-sitter~ + ~treesit-auto~ | treesit-auto + tree-sitter-langs                        |
+| ~go/rust/python/js/ts/web/yaml/json/md/sh/nix/php/data/rest/common-lisp~ | =Recortar= a los que tengan toolchain: rust, python, typescript/web, sh, yaml/json/markdown, data |
+| ~tide~                   | *eliminar* (choca con lsp-mode)                            |
+| ~prettier-js~            | prettier (npm) solo si hay node                             |
+| ~vlf~                    | vlf + so-long                                              |
+| install-lsp-servers      | portar como script externo (no en el init)                  |
+
+** 3.1 Cliente LSP: decisión y paridad con VSCode
+*Requisito declarado: reconocimiento equivalente al de VSCode.* Eso no lo da el protocolo solo —lo da la *capa de UI* del cliente.
+
+| Capacidad VSCode                    | ~eglot~ (built-in)      | *lsp-mode + lsp-ui*                    |
+|-------------------------------------+-------------------------+----------------------------------------|
+| Hover con docs markdown, en ventana | solo echo-area de eldoc, texto plano | ~lsp-ui-doc-mode~, child frame, markdown |
+| Peek definition / references        | no existe (buffer ~xref~) | ~lsp-ui-peek-find-definitions/references~ |
+| Peek workspace symbol               | no                       | ~lsp-ui-peek-find-workspace-symbol~      |
+| Quick fix / code action (bulb)      | manual, sin UI           | ~lsp-execute-code-action~ + sideline     |
+| Diagnósticos                        | flymake ✓                | flycheck + ~flycheck-diagnostics~ ✓       |
+| IntelliSense con docs en popup      | corfu + capf ✓           | *capefy* (Cape + Corfu) ✓                |
+| Outline / breadcrumbs               | ~imenu~                  | ~lsp-ui-imenu~ + breadcrumbs headerline  |
+| Semantic tokens (LSP 3.17)          | ✓                        | ✓                                       |
+| Inlay hints                         | ~eglot-momentary-inlay-hints~ | ~lsp-inlay-hints~ (comunidad)      |
+| Auto-import en TS                   | manual                   | ~lsp-completion-enable-auto-import~      |
+| Format on save + organize imports   | ✓                        | ✓                                       |
+| Debug (DAP)                         | no                       | ~dap-mode~                              |
+| Startup                             | ~0~ (built-in)           | +0.2~0.4 s (controlable con ~:commands~) |
+
+*Decisión: lsp-mode + lsp-ui + capefy.*
+#+begin_quote
+Motivos: (1) ~eglot~ no trae capa de UI — habría que reconstruirla con paquetes de comunidad menos maduros; (2) ya tenés ~lsp-ui-doc~, ~lsp-ui-peek~ y tus funciones de doctor funcionando, así que la migración es *trasladar*, no reconstruir; (3) ~capefy~ es el estándar actual y ya venís usando company.
+#+end_quote
+
+Mitigación del costo de startup: cargar ~lsp-mode~ con ~:commands~, enganchar ~lsp-deferred~ por modo, y activar ~lsp-auto-configure~ solo en los lenguajes de la lista recortada.
+
+#+begin_src emacs-lisp
+;; init.d/modules/langs/lsp.el — esqueleto, se completa en la Fase 2
+(use-package lsp-mode
+  :defer t
+  :init
+  (setq lsp-idle-delay 0.3
+        lsp-completion-provider :capf     ; lo consume capefy
+        lsp-headerline-breadcrumb-enable t
+        lsp-auto-configure nil            ; control manual: solo los modos de la lista
+        lsp-log-io nil)
+  :hook ((rust-ts-mode . lsp-deferred)
+         (python-ts-mode . lsp-deferred)
+         (typescript-mode . lsp-deferred)
+         (js-mode . lsp-deferred)
+         (web-mode . lsp-deferred)
+         (sh-mode . lsp-deferred)
+         (yaml-mode . lsp-deferred)
+         (json-mode . lsp-deferred)
+         (markdown-mode . lsp-deferred)))
+
+(use-package capefy
+  :after lsp-mode
+  :config (cape-configure))
+
+(use-package lsp-ui
+  :after lsp-mode
+  :config
+  (setq lsp-ui-doc-enable t
+        lsp-ui-doc-position 'at-point     ; igual que tu config actual (lisp/lsp.el:222)
+        lsp-ui-doc-max-height 8
+        lsp-ui-doc-max-width 72
+        lsp-ui-doc-show-with-cursor t
+        lsp-ui-doc-delay 0.5
+        lsp-ui-peek-enable t
+        lsp-ui-sideline-enable nil))       ; apagado, como hoy
+#+end_src
+
+** Git
+| ~(magit +forge)~   | magit + magit-delta + glab/ghub (estaban comentados) |
+| ~magit-delta~      | magit-delta (adaptar el guard de 50k líneas)            |
+| ~vc-gutter +pretty~| builtin + vc-git                                           |
+
+** RSS / media
+| ~rss +org~ / elfeed         | elfeed + elfeed-org + elfeeds.org (assets)           |
+| ~elfeed-tube(-mpv)~         | idem, con mpv ✓ presente                              |
+| ~eww~                       | eww (built-in)                                        |
+| ~pdf~ (pdf-tools)           | pdf-tools (+ poppler, ghostscript, imagemagick)        |
+| ~nov~ + calibredb           | nov + calibredb (+ calibre)                           |
+| ~emms~                      | emms diferido                                          |
+| ~everwhere~                 | *reemplazar* por effortless o hiperref                |
+
+** IA
+| ~gptel~ + ~ellama~ + ~llm~ | =ellama~ (solo provider ollama) + gptel si hay API |
+| org-roam integration        | org-roam v2 + ellama-context-header-line            |
+| ~+my/install-all-ellama-models~ | portar como script `ollama pull` externo           |
+
+** Extras
+| ~detached~ (+consult/compile/list) | detached-* (los tres paquetes sueltos)     |
+| ~pass~ / ~upload~ / ~docker~ / ~terraform~ / ~make~ / ~eval~ / ~rgb~ / ~upload~ | paquetes nativos equivalentes |
+| ~editorconfig~ / ~pass~    | native                                              |
+
+* 4. Plan por fases (ejecución paso a paso)
+** P0 — Cimientos (día 1) · Riesgo bajo · Es la base de todo
+Objetivo: Emacs usable con modal, leader, theme y completion.
+
+Pasos:
+1. ~paru -S emacs~ (ya está) + crear carpeta ~emacs/.config/emacs~ en el repo.
+2. Escribir ~early-init.el~ (archives, native-comp, GC tuning) e ~init.el~ que hace ~dolist load de init.d~.
+3. ~stow emacs~ → verifica que ~~/.config/emacs/init.el~ carga con ~emacs --batch -Q -l ~/.config/emacs/early-init.el~.
+4. ~core/keys.el~: evil + ~general~ + which-key. Portar TODOS los prefijos ~SPC~ que ya usás (n,j,D,y,m,l,e,c,o,W).
+5. ~core/ui.el~: gruvbox (+ *gruvbox-material* si querés iconos Nerd Font), doom-modeline, centaur-tabs, fuentes (Cascadia Mono NF + Alegreya), hl-line, relative numbers, blink-cursor, remove-top-bar, splash.
+6. ~core/buffers.el~: vertico + posframe, corfu+cape, dired+dirvish+fd, project, consult-buffering, vlf, so-long.
+7. ~core/editing.el~: snippets, multiple-cursors, word-wrap, format-on-save (propio, sin el DSL de Doom), treesit-font-lock.
+8. Mover ~assets/sounds~, ~assets/images~ y ~assets/latex-classes~ desde ~doom/~, y portar ~+my/create-directories~ (config.el:260-266) *sin cambiar las rutas* (~/Org, ~/Workspace, ~/Library).
+
+Criterio de aceptación:
+- [ ] ~emacs~ arranca sin errores (~M-x debug-init~ limpio).
+- [ ] ~SPC~ muestra which-key; ~SPC o -~ abre dired; ~SPC o p~ abre project switcher.
+- [ ] ~M-x corfu-complete~ funciona en ~python-mode~ / ~rust-mode~.
+- [ ] Tema gruvbox aplicado, sin faces "sin definir".
+- [ ] Startup < 3 s (medir con ~M-x emacs-startup-time~).
+
+#+begin_quote
+*Punto de control 0*: acá ya tenés un Emacs daily-driver. Si algo falla, se arregla sin haber migrado nada más.
+#+end_quote
+
+** P1 — Git (día 2) · Riesgo bajo · Valor alto
+1. Instalar ~delta~ (~paru -S git-delta~).
+2. ~modules/git/magit.el~: magit + magit-delta con los ~magit-post-*~ hooks y el guard de 50k líneas portado a ~defadvice~.
+3. ~vc-git~ + gutter de diff.
+
+Aceptación: ~M-x magit~ en el repo de dotfiles, diff con delta side-by-side, ~SPC g g~ sin errores.
+
+** P2 — LSP + tree-sitter + lenguajes (días 3-4) · Riesgo medio
+1. *Cliente: lsp-mode + lsp-ui + capefy* (decidido en 3.1). Se elimina ~tide~ por el conflicto documentado.
+2. Instalar toolchains faltantes: ~paru -S nodejs npm~, ~pip install python-lsp-server pyright black~ en venv (~~/.emacs-lsp-venv~), ~paru -S bash-language-server yaml-language-server dockerfile-language-server marksman texlab~, ~go install mvdan.cc/sh/v3/cmd/shfmt@latest~.
+3. ~modules/langs/lsp.el~: portar la tabla ~+my/lsp-servers-to-install~ tal cual, los hooks ~lsp-deferred~ por modo, ~+my/lsp-treesit-doctor~ y ~+my/list-lsp-servers~ (mismo ~SPC l~).
+4. ~modules/langs/treesit.el~: treesit-auto + grammars solo de los lenguajes activos.
+5. Recortar :lang: *dejar* rust, python, typescript/javascript, web, sh, yaml, json, markdown, data. *Quitar* go, php, nix, common-lisp, rest.
+6. Sustituir el hack ~doom-after-init-hook~ (lisp/lsp.el:298-302) por el comando ~M-x my/install-lsp-servers~, que ya está escrito en ~modules/langs/lsp.el~.
+
+Aceptación: ~SPC l d~ (doctor) muestra todos en verde; rust-analyzer y tsserver responden; hover de lsp-ui-doc aparece; peek definitions funciona; completar con corfu/cape muestra docs.
+
+** P3 — Org (días 5-7) · Riesgo medio · *El bloque más grande*
+Es ~340 líneas + assets. Se migra por sub-módulos, en este orden:
+1. ~modules/org/org.el~: variables base (~+my/org-*~), ~my/create-directories~, org-todo-keywords + keyfaces propios (org.el:142-178), hooks de idioma por ~#+LANGUAGE~ (org.el:233-240), org-agenda-files *dinámico* (arreglando el punto 11 de la deuda).
+2. ~modules/org/capture.el+: portar los *9* ~org-capture-templates~ tal cual (~+my/org-capture-paths~).
+3. ~modules/org/journal.el+: journal personal + ~my/org-journal-open-work~ + leader ~SPC n j~.
+4. ~modules/org/roam.el+: org-roam v2 + el LLM de nombres de ellama.
+5. ~modules/org/latex.el+: ~ox-latex~ con las clases propias (~poems/~, ~reports~) y el compilador ~xelatex~. *Requiere ~paru -S texlive~ + ~xelatex~ + ~latexmk~.*
+6. ~modules/org/hugo.el+: ~ox-hugo~ con tu config (~org-hugo-base-dir ~/Workspace/blog~).
+7. ~modules/org/writer.el+: funciones ~my/writer-*~ (olivetti + outline indirecto) y leader ~SPC W~.
+8. ~modules/org/alerts.el+: ~org-alert~ + ~alert~ + ~my/play-sound-by-severity~ (~aplay~ ✓ disponible) — 60 líneas de sounds por severidad.
+
+Aceptación:
+- [ ] ~SPC n j~ abre el journal del día (personal y work).
+- [ ] ~SPC c c~ / ~c t~ / ~c p~ / ~c b~ / ~c h~ capturan en el archivo correcto.
+- [ ] ~C-c a~ agenda con los 2 workfiles.
+- [ ] ~C-c C-c o~ exporta un org real a PDF sin errores.
+- [ ] ~SPC W f~ entra/sale del modo escritura.
+- [ ] Un reminder dispara sonido + notificación.
+
+** P4 — RSS y media (día 8) · Riesgo bajo
+1. ~modules/feeds/elfeed.el~: elfeed + elfeed-org (~elfeeds.org~ con sus ~40 feeds~) + elfeed-tube + eww + update horario.
+2. ~modules/media/~: pdf-tools (*necesita* ~paru -S poppler ghostscript imagemagick~), nov (bsdtar ✓ ya está), calibredb (*necesita* ~paru -S calibre~), emms **con ~:commands~ para no arrancar mpv**.
+
+Aceptación: ~SPC e e~ abre elfeed con los feeds cargados; ~SPC e u~ actualiza; abrir un PDF y un EPUB; ~SPC m p~ reproduce sin que mpv arranque al iniciar Emacs.
+
+** P5 — IA (día 9) · Riesgo bajo · Precondición: ollama
+1. ~paru -S ollama~ + ~ollama serve~ como servicio systemd.
+2. ~modules/ai/ellama.el~: ellama con los 7 modelos de ia.el:53-69, leader ~SPC y~, integración con org-roam.
+3. Portar ~+my/install-all-ellama-models~ como script externo.
+
+Aceptación: ~SPC y c~ responde con ~qwen2.5:3b~; ~C-c C-c o~ en org usa el nombre LLM de la nota.
+
+** P6 — Extras (día 10) · Riesgo bajo · Opcional por bloque
+1. detached (+consult, +compile, +list) → ~SPC c c~, ~SPC g o s~, ~M-&~.
+2. pass, upload, docker, terraform, make, eval, rgb, editorconfig.
+3. Decidir si ~everywhere~ entra como *effortless* (reimplementación de Magit, sin LSP) o se descarta.
+
+Aceptación: compilación en background, sesiones listables, ~M-&~ disponible.
+
+** P7 — Cierre (día 10-11)
+1. ~stow -D doom~ y borrar ~doom/~ del repo (o mover a ~archive/).
+2. Actualizar ~README.org~ (tabla de configs: ~emacs~ reemplaza a ~doom~).
+3. ~install.org~ / ~install.sh~: agregar bootstrap de paquetes del sistema.
+4. Primer commit con la config nueva funcionando.
+5. ~/.config/emacs se queda en git vía stow = rollback con ~git checkout~ de una versión anterior.
+
+* 5. Valoración de prioridad (matriz impacto vs esfuerzo)
+#+begin_quote
+P = prioridad de migración. I = impacto en tu día. E = esfuerzo (1 bajo - 5 alto). R = riesgo.
+#+end_quote
+| # | Fase                          | I | E | R | P  | Justificación                                                |
+|---|-------------------------------|---|---|---|----|---------------------------------------------------------------|
+| 0 | Cimientos (teclas/UI/buffer) | 5 | 3 | 1 | *P0* | sin esto no hay Emacs; todo lo demás depende              |
+| 1 | Git (magit+delta)            | 5 | 1 | 1 | *P1* | 35 líneas de config, valor diario máximo                  |
+| 2 | LSP + tree-sitter            | 5 | 4 | 3 | *P0* | 320 líneas, tu mayor superficie de config; cuts it now    |
+| 3 | Org                          | 5 | 5 | 3 | *P0* | bloque más grande y con más código propio                 |
+| 4 | RSS + media                  | 4 | 3 | 2 | *P2* | bien resuelto, requiere binarios externos                  |
+| 5 | IA (ellama)                  | 3 | 2 | 2 | *P3* | 114 líneas pero depende de ollama que no está              |
+| 6 | Extras (detached/pass/...)   | 2 | 2 | 1 | *P4* | bajo valor, se migra al final o se descarta                |
+
+* 6. Riesgos y mitigaciones
+| Riesgo | Impacto | Mitigación |
+|--------|---------|------------|
+| Doble init (Doom y vanilla a la vez) | Alto | Doom nunca estuvo instalado; ~stow -D doom~ antes de empezar |
+| *native-comp* rompe pdf-tools/nov | Medio | excluir de native-comp si falla; probar cada fase |
+| lsp-mode pesa en startup | Medio | ~:defer t~, ~:commands~, ~lsp-auto-configure nil~ y hooks por modo |
+| org-roam v2 ≠ v1 (sintaxis DB) | Alto | inventariar tus archivos .org antes de migrar roam |
+| Sin node → LSP de TS no arranca | Alto | ~paru -S nodejs npm~ como *pre-requisito* de P2 |
+| Sin texlive → export LaTeX falla | Medio | ~paru -S texlive~ antes de P3 |
+| ~tide~ + lsp-mode | Alto | eliminar ~tide~ en la migración (deuda #1) |
+| emms mpv en cada arranque | Medio | ~:commands~ en vez de ~:config~ |
+| Archivos de datos (elfeed db, org-roam, calibre) | Bajo | *resuelto*: las rutas no cambian (~/Org, ~/Workspace, ~/Library, ~/.elfeed) |
+
+* 7. Dependencias del sistema a instalar
+#+begin_src bash
+# Prioridad P1/P2
+paru -S git-delta                      # diffs de magit
+paru -S nodejs npm                     # LSP de TypeScript/JS (NO está)
+python -m venv ~/.emacs-lsp-venv && ~/.emacs-lsp-venv/bin/pip install \
+      python-lsp-server pyright pylint black   # LSP de Python (NO está)
+
+# Prioridad P2 (LSP adicionales)
+paru -S bash-language-server yaml-language-server dockerfile-language-server
+paru -S marksman texlab gopls shfmt
+
+# Prioridad P3 (Org/LaTeX/Hugo)
+paru -S texlive texlive-most pandoc gnuplot  # xelatex, latexmk, pandoc
+paru -S hugo                                     # export a Hugo
+
+# Prioridad P4 (media)
+paru -S poppler ghostscript imagemagick  # pdf-tools
+paru -S calibre                         # calibredb
+
+# Prioridad P5 (IA)
+paru -S ollama                          # ellama/gptel
+#+end_src
+
+* 8. Estado de las decisiones
+** Resuelto
+| # | Pregunta | Respuesta |
+|---|----------|-----------|
+| 1 | ¿Datos o solo config? | *Se conservan las rutas de Doom*: ~/Org, ~/Workspace, ~/Library, ~/.elfeed. Solo se mueven los assets que vivían *dentro* de la config de Doom a ~/.config/emacs/assets/ |
+| 2 | ¿Emacs del sistema? | Sí, 31.1 de CachyOS |
+| 4 | ¿Es una config paralela? | *No*. Es una migración: se porta el código 1:1, los assets se trasladan y ~doom/~ desaparece del repo en la Fase 7 |
+| 5 | ¿Cliente LSP? | *lsp-mode + lsp-ui + capefy* por paridad con VSCode (ver 3.1) |
+| 6 | ¿Native-comp? | *Sí*, vía ~package-always-enable-native-comp~ (no Elpaca) |
+
+** Pendientes (no bloquean la Fase 0)
+7. ¿Tono del código: comentarios en español o inglés? (recomiendo inglés en código, español en README/docs)
+8. ¿Se mantienen los prefijos ~SPC~ actuales tal cual, o querés reorganizarlos al migrar?
+9. ¿*Gruvbox* plano, o *gruvbox-material* / *catppuccin-gruvbox* para iconos Nerd Font?
+10. ¿Se migran ~emms~, ~calibredb~, ~nov~ aunque falten binarios (calibre), o se dejan para después?
+11. ¿~ollama~ + los 7 modelos (~8 GB), o ~gptel~ contra una API externa?
+12. ¿~pass~, ~upload~, ~docker~, ~terraform~ se migran o se descartan?
+13. ¿Cómo verificamos cada fase: ~emacs -Q --eval (load ...)~ por archivo, o un script de smoke test?
+
+* 9. Bitácora de la Fase 0 (implementada)
+** Archivos escritos
+#+begin_quote
+emacs/.config/emacs/early-init.el           bootstrap: archives, native-comp, GC, package-initialize
+emacs/.config/emacs/init.el                 define el orden de carga
+emacs/.config/emacs/init.d/core/defaults.el encoding, performance, andamiaje de directorios, diccionario
+emacs/.config/emacs/init.d/core/keys.el     evil + escape kj, líder SPC, which-key
+emacs/.config/emacs/init.d/core/ui.el       gruvbox, doom-modeline, centaur-tabs, persp-mode, fuentes, sin barras
+emacs/.config/emacs/init.d/core/buffers.el  corfu+cape, dired, dirvish, vlf, so-long
+emacs/.config/emacs/init.d/core/editing.el  yasnippet, multiple-cursors, smartparens, format-on-save, treesit
+emacs/.config/emacs/init.d/modules/git/magit.el  magit + magit-delta + vc-git  (=Fase 1, ya escrito)
+emacs/.config/emacs/init.d/modules/langs/lsp.el  instalador de servidores como comando (=M-x my/install-lsp-servers=)
+emacs/.config/emacs/assets/                 sounds/, images/, latex-classes/, elfeeds.org (movidos con git mv)
+#+end_quote
+
+** Verificación
+#+begin_quote
+El arranque no imprime nada salvo que un módulo falle realmente.
+Para inspeccionar el estado: ~M-x my-init-status~.
+#+end_quote
+Resultado actual: *7/23 módulos cargados, 16 pendientes, 0 rotos*;
+verificado además dentro de un frame de GUI vivo (tema gruvbox, sin
+menu bar ni tool bar, sin bordes internos, escape =kj=, =evil-mode= activo,
+centaur-tabs en estilo alternate, líder y magit operativos).
+
+** Hallazgos que cambiaron el plan
+1. *Evil 1.15 reescribió su API.* ~evil-normal-map~ → ~evil-normal-state-map~; ~evil-escape-delay~ → ~evil-esc-delay~; ~evil-escape-key-sequence~ ya no existe. Se usa el paquete ~evil-escape~ para conservar la secuencia =kj=. *~evil-mode-disable~ también fue eliminado*: ahora se desactiva Evil listando los major modes en ~evil-emacs-state-modes~.
+2. *~:init~ no es ~:custom~.* =:init= corre *antes* de cargar el paquete, así que su ~defcustom~ sobrescribe el valor. Ocho ajustes (escape =kj=, estilo y alto de centaur-tabs, persp-keymap, yas-snippet-bases, yas-key-bindings, vlf-batch-size-remote, visual-fill-column-width) se perdían en silencio. Movidos a ~:custom~.
+3. *Variables que ya no existen:* ~magit-blame-heading-format~ (→ ~magit-blame-time-format~), ~corfu-global-matches~, ~corfu-echo-persistent~, ~corfu-cycle-on-no-match~, ~corfu-order~, ~smartparens-strict-mode~, ~smartparens-undo-backward~, ~smart-backspace-deletes-quote~. Todas verificadas una por una contra el código del paquete instalado.
+4. *~general~ perdió el leader.* No existen ni ~general-leading-key~ ni ~general-defmap~. Se sustituyó por ~my-leader~ con un keymap propio.
+5. *~capefy~ fue absorbido por ~cape~*: ya no hay ~cape-configure~ ni ~cape-auto-complete~; los backends se añaden a ~completion-at-point-functions~.
+6. *Paquetes que ya no se publican:* ~gruvbox-material~, ~vi-frm~, ~consult-fd~, ~corfu-suggest~.
+7. *Built-ins mal tratados:* ~consult~, ~consult-buffering~, ~project~, ~dired~, ~vc-git~, ~flyspell~; con ~use-package~ intentaba instalarlos desde un archivo.
+8. *APIs de consult eliminadas:* ~:buffer-templates~ y ~consult-buffer-save-window-config~.
+9. *Archives rotos:* ~elpa.elpa.org~ no resuelve y NonGNU ELPA se movió a ~elpa.nongnu.org/nongnu~.
+10. *~package-initialize~ es obligatorio* en ~early-init.el~.
+11. *Emacs 31.1 no evalúa pares punto literales sin cotizar.* Esto también rompe ~use-package :custom~ cuando el valor contiene un par punto dentro de una lista cotizada: use-package lo cotiza y el reader falla. Por eso ~yas-snippet-bases~ va en ~:config~.
+12. *Las barras superiores:* se agregaron ~my/hide-chrome~ en ~after-make-frame-functions~ y ~emacs-startup-hook~ (equivale al módulo ~remove-top-bar~ de Doom), además de ~internal-border-width~ y ~vertical-border-width~ a ~nil~.
+13. *El config dir es un symlink al repo.* Emacs escribía ahí el cache de compilación nativa, los workspaces de persp y los auto-saves: cientos de archivos sin trackear. Todo el estado de runtime se movió a ~~/.cache/emacs~ y ~~/.local/share/emacs~, con entradas en ~.gitignore~ como red.
+14. *~persp-mode~ no crea su directorio.* Fallaba con "No such file or directory" en cada guardado; ahora se crea explícitamente.
+15. *~basic-save-buffer~ recibe un argumento* (el buffer), así que el advice del salto de línea debe aceptarlo con ~&rest~.
+16. *Los bordes no pueden ser ~nil~.* doom-modeline resta los accesores de ventana sin proteger: ~(- (window-pixel-width) (window-scroll-bar-width) (window-right-divider-width) ... )~. Con ~right-divider-width~ en ~nil~, ~window-right-divider-width~ devuelve ~nil~ y el modo de línea muere con "Wrong type argument: integerp, nil". Ahora todos los bordes valen ~0~ (idéntico en pantalla, pero entero). El smoke test verifica esta aritmética.
+17. *Evil instalado no es Evil activo.* Se habían portado los atajos y la secuencia =kj= pero nunca se llamaba a ~(evil-mode 1)~; además ~(evil-set-default-keybindings)~ ya no existe en Evil 1.15 y abortaba el resto del bloque ~:config~.
+18. *Bug upstream en Evil 1.15:* ~evil-mode-buffers~ se declara con ~(defvar evil-mode-buffers)~, que la marca especial pero la deja void, y ~evil-normal-post-command~ la lee en cada comando en Normal state. Da "Error in post-command-hook (evil-normal-post-command): (void-variable evil-mode-buffers)". Presente tanto en NonGNU ELPA como en MELPA; se parchea en la config asignándole ~nil~.
+19. *~defadvice~ está roto en este Emacs 31.1:* ~:before~, ~:around~ y ~:override~ fallan con "Eager macro-expansion failure: (wrong-type-argument listp :KEYWORD)". Toda la config usa ~advice-add~, que sí funciona.
+20. *persp y Emacs 30+:* para guardar su estado, persp crea un frame temporal invisible y llama a ~delete-other-windows~ sobre él con la ventana seleccionada aún en el frame principal. Emacs 30 pasó a señalar eso y persp avisa en cada guardado. Un ~advice-add~ sobre ~persp-delete-other-windows~ omite esa llamada: el resultado es idéntico porque persp igual devolvía ~nil~, solo sin el ruido.
+
+** Estado de la Fase 0
+#+begin_quote
+[x] early-init + init + core/ y git/ escritos
+[x] 47 paquetes instalados y verificados
+[x] Sin errores de arranque en batch
+[x] Leader SPC, dirvish, magit, modeline, tabs, persp, corfu, yasnippet activos
+[x] Assets movidos con ~git mv~ (historial preservado)
+[ ] ~stow emacs~ y prueba en GUI  ← *pendiente, no ejecutado por decisión tuya*
+#+end_quote
+
+* 10. Checklist global de la migración
+#+begin_quote
+□ Fase 0: cimientos (teclas, UI, buffer, archivos) funcionando
+□ Fase 1: magit + delta funcionando
+□ Fase 2: LSP para rust/python/ts + tree-sitter funcionando
+□ Fase 3: Org completo (journal, captures, agenda, latex, hugo, roam, alerts)
+□ Fase 4: elfeed + pdf + epub + música (emms diferido)
+□ Fase 5: IA (ellama/gptel) con modelo local o API
+□ Fase 6: extras (detached, pass, etc.) si se quieren
+□ Fase 7: stow -D doom, repo limpio, README actualizado, primer commit
+#+end_quote
