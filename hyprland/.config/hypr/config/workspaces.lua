@@ -1,0 +1,1 @@
+hl.workspace_rule({ workspace = "name:gaming", monitor = PRIMARY_MONITOR, default = true })

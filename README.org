@@ -23,20 +23,32 @@ few command lines.
 - bat ➔ A cat(1) clone with wings
 - doom ➔ Doom Emacs configuration framework
 - fastfetch ➔ Fast system information tool
+- hyprland ➔ Hyprland compositor (wayland)
+- kitty ➔ GPU accelerated terminal
+- noctalia ➔ Noctalia desktop shell
 - starship ➔ Cross-shell prompt
 - tmux ➔ Terminal multiplexer
+- tridactyl ➔ Vim-like browser navigation
+- yt-dlp ➔ Media downloader
+- zathura ➔ PDF viewer
 - zsh ➔ Customizable shell
 
 * Available Dotfiles
 
-| Directory  | Description           |
-|------------+-----------------------|
-| =bat/=       | bat (cat replacement) |
-| =doom/=      | Doom Emacs config     |
-| =fastfetch/= | System info fetcher   |
-| =starship/=  | Cross-shell prompt    |
-| =tmux/=      | Terminal multiplexer  |
-| =zsh/=       | Zsh shell config      |
+| Directory     | Description                        |
+|---------------+------------------------------------|
+| =bat/=        | bat (cat replacement)              |
+| =doom/=       | Doom Emacs config                  |
+| =fastfetch/=  | System info fetcher                |
+| =hyprland/=   | Hyprland compositor and Noctalia   |
+| =kitty/=      | Terminal emulator config           |
+| =noctalia/=   | Noctalia shell config and palette  |
+| =starship/=   | Cross-shell prompt                 |
+| =tmux/=       | Terminal multiplexer               |
+| =tridactyl/=  | Browser extension                  |
+| =yt-dlp/=     | Media downloader config            |
+| =zathura/=    | PDF viewer config                  |
+| =zsh/=        | Zsh shell config                   |
 
 * Getting Started
 
