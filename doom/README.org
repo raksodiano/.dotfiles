@@ -1,0 +1,43 @@
+#+TITLE: Raksodiano's DOOM Emacs configuration
+#+OPTIONS: tags:nil todo:nil
+#+LANGUAGE: en
+#+PROPERTY: header-args+ :mkdirp yes
+
+The truth is that I'm very lazy when it comes to making configurations and being a hopper distro, one day I'm with =ArchLinux=, another with =FreeBSD=, in others I'm with =OpenBSD= as in others I'm with =openSUSE= and only for *Emacs* versions I had to reconfigure something or packages failed, that made me a little tired and so I decided to leave aside the holy mode and go to the dark side XD
+
+That's why this Emacs configuration was born using *Doom Emacs* as a base, to get rid of some headaches.
+
+* Installation
+
+** Prerequisites
+
+- Git 2.23+
+- Emacs 27.x+
+- Stow 2.x+
+- Python 3.3+
+- NodeJS 16+
+- MPV
+- Enchant
+- Hunspell
+
+** Steps
+
+- First, we clone Doom Emacs and install it.
+
+  #+begin_quote
+  git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
+   #+end_quote
+
+- Second, with the dotfiles cloned, you just need to use stow.
+
+  #+begin_quote
+  cd ~/.dotfiles && stow doom-emacs
+  #+end_quote
+
+- Third, we install doom emacs with the configurations I have already made.
+
+  #+begin_quote
+  ~/.config/emacs/bin/doom install
+  #+end_quote
+
+  Then, just follow the instructions for installing [[https://github.com/hlissner/doom-emacs#install][doom emacs]]. Run ~doom env~, then ~doom tangle~ and finally ~doom install~.

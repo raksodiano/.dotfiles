@@ -96,7 +96,11 @@
 (setq native-comp-cache-dir (expand-file-name "eln-cache" my/emacs-cache)
       native-comp-eln-load-path
       (list (expand-file-name "eln-cache" my/emacs-cache)
-            (or (getenv "EMACS_LOAD_PATH") "")))
+            (or (getenv "EMACS_LOAD_PATH") ""))
+      ;; Async compilation chatter (e.g. third-party "function not known
+      ;; to be defined" notes) must not pop up as warnings; real errors
+      ;; still surface in *Async-native-compile-log*.
+      native-comp-async-report-warnings-errors 'silent)
 
 ;; Lock files and automatic saves.
 (setq auto-save-directory (expand-file-name "auto-save" my/emacs-cache)

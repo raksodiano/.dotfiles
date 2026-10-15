@@ -90,14 +90,17 @@
 (defvar my-leader-map (make-sparse-keymap)
   "Keymap for the leader key (SPC).")
 
-(define-key global-map (kbd "SPC") my-leader-map)
+;; Doom-like modal leader: SPC opens the leader ONLY in Evil's
+;; normal/visual/motion/emacs states. It is deliberately NOT bound in
+;; `global-map', in local maps, or in insert state, so SPC keeps inserting
+;; a space while typing (minibuffer narrowing like "find file" needs it).
+(defconst my-leader-state-maps
+  '(evil-normal-state-map evil-visual-state-map
+    evil-motion-state-map evil-emacs-state-map)
+  "Evil state maps where SPC opens `my-leader-map'.")
 
-;; Evil's own normal/visual/motion state maps shadow the global map: if we
-;; only define SPC there, Evil buffers never see the leader (and SPC falls
-;; back to scroll-down). Bind the leader in every state Evil is likely to be
-;; in, mirroring Doom's `general' setup.
 (with-eval-after-load 'evil
-  (dolist (state-map '(evil-normal-state-map evil-visual-state-map evil-motion-state-map))
+  (dolist (state-map my-leader-state-maps)
     (define-key (symbol-value state-map) (kbd "SPC") my-leader-map)))
 
 ;; Restore Vim's default tab navigation (works on the visible tab bar),
@@ -141,16 +144,6 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
   :config
   (which-key-mode 1))
 
-
-;; Keep SPC bound in every buffer that already exists when this module loads.
-(defun my/bind-leader-for-current-buffer ()
-  (unless (or (minibufferp)
-              (derived-mode-p 'minibuffer-mode 'minibuffer-inactive-mode))
-    (local-set-key (kbd "SPC") my-leader-map)))
-(add-hook 'after-change-major-mode-hook #'my/bind-leader-for-current-buffer)
-(my/bind-leader-for-current-buffer)
-(dolist (buffer (buffer-list))
-  (with-current-buffer buffer (my/bind-leader-for-current-buffer)))
 
 (provide 'my-keys)
 ;;; my-keys.el ends here
