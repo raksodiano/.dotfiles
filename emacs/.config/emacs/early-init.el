@@ -100,7 +100,18 @@
 ;; Lock files and automatic saves.
 (setq auto-save-directory (expand-file-name "auto-save" my/emacs-cache)
       lockfile-directory my/emacs-cache
-      tramp-auto-save-directory (expand-file-name "tramp" my/emacs-cache))
+      tramp-auto-save-directory (expand-file-name "tramp" my/emacs-cache)
+      tramp-persistency-file-name
+      (expand-file-name "tramp-persistency.el"
+                       (expand-file-name "tramp" my/emacs-cache))
+      recentf-save-file
+      (expand-file-name "recentf.eld" my/emacs-cache)
+      project-remember-data-file
+      (expand-file-name "projects.eld" my/emacs-cache)
+      savehist-file
+      (expand-file-name "savehist.eld" my/emacs-cache)
+      save-place-file
+      (expand-file-name "saveplace" my/emacs-cache))
 
 ;; Activate the installed packages: without this their directories never
 ;; reach load-path and use-package cannot find them.
