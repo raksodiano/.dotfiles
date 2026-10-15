@@ -297,3 +297,6 @@
 ;;; my-ui.el ends here
 (setq nerd-icons-scale-factor 0.95
       nerd-icons-default-adjust -0.2)
+
+(provide 'my-ui)
+;;; my-ui.el ends here
