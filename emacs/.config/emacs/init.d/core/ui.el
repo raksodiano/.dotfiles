@@ -20,7 +20,8 @@
 ;; Icons for buffer names, mode lines and the like.
 (use-package all-the-icons
   :config
-  (setq all-the-icons-scale-factor 1.5))
+  (setq all-the-icons-scale-factor 0.95
+        all-the-icons-default-adjust -0.2))
 
 ;;; ### Fonts
 
@@ -283,5 +284,7 @@
 (setq indent-tabs-mode nil)
 (setq tab-always-indent nil)
 
-(provide 'my-ui)
+
 ;;; my-ui.el ends here
+(setq nerd-icons-scale-factor 0.95
+      nerd-icons-default-adjust -0.2)
