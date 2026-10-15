@@ -201,6 +201,9 @@
   ;; Doom's greeting, from its config.el.
   (dashboard-banner-logo-title
    (format "Welcome Home, %s." (or (getenv "USER") (user-login-name))))
+  ;; Doom's banner image.
+  (dashboard-startup-banner
+   (expand-file-name "images/gnu_color.png" my/assets-dir))
   (dashboard-startupify-list
    '(dashboard-insert-banner
      dashboard-insert-newline
@@ -214,10 +217,7 @@
      dashboard-insert-newline
      dashboard-insert-footer))
   :config
-  (dashboard-setup-startup-hook)
-  (when (display-graphic-p)
-    (dashboard-choose-banner
-     (expand-file-name "images/gnu_color.png" my/assets-dir) t)))
+  (dashboard-setup-startup-hook))
 
 ;; Doom showed the dashboard instead of *scratch* on startup.
 (setq inhibit-startup-screen t)
