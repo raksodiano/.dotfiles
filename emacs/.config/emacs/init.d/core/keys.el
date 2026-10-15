@@ -103,8 +103,8 @@
 ;; Restore Vim's default tab navigation (works on the visible tab bar),
 ;; rather than a custom command.
 (with-eval-after-load 'evil
-  (define-key evil-normal-state-map (kbd "g t") #'centaur-tabs-forward)
-  (define-key evil-normal-state-map (kbd "g T") #'centaur-tabs-backward))
+  (define-key evil-normal-state-map (kbd "g t") #'centaur-tabs-forward-tab)
+  (define-key evil-normal-state-map (kbd "g T") #'centaur-tabs-backward-tab))
 
 (defun my-leader (bindings)
   "Bind BINDINGS, a quoted alist of (KEY . COMMAND), in `my-leader-map'.
