@@ -22,43 +22,6 @@
       use-package-always-update-on-changelog nil
       use-package-always-pin nil)
 
-;; ### Leader
-
-;; Replaces Doom's `map! :leader'. Every prefix the user already knows
-;; is defined here so the rest of the configuration can bind into it.
-(defvar my-leader-map (make-sparse-keymap)
-  "Keymap for the leader key (SPC).")
-
-(define-key global-map (kbd "SPC") my-leader-map)
-
-;; Evil's own normal/visual/motion state maps shadow the global map: if we
-;; only define SPC there, Evil buffers never see the leader (and SPC falls
-;; back to scroll-down). Bind the leader in every state Evil is likely to be
-;; in, mirroring Doom's `general' setup.
-
-
-;; Restore Vim's default tab navigation (works on the visible tab bar),
-;; rather than a custom command.
-(with-eval-after-load 'evil
-  (define-key evil-normal-state-map (kbd "g t") #'tab-bar-switch-to-next-tab)
-  (define-key evil-normal-state-map (kbd "g T") #'tab-bar-switch-to-prev-tab))
-
-(defun my-leader (bindings)
-  "Bind BINDINGS, a quoted alist of (KEY . COMMAND), in `my-leader-map'.
-
-KEY is a string that may contain spaces (used as separators, Doom
-style); spaces are removed before binding, so \"o p\" binds the two
-key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
-  (declare (indent defun))
-  (dolist (binding bindings)
-    ;; `kbd' already understands the spaces Doom uses as separators, so
-    ;; "SPC ." becomes the two-key sequence <SPC> then ".".
-    (define-key my-leader-map (kbd (car binding)) (cdr binding))))
-
-;; NOTE: BINDINGS must be quoted. A literal dotted pair in argument
-;; position is evaluated as a function call, so (\"o -\" . #'dired-jump)
-;; would try to call the string \"o -\".
-
 ;;; ### Evil
 
 ;; Doom's (evil +everywhere): the modal map replaces emacs-mode-map in
@@ -100,10 +63,7 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
   ;; NOTE: there is no evil-set-default-keybindings in Evil 1.15; the
   ;; default bindings are installed by evil-mode itself.
   (evil-mode 1)
-  ;; Bind SPC as leader in Evil states.
-  (dolist (state-map '(evil-normal-state-map evil-visual-state-map evil-motion-state-map))
-    (define-key (symbol-value state-map) (kbd "SPC") my-leader-map))
-  (add-hook 'after-make-frame-functions (lambda (frame) (evil-mode) (dolist (sm '(evil-normal-state-map evil-visual-state-map evil-motion-state-map)) (define-key (symbol-value sm) (kbd "SPC") my-leader-map))))
+  (add-hook 'after-make-frame-functions #'evil-mode)
 
   ;; evil-collection restores Doom's "evil everywhere" behaviour: it adds
   ;; the right bindings/motion to magit, dired, org, term, help, etc.
@@ -123,6 +83,44 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
   (unless (boundp 'evil-mode-buffers)
     (setq evil-mode-buffers nil)))
 
+;;; ### Leader
+
+;; Replaces Doom's `map! :leader'. Every prefix the user already knows
+;; is defined here so the rest of the configuration can bind into it.
+(defvar my-leader-map (make-sparse-keymap)
+  "Keymap for the leader key (SPC).")
+
+(define-key global-map (kbd "SPC") my-leader-map)
+
+;; Evil's own normal/visual/motion state maps shadow the global map: if we
+;; only define SPC there, Evil buffers never see the leader (and SPC falls
+;; back to scroll-down). Bind the leader in every state Evil is likely to be
+;; in, mirroring Doom's `general' setup.
+(with-eval-after-load 'evil
+  (dolist (state-map '(evil-normal-state-map evil-visual-state-map evil-motion-state-map))
+    (define-key (symbol-value state-map) (kbd "SPC") my-leader-map)))
+
+;; Restore Vim's default tab navigation (works on the visible tab bar),
+;; rather than a custom command.
+(with-eval-after-load 'evil
+  (define-key evil-normal-state-map (kbd "g t") #'tab-bar-switch-to-next-tab)
+  (define-key evil-normal-state-map (kbd "g T") #'tab-bar-switch-to-prev-tab))
+
+(defun my-leader (bindings)
+  "Bind BINDINGS, a quoted alist of (KEY . COMMAND), in `my-leader-map'.
+
+KEY is a string that may contain spaces (used as separators, Doom
+style); spaces are removed before binding, so \"o p\" binds the two
+key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
+  (declare (indent defun))
+  (dolist (binding bindings)
+    ;; `kbd' already understands the spaces Doom uses as separators, so
+    ;; "SPC ." becomes the two-key sequence <SPC> then ".".
+    (define-key my-leader-map (kbd (car binding)) (cdr binding))))
+
+;; NOTE: BINDINGS must be quoted. A literal dotted pair in argument
+;; position is evaluated as a function call, so (\"o -\" . #'dired-jump)
+;; would try to call the string \"o -\".
 (my-leader
  '(("SPC" . consult-buffer)
    ("o -"  . dired-jump)
@@ -143,19 +141,16 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
   :config
   (which-key-mode 1))
 
-;; Ensure every major mode keeps SPC=leader in its local keymap.
+
+;; Keep SPC bound in every buffer that already exists when this module loads.
 (defun my/bind-leader-for-current-buffer ()
-  "Bind SPC to the leader keymap in the current buffer."
   (unless (or (minibufferp)
               (derived-mode-p 'minibuffer-mode 'minibuffer-inactive-mode))
     (local-set-key (kbd "SPC") my-leader-map)))
 (add-hook 'after-change-major-mode-hook #'my/bind-leader-for-current-buffer)
 (my/bind-leader-for-current-buffer)
-
-;; Cover buffers created before this module finished loading.
 (dolist (buffer (buffer-list))
-  (with-current-buffer buffer
-    (my/bind-leader-for-current-buffer)))
+  (with-current-buffer buffer (my/bind-leader-for-current-buffer)))
 
 (provide 'my-keys)
 ;;; my-keys.el ends here
@@ -202,100 +197,17 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
    ("w U" . winner-redo)))
 
 
-;; general-override-mode-map (installed by general/evil-collection) sits in
-;; emulation-mode-map-alists and can shadow the leader in Evil buffers.
-(with-eval-after-load 'general
-  (when (boundp 'general-override-mode-map)
-    (define-key general-override-mode-map (kbd "SPC") my-leader-map)))
-
-;; Safeguard: SPC must be the leader everywhere, regardless of Evil/general
-;; overriding maps.
-(with-eval-after-load 'evil
-  (define-key global-map (kbd "SPC") my-leader-map)
-  (dolist (sm '(evil-normal-state-map evil-visual-state-map evil-motion-state-map))
-    (define-key (symbol-value sm) (kbd "SPC") my-leader-map))
-  (when (boundp 'general-override-mode-map)
-    (define-key general-override-mode-map (kbd "SPC") my-leader-map))
-)
-
-;; Ensure every major mode keeps SPC=leader in its local keymap.
-
-(defun my/bind-leader-for-current-buffer ()
-  "Bind SPC to the leader keymap in the current buffer."
-  (unless (or (minibufferp)
-              (derived-mode-p 'minibuffer-mode 'minibuffer-inactive-mode))
-    (local-set-key (kbd "SPC") my-leader-map)))
-(add-hook 'after-change-major-mode-hook #'my/bind-leader-for-current-buffer)
-(my/bind-leader-for-current-buffer)
-
-
-;; Extra Doom-ish leader bindings.
-(my-leader
- '(("SPC" . execute-extended-command)
-   (":"   . execute-extended-command)
-   (";"   . comment-dwim)
-   (","   . consult-buffer)
-   ("/"   . consult-ripgrep)
-   ("u"   . universal-argument)
-   ("w w" . other-window)
-   ("w o" . other-window)
-   ("w 0" . delete-window)
-   ("b d" . kill-current-buffer)
-   ("f b" . consult-buffer)
-   ("f s" . save-buffer)
-   ("f S" . save-some-buffers)
-   ("q a" . kill-emacs)
-   ("t n" . tab-bar-new-tab)
-   ("t b" . tab-bar-switch-to-tab)
-   ("h h" . describe-key)))
-
-;; Ensure every major mode keeps SPC=leader in its local keymap.
-(defun my/bind-leader-for-current-buffer ()
-  "Bind SPC to the leader keymap in the current buffer."
-  (unless (or (minibufferp)
-              (derived-mode-p 'minibuffer-mode 'minibuffer-inactive-mode))
-    (local-set-key (kbd "SPC") my-leader-map)))
-(add-hook 'after-change-major-mode-hook #'my/bind-leader-for-current-buffer)
-(my/bind-leader-for-current-buffer)
-
 (defun my-leader-sanity-check ()
-  "Open a diagnostic buffer showing the leader binding for this buffer."
+  "Open a diagnostic buffer for SPC bindings."
   (interactive)
-  (let* ((local-spc (lookup-key (current-local-map) (kbd "SPC")))
-         (buffer (get-buffer-create "*leader-check*")))
+  (let ((buffer (get-buffer-create "*leader-check*")))
     (with-current-buffer buffer
       (read-only-mode -1)
       (erase-buffer)
-      (insert "buffer: " (buffer-name (current-buffer)) "\n")
-      (insert "SPC in current-local-map:\n" (pp-to-string local-spc) "\n")
-      (insert (if (eq local-spc my-leader-map)
-                  "state: MATCHES my-leader-map\n"
-                "state: does NOT match my-leader-map\n"))
-      (insert "\nCommands under SPC in my-leader-map:\n")
-      (dolist (pair (cdr my-leader-map))
-        (insert (format "  %s -> %S\n" (car pair) (cdr pair)))
-        )
-      (goto-char (point-min)))
-    (display-buffer buffer)))
-
-(defun my-leader-sanity-check ()
-  "Open a diagnostic buffer showing the leader binding for this buffer."
-  (interactive)
-  (let* ((local-spc (lookup-key (current-local-map) (kbd "SPC")))
-         (root-spc (lookup-key global-map (kbd "SPC")))
-         (evil-normal-spc (lookup-key evil-normal-state-map (kbd "SPC")))
-         (buffer (get-buffer-create "*leader-check*")))
-    (with-current-buffer buffer
-      (read-only-mode -1)
-      (erase-buffer)
-      (insert "major-mode: " (symbol-name major-mode) "\n")
-      (insert "current-local-map SPC:\n" (pp-to-string local-spc) "\n")
-      (insert "global SPC:\n" (pp-to-string root-spc) "\n")
-      (insert "evil-normal-state-map SPC:\n" (pp-to-string evil-normal-spc) "\n")
-      (insert (if (or evil-normal-spc local-spc root-spc)
-                  "status: SPC is bound in at least one active map\n"
-                "status: SPC appears to be unbound\n"))
-      (insert "my-leader-map branches: " (format "%s" (mapcar #'car my-leader-map)) "\n")
+      (insert (format "major-mode: %s\n" (symbol-name major-mode)))
+      (insert (format "current-local-map SPC: %S\n" (lookup-key (current-local-map) (kbd "SPC"))))
+      (insert (format "global SPC: %S\n" (lookup-key global-map (kbd "SPC"))))
+      (insert (format "evil-normal-state-map SPC: %S\n" (lookup-key evil-normal-state-map (kbd "SPC"))))
       (goto-char (point-min))
       (read-only-mode 1))
     (display-buffer buffer)))
