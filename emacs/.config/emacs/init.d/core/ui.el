@@ -62,7 +62,15 @@
   (centaur-tabs-height 28)
   (centaur-tabs-set-bar 'under)
   :config
-  (centaur-tabs-mode +1))
+  ;; Doom only shows the tab bar once a real file is opened, not at
+  ;; startup (the dashboard would otherwise show an empty tab bar).
+  (defun my/centaur-tabs-maybe-enable ()
+    "Enable centaur-tabs once a file-visiting buffer exists."
+    (unless centaur-tabs-mode
+      (when (cl-some #'buffer-file-name (buffer-list))
+        (centaur-tabs-mode +1))))
+  (add-hook 'find-file-hook #'my/centaur-tabs-maybe-enable)
+  (add-hook 'after-save-hook #'my/centaur-tabs-maybe-enable))
 
 ;;; ### Workspaces
 
