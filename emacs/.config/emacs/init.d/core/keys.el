@@ -197,4 +197,4 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
     (define-key (symbol-value sm) (kbd "SPC") my-leader-map))
   (when (boundp 'general-override-mode-map)
     (define-key general-override-mode-map (kbd "SPC") my-leader-map))
-  (general-override-mode +1))
+)
