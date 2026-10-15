@@ -158,7 +158,11 @@
 
 ;;; ### Line numbers and cursor
 
-(setq-default display-line-numbers-mode nil)
+;; Ported from Doom: relative line numbers everywhere, with the ordinary
+;; per-major-mode exceptions below.
+(setq-default display-line-numbers-type 'relative
+              display-line-numbers t)
+(global-display-line-numbers-mode +1)
 (add-hook 'prog-mode-hook #'hl-line-mode)
 
 ;; Doom's +org provides org-hide-leading-stars with level 4.

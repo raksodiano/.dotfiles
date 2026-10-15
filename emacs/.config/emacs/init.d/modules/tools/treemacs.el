@@ -6,9 +6,14 @@
 (use-package treemacs
   :commands treemacs
   :config
-  (setq treemacs-width 35)
+  (setq treemacs-width 35
+        treemacs-persist-file
+        (expand-file-name "treemacs-persist" my/emacs-cache)
+        treemacs-last-error-persist-file
+        (expand-file-name "treemacs-persist-at-last-error" my/emacs-cache))
   (treemacs-follow-mode t)
-  (treemacs-filewatch-mode t))
+  (treemacs-filewatch-mode t)
+  (add-hook 'treemacs-mode-hook #'(lambda () (display-line-numbers-mode -1))))
 
 (use-package treemacs-evil
   :after (treemacs evil))
