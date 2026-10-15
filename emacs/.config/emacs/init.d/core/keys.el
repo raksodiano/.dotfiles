@@ -243,3 +243,23 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
     (local-set-key (kbd "SPC") my-leader-map)))
 (add-hook 'after-change-major-mode-hook #'my/bind-leader-for-current-buffer)
 (my/bind-leader-for-current-buffer)
+
+(defun my-leader-sanity-check ()
+  "Open a diagnostic buffer showing the leader binding for this buffer."
+  (interactive)
+  (let* ((local-spc (lookup-key (current-local-map) (kbd "SPC")))
+         (buffer (get-buffer-create "*leader-check*")))
+    (with-current-buffer buffer
+      (read-only-mode -1)
+      (erase-buffer)
+      (insert "buffer: " (buffer-name (current-buffer)) "\n")
+      (insert "SPC in current-local-map:\n" (pp-to-string local-spc) "\n")
+      (insert (if (eq local-spc my-leader-map)
+                  "state: MATCHES my-leader-map\n"
+                "state: does NOT match my-leader-map\n"))
+      (insert "\nCommands under SPC in my-leader-map:\n")
+      (dolist (pair (cdr my-leader-map))
+        (insert (format "  %s -> %S\n" (car pair) (cdr pair)))
+        )
+      (goto-char (point-min)))
+    (display-buffer buffer)))
