@@ -204,6 +204,16 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
     (define-key general-override-mode-map (kbd "SPC") my-leader-map))
 )
 
+;; Ensure every major mode keeps SPC=leader in its local keymap.
+
+(defun my/bind-leader-for-current-buffer ()
+  "Bind SPC to the leader keymap in the current buffer."
+  (unless (or (minibufferp)
+              (derived-mode-p 'minibuffer-mode 'minibuffer-inactive-mode))
+    (local-set-key (kbd "SPC") my-leader-map)))
+(add-hook 'after-change-major-mode-hook #'my/bind-leader-for-current-buffer)
+(my/bind-leader-for-current-buffer)
+
 
 ;; Extra Doom-ish leader bindings.
 (my-leader
