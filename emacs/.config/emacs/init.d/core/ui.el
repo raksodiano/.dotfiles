@@ -232,6 +232,12 @@
 (setq inhibit-startup-screen t
       inhibit-splash-screen t
       initial-buffer-choice nil)
+;; Ensure the dashboard takes focus after persp-mode/workspaces have had a
+;; chance to (attempt to) restore their saved state.
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (run-with-timer 0.3 nil #'dashboard-initialize))
+          t)
 
 ;;; ### Window borders and transparency
 
