@@ -204,6 +204,27 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
     (define-key general-override-mode-map (kbd "SPC") my-leader-map))
 )
 
+
+;; Extra Doom-ish leader bindings.
+(my-leader
+ '(("SPC" . execute-extended-command)
+   (":"   . execute-extended-command)
+   (";"   . comment-dwim)
+   (","   . consult-buffer)
+   ("/"   . consult-ripgrep)
+   ("u"   . universal-argument)
+   ("w w" . other-window)
+   ("w o" . other-window)
+   ("w 0" . delete-window)
+   ("b d" . kill-current-buffer)
+   ("f b" . consult-buffer)
+   ("f s" . save-buffer)
+   ("f S" . save-some-buffers)
+   ("q a" . kill-emacs)
+   ("t n" . tab-bar-new-tab)
+   ("t b" . tab-bar-switch-to-tab)
+   ("h h" . describe-key)))
+
 ;; Ensure every major mode keeps SPC=leader in its local keymap.
 (defun my/bind-leader-for-current-buffer ()
   "Bind SPC to the leader keymap in the current buffer."
