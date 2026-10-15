@@ -130,5 +130,18 @@
 (when (file-exists-p custom-file)
   (load custom-file nil t))
 
+  ;; Dirvish (Doom's dired +icons +dirvish).
+(use-package dirvish
+  :commands (dirvish dirvish-side)
+  :config
+  (dirvish-override-dired-mode)
+  (setq dirvish-default-layout (quote (0 0 0.4))
+        dirvish-layout-recipes
+        (quote ((1 0.11 0.55) (2 0.22 0.55) (3 0.15 0.55)))
+        dirvish-attributes
+        (quote (vc-state subtree-state nerd-icons file-size))))
+
+
 (provide 'my-buffers)
 ;;; my-buffers.el ends here
+
