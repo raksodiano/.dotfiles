@@ -91,7 +91,8 @@
   (unless (file-directory-p persp-save-dir)
     (make-directory persp-save-dir t))
   (setq persp-keymap-save-environment t
-        persp-initial-frame-workspace nil)
+        persp-initial-frame-workspace nil
+        persp-auto-resume-time 0)
   (setq-default persp-keymap '(C-c C-w)
                 persp-show-branches t)
   (persp-mode +1)
