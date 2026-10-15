@@ -56,6 +56,9 @@
 
 ;;; ### Tabs
 
+;; Emacs native tabs for g t / g T.
+(tab-bar-mode +1)
+
 ;; Doom's (tabs +centaur +workspace).
 (use-package centaur-tabs
   :custom
