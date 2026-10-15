@@ -9,6 +9,9 @@
 ;; path of every startup.
 
 ;;; Code:
+
+;; evil-collection requires this before Evil loads.
+(setq evil-want-keybinding nil)
 ;; Hide chrome before any frame is created, so the menu/tool/scroll bars
 ;; never flash in a GUI session.
 (menu-bar-mode -1)
