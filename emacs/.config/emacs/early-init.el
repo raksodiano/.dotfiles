@@ -9,6 +9,12 @@
 ;; path of every startup.
 
 ;;; Code:
+;; Hide chrome before any frame is created, so the menu/tool/scroll bars
+;; never flash in a GUI session.
+(menu-bar-mode -1)
+(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+
 
 ;;; ### Package archives
 
