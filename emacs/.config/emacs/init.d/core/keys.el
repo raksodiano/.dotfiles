@@ -158,3 +158,9 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
    ("q q"  . save-buffers-kill-terminal)
    ("q Q"  . (lambda () (interactive) (kill-emacs)))
    ("o -"  . dired-jump)))
+
+;; ### More navigation
+(my-leader
+ '(("]" . centaur-tabs-forward)
+   ("[" . centaur-tabs-backward)
+   ("TAB" . next-buffer)))
