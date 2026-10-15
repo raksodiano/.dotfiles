@@ -135,7 +135,7 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
 (use-package which-key
   :ensure nil
   :custom
-  (which-key-idle-delay 0.2)
+  (which-key-idle-delay 0)
   (which-key-max-display-length 30)
   (which-key-setup-side-window-right)
   :config
