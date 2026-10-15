@@ -127,6 +127,21 @@
 (dolist (pattern '("\\.astro\\'" "\\.svelte\\'"))
   (add-to-list 'auto-mode-alist (cons pattern 'web-mode)))
 
+;; TypeScript / TSX open in the built-in tree-sitter modes (grammars come
+;; from my/treesit-language-sources, installed with SPC l t i).
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.mts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.cts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+
+;; Vue single-file components (LSP via volar, installed with SPC l i).
+(use-package vue-mode
+  :mode ("\\.vue\\'" . vue-mode))
+
+;; PHP (LSP via intelephense, installed with SPC l i).
+(use-package php-mode
+  :mode ("\\.php\\'" . php-mode))
+
 ;; docker-compose files as YAML, ported from config.el.
 (add-to-list 'auto-mode-alist
              '("docker-compose[.-]?\\(yml\\|yaml\\)\\'" . yaml-mode))

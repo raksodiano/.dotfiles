@@ -11,8 +11,29 @@
 ;;; ### Grammar table
 
 (defvar my/treesit-grammars-to-install
-  '(python javascript typescript go rust json yaml markdown php html css toml)
+  '(python javascript typescript tsx go rust json yaml markdown markdown-inline
+    php html css toml bash)
   "Tree-sitter grammars we want for this configuration.")
+
+;; Emacs 31 ships no recipes (treesit-language-source-alist is nil), so
+;; every grammar needs its upstream repository spelled out here.
+(defvar my/treesit-language-sources
+  '((python          "https://github.com/tree-sitter/tree-sitter-python")
+    (javascript      "https://github.com/tree-sitter/tree-sitter-javascript")
+    (typescript      "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+    (tsx             "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+    (go              "https://github.com/tree-sitter/tree-sitter-go")
+    (rust            "https://github.com/tree-sitter/tree-sitter-rust")
+    (json            "https://github.com/tree-sitter/tree-sitter-json")
+    (yaml            "https://github.com/tree-sitter/tree-sitter-yaml")
+    (markdown        "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown/src")
+    (markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown-inline/src")
+    (php             "https://github.com/tree-sitter/tree-sitter-php" "master" "php/src")
+    (html            "https://github.com/tree-sitter/tree-sitter-html")
+    (css             "https://github.com/tree-sitter/tree-sitter-css")
+    (toml            "https://github.com/tree-sitter/tree-sitter-toml")
+    (bash            "https://github.com/tree-sitter/tree-sitter-bash"))
+  "Upstream recipes for `treesit-language-source-alist'.")
 
 (defun my/treesit-grammar-installed-p (lang)
   (treesit-language-available-p lang))
@@ -69,6 +90,8 @@
   :config
   (setq treesit-auto-install t
         treesit-font-lock-level 4)
+  (dolist (entry my/treesit-language-sources)
+    (add-to-list 'treesit-language-source-alist entry))
   ;; Prefer tree-sitter major modes over the classical ones when available.
   (when (fboundp 'treesit-install-language-grammar)
     (setq major-mode-remap-alist

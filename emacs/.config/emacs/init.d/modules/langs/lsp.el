@@ -15,6 +15,16 @@
 
 (require 'seq)
 
+;;; ### Toolchain paths
+
+;; Volta (and a conventional ~/.npm-global) keep user binaries outside the
+;; default exec-path, so neither `executable-find' nor lsp-mode sees them.
+;; lsp-mode itself also needs them there to start servers.
+(dolist (dir '("~/.volta/bin" "~/.npm-global/bin" "/usr/local/bin"))
+  (let ((full (expand-file-name dir)))
+    (when (and (file-directory-p full) (not (member full exec-path)))
+      (add-to-list 'exec-path full))))
+
 ;;; ### Servers
 
 (defconst my/lsp-venv
@@ -28,7 +38,9 @@
     ("bash-language-server"       . "bash-language-server")
     ("docker-langserver"          . "dockerfile-language-server-nodejs")
     ("astro-ls"                   . "@astrojs/language-server")
-    ("svelte-language-server"     . "svelte-language-server")
+    ("svelteserver"                . "svelte-language-server")
+    ("vue-language-server"        . "@vue/language-server")
+    ("intelephense"               . "intelephense")
     ("prettier"                   . "prettier"))
   "Servers installed with npm, as (COMMAND . PACKAGES).
 
@@ -80,13 +92,20 @@ With CHECK-ONLY, only report the status."
         (error (my/lsp--log "python: FAILED: %s"
                             (error-message-string err)))))))
 
-(defun my/install-npm-servers (check-only)
-  "Install the npm language servers.
+(defun my/lsp--npm ()
+  "Return the npm executable path, looking beyond `exec-path'."
+  (or (executable-find "npm")
+      (let ((volta (expand-file-name "~/.volta/bin/npm")))
+        (and (file-executable-p volta) volta))))
 
-With CHECK-ONLY, only report the status."
+(defun my/install-npm-servers (check-only)
+  "Install the npm language servers with `npm install -g'.
+
+With CHECK-ONLY (prefix argument interactively), only report status."
+  (interactive "P")
   (cond
-   ((not (executable-find "npm"))
-    (my/lsp--log "npm: not found, run `paru -S nodejs npm' first"))
+   ((not (my/lsp--npm))
+    (my/lsp--log "npm: not found, install nodejs/npm first"))
    (t
     (dolist (entry my/lsp-npm-servers)
       (let ((command (car entry))
@@ -98,13 +117,24 @@ With CHECK-ONLY, only report the status."
           (my/lsp--log "npm: MISSING (%s)" command))
          (t
           (condition-case err
-              (progn
+              (let ((outbuf (get-buffer-create "*my-lsp-npm*"))
+                    status output)
+                (with-current-buffer outbuf (erase-buffer))
                 (my/lsp--log "npm: installing %s" packages)
-                (call-process "npm" nil nil nil
-                              "install" "-g" (string-join packages " "))
-                (my/lsp--log "npm: installed %s" command))
+                (setq status (apply #'call-process (my/lsp--npm) nil outbuf nil
+                                    "install" "-g" (split-string packages)))
+                (setq output (with-current-buffer outbuf (buffer-string)))
+                (cond
+                 ((and (zerop status) (my/lsp--have command))
+                  (my/lsp--log "npm: installed %s" command))
+                 (t
+                  (my/lsp--log "npm: FAILED %s (exit %s): %s" command status
+                               (string-trim
+                                (mapconcat #'identity
+                                           (last (split-string output "\n" t) 3)
+                                           " "))))))
             (error (my/lsp--log "npm: FAILED %s: %s"
-                                command (error-message-string e)))))))))))
+                                command (error-message-string err)))))))))))
 
 (defun my/install-cargo-servers (check-only)
   "Install the cargo language servers.
@@ -180,10 +210,14 @@ install nothing."
                           report)))
     (if noninteractive
         (princ (concat "my/lsp: " summary "\n"))
-      (with-temp-buffer
-        (rename-buffer "*my-lsp*" t)
-        (insert summary)
-        (display-buffer)))
+      (let ((buf (get-buffer-create "*my-lsp*")))
+        (with-current-buffer buf
+          (read-only-mode -1)
+          (erase-buffer)
+          (insert summary)
+          (goto-char (point-min))
+          (read-only-mode 1))
+        (display-buffer buf)))
     my/lsp--install-log))
 
 ;;; ### Client (lsp-mode)
@@ -226,9 +260,9 @@ install nothing."
                      :activation-fn (lambda (filename _mode)
                                      (string-match-p "\\.astro\\'" filename)))))
 
-  (when (executable-find "svelte-language-server")
+  (when (executable-find "svelteserver")
     (lsp-register-client
-     (make-lsp-client :new-connection (lsp-stdio-connection "svelte-language-server")
+     (make-lsp-client :new-connection (lsp-stdio-connection "svelteserver")
                      :server-id 'svelte-ls
                      :major-modes '(web-mode)
                      :activation-fn (lambda (filename _mode)
@@ -270,12 +304,13 @@ install nothing."
 ;; Activate LSP automatically for the languages Doom enabled.
 (dolist (hook '(python-mode-hook python-ts-mode-hook
                 js-mode-hook js-ts-mode-hook
-                typescript-mode-hook typescript-ts-mode-hook
+                typescript-mode-hook typescript-ts-mode-hook tsx-ts-mode-hook
                 go-mode-hook go-ts-mode-hook
                 rust-mode-hook rust-ts-mode-hook
                 yaml-mode-hook yaml-ts-mode-hook
                 json-mode-hook json-ts-mode-hook
-                web-mode-hook html-mode-hook html-ts-mode-hook
+                web-mode-hook vue-mode-hook php-mode-hook
+                html-mode-hook html-ts-mode-hook
                 sh-mode-hook bash-ts-mode-hook
                 markdown-mode-hook))
   (add-hook hook #'lsp-deferred))
@@ -289,8 +324,10 @@ install nothing."
     (python-mode . ("pylsp" "pyright"))
     ;; JavaScript/TypeScript
     (js-mode . ("typescript-language-server" "typescript"))
+    (js-ts-mode . ("typescript-language-server" "typescript"))
     (typescript-mode . ("typescript-language-server" "typescript"))
     (typescript-ts-mode . ("typescript-language-server" "typescript"))
+    (tsx-ts-mode . ("typescript-language-server" "typescript"))
     ;; Go
     (go-mode . ("gopls" "gofmt"))
     (go-ts-mode . ("gopls" "gofmt"))
@@ -302,7 +339,11 @@ install nothing."
     ;; YAML
     (yaml-mode . ("yaml-language-server"))
     ;; Web
-    (web-mode . ("astro-ls" "svelte-language-server" "typescript-language-server"))
+    (web-mode . ("astro-ls" "svelteserver" "typescript-language-server"))
+    ;; Vue
+    (vue-mode . ("vue-language-server"))
+    ;; PHP
+    (php-mode . ("intelephense"))
     ;; Bash/Shell
     (sh-mode . ("bash-language-server")))
   "List of modes and their corresponding LSP servers.")

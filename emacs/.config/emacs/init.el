@@ -62,7 +62,8 @@
     ("init.d/modules/ai/ellama.el"           . my-ellama)
     ("init.d/modules/tools/detached.el"      . my-detached)
     ("init.d/modules/tools/pass.el"          . my-pass)
-    ("init.d/modules/tools/treemacs.el"      . my-treemacs))
+    ("init.d/modules/tools/treemacs.el"      . my-treemacs)
+    ("init.d/modules/term/vterm.el"         . my-term))
   "Configuration modules as (PATH . FEATURE), in load order.
 
 FEATURE is the symbol each module provides; `my-load-init-files' uses it

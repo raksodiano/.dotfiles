@@ -127,10 +127,11 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
 (my-leader
  '(("SPC" . consult-buffer)
    ("o -"  . dired-jump)
-   ("o t"  . project-switch-project)
    ("o p"  . project-dired)
    ("o f"  . find-file)
-   ("o r"  . recentf)))
+   ("o r"  . recentf)
+   ;; Doom keeps project switching on SPC p p; SPC o t is the terminal.
+   ("p p"  . project-switch-project)))
 
 ;;; ### which-key
 

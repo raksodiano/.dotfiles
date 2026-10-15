@@ -69,6 +69,7 @@
   (centaur-tabs-style "alternate")
   (centaur-tabs-height 28)
   (centaur-tabs-set-bar 'under)
+  (centaur-tabs-set-icons t)
   :config
   ;; Doom only shows the tab bar once a real file is opened, not at
   ;; startup (the dashboard would otherwise show an empty tab bar).
@@ -151,10 +152,19 @@
 
 ;;; ### Indentation guides
 
-;; Loaded after the theme above, otherwise it cannot derive its faces.
-(eval-after-load 'highlight-indent-guides
-  (setq highlight-indent-guides-method (if (display-graphic-p) 'bitmap 'character)
-        highlight-indent-guides-responsive 'top))
+;; Doom's (indent-guides): on in code buffers. Loaded after the theme
+;; above, otherwise it cannot derive its faces. GUI only: face
+;; auto-derivation needs a real background, which terminals (and batch
+;; runs) don't provide.
+(use-package highlight-indent-guides
+  :custom
+  (highlight-indent-guides-method (if (display-graphic-p) 'bitmap 'character))
+  (highlight-indent-guides-responsive 'top)
+  :config
+  (add-hook 'prog-mode-hook
+            (lambda ()
+              (when (display-graphic-p)
+                (highlight-indent-guides-mode 1)))))
 
 ;;; ### Line numbers and cursor
 
@@ -164,6 +174,47 @@
               display-line-numbers t)
 (global-display-line-numbers-mode +1)
 (add-hook 'prog-mode-hook #'hl-line-mode)
+(add-hook 'text-mode-hook #'hl-line-mode)
+
+;; Cursor shape and color per Evil state, gruvbox-tinted like Doom.
+(with-eval-after-load 'evil
+  (setq evil-normal-state-cursor '(box "#b8bb26")
+        evil-insert-state-cursor '(bar "#fb4934")
+        evil-visual-state-cursor '(hbar "#fabd2f")
+        evil-replace-state-cursor '(hbar "#fb4934")
+        evil-motion-state-cursor '(box "#83a598")
+        evil-emacs-state-cursor '(box "#d3869b")
+        evil-operator-state-cursor '(hbar "#b8bb26")))
+
+;;; ### Doom eye-candy modules
+
+;; hl-todo: TODO/FIXME/NOTE screaming in code, as in Doom.
+(use-package hl-todo
+  :hook (prog-mode . hl-todo-mode))
+
+;; vi-tilde-fringe: Vim-like ~ past end of buffer, as in Doom.
+(use-package vi-tilde-fringe
+  :config
+  (global-vi-tilde-fringe-mode 1))
+
+;; vc-gutter +pretty: git marks in the fringe, refreshed with magit.
+;; :demand so the global mode is on from startup, like Doom.
+(use-package diff-hl
+  :demand t
+  :hook (dired-mode . diff-hl-dired-mode)
+  :config
+  (global-diff-hl-mode 1)
+  (add-hook 'magit-pre-refresh-hook #'diff-hl-magit-pre-refresh)
+  (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh))
+
+;; solaire-mode: Doom's depth cue, dimming sidebars and popups.
+(use-package solaire-mode
+  :config
+  (solaire-global-mode 1))
+
+;; rainbow-delimiters in code, as Doom's doom module does.
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
 
 ;; Doom's +org provides org-hide-leading-stars with level 4.
 (add-hook 'org-mode-hook
@@ -214,10 +265,11 @@
 ;; `dashboard-startupify-list'; the old dashboard-set-* helpers are gone.
 (use-package dashboard
   :custom
-  ;; Doom centred the whole dashboard and hid the per-item shortcuts.
+  ;; Doom centred the whole dashboard; section shortcut letters stay
+  ;; visible so every section has an easy access key (p/m/r/a...).
   (dashboard-center-content t)
-  (dashboard-show-shortcuts nil)
-  (dashboard-items '((projects . 5) (bookmarks . 5) (recents . 5)))
+  (dashboard-show-shortcuts t)
+  (dashboard-items '((projects . 5) (bookmarks . 5) (agenda . 8) (recents . 5)))
   (dashboard-items-default-length 8)
   ;; Doom's greeting, from its config.el.
   (dashboard-banner-logo-title
@@ -237,18 +289,82 @@
      dashboard-insert-init-info
      dashboard-insert-newline
      dashboard-insert-footer))
+  ;; Every section shows its icon before the name (nerd-icons when
+  ;; available, all-the-icons otherwise; hidden in terminal).
+  (dashboard-set-heading-icons t)
+  (dashboard-set-file-icons t)
+  ;; Section shortcut letters are always shown (dashboard only shows
+  ;; them — and only defines the jump keys — for non-empty sections).
+  ;; The overlay renames below keep the underlying "Name:" text intact,
+  ;; so section search/jump keeps working.
+  (dashboard-heading-shorcut-format "")
+  (dashboard-item-names
+   '(("Projects:" . "Projects: (p)")
+     ("Agenda for today:" . "Agenda for today: (a)")
+     ("Agenda for the coming week:" . "Agenda for the coming week: (a)")
+     ("Bookmarks:" . "Bookmarks: (m)")
+     ("Recent Files:" . "Recent Files: (r)")))
   :config
-  (dashboard-setup-startup-hook))
+  (dashboard-setup-startup-hook)
+  ;; Jump commands that work even when a section is empty (dashboard only
+  ;; generates its own when the section has items).
+  (defun my/dashboard-jump-to-section (label)
+    "Move point to the dashboard section headed LABEL."
+    (goto-char (point-min))
+    (if (search-forward label nil t)
+        (progn (forward-line 1) (back-to-indentation))
+      (goto-char (point-min))))
+  (defun my/dashboard-jump-to-projects ()
+    "Jump to the dashboard Projects section."
+    (interactive)
+    (my/dashboard-jump-to-section "Projects:"))
+  (defun my/dashboard-jump-to-bookmarks ()
+    "Jump to the dashboard Bookmarks section."
+    (interactive)
+    (my/dashboard-jump-to-section "Bookmarks:"))
+  (defun my/dashboard-jump-to-agenda ()
+    "Jump to the dashboard Agenda section (week or day view)."
+    (interactive)
+    (goto-char (point-min))
+    (if (or (search-forward "Agenda for the coming week:" nil t)
+            (progn (goto-char (point-min))
+                   (search-forward "Agenda for today:" nil t)))
+        (progn (forward-line 1) (back-to-indentation))
+      (goto-char (point-min))))
+  (defun my/dashboard-jump-to-recents ()
+    "Jump to the dashboard Recent Files section."
+    (interactive)
+    (my/dashboard-jump-to-section "Recent Files:"))
+  ;; Plain bindings cover non-Evil states; Evil normal-state bindings win
+  ;; over evil's own keys (e.g. "p" pastes) inside the dashboard.
+  (define-key dashboard-mode-map (kbd "p") #'my/dashboard-jump-to-projects)
+  (define-key dashboard-mode-map (kbd "a") #'my/dashboard-jump-to-agenda)
+  (define-key dashboard-mode-map (kbd "m") #'my/dashboard-jump-to-bookmarks)
+  (define-key dashboard-mode-map (kbd "r") #'my/dashboard-jump-to-recents)
+  (with-eval-after-load 'evil
+    (evil-define-key 'normal dashboard-mode-map
+      (kbd "p") #'my/dashboard-jump-to-projects
+      (kbd "a") #'my/dashboard-jump-to-agenda
+      (kbd "m") #'my/dashboard-jump-to-bookmarks
+      (kbd "r") #'my/dashboard-jump-to-recents)))
 
 ;; Doom showed the dashboard instead of *scratch* on startup.
 (setq inhibit-startup-screen t
       inhibit-splash-screen t
       initial-buffer-choice nil)
 ;; Ensure the dashboard takes focus after persp-mode/workspaces have had a
-;; chance to (attempt to) restore their saved state.
+;; chance to (attempt to) restore their saved state, and leave point on
+;; the Projects section (shortcut "p", generated as dashboard-jump-to-projects
+;; when the section renders).
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (run-with-timer 0.3 nil #'dashboard-initialize))
+            (run-with-timer 0.3 nil
+                            (lambda ()
+                              (dashboard-initialize)
+                              (let ((buf (get-buffer "*dashboard*")))
+                                (when (buffer-live-p buf)
+                                  (with-current-buffer buf
+                                    (my/dashboard-jump-to-projects)))))))
           t)
 
 ;;; ### Window borders and transparency
