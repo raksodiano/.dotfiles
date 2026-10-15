@@ -92,6 +92,14 @@
 
 (define-key global-map (kbd "SPC") my-leader-map)
 
+;; Evil's own normal/visual/motion state maps shadow the global map: if we
+;; only define SPC there, Evil buffers never see the leader (and SPC falls
+;; back to scroll-down). Bind the leader in every state Evil is likely to be
+;; in, mirroring Doom's `general' setup.
+(with-eval-after-load 'evil
+  (dolist (state-map '(evil-normal-state-map evil-visual-state-map evil-motion-state-map))
+    (define-key (symbol-value state-map) (kbd "SPC") my-leader-map)))
+
 (defun my-leader (bindings)
   "Bind BINDINGS, a quoted alist of (KEY . COMMAND), in `my-leader-map'.
 
