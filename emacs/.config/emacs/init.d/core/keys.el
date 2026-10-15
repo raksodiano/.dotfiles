@@ -22,6 +22,43 @@
       use-package-always-update-on-changelog nil
       use-package-always-pin nil)
 
+;; ### Leader
+
+;; Replaces Doom's `map! :leader'. Every prefix the user already knows
+;; is defined here so the rest of the configuration can bind into it.
+(defvar my-leader-map (make-sparse-keymap)
+  "Keymap for the leader key (SPC).")
+
+(define-key global-map (kbd "SPC") my-leader-map)
+
+;; Evil's own normal/visual/motion state maps shadow the global map: if we
+;; only define SPC there, Evil buffers never see the leader (and SPC falls
+;; back to scroll-down). Bind the leader in every state Evil is likely to be
+;; in, mirroring Doom's `general' setup.
+
+
+;; Restore Vim's default tab navigation (works on the visible tab bar),
+;; rather than a custom command.
+(with-eval-after-load 'evil
+  (define-key evil-normal-state-map (kbd "g t") #'tab-bar-switch-to-next-tab)
+  (define-key evil-normal-state-map (kbd "g T") #'tab-bar-switch-to-prev-tab))
+
+(defun my-leader (bindings)
+  "Bind BINDINGS, a quoted alist of (KEY . COMMAND), in `my-leader-map'.
+
+KEY is a string that may contain spaces (used as separators, Doom
+style); spaces are removed before binding, so \"o p\" binds the two
+key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
+  (declare (indent defun))
+  (dolist (binding bindings)
+    ;; `kbd' already understands the spaces Doom uses as separators, so
+    ;; "SPC ." becomes the two-key sequence <SPC> then ".".
+    (define-key my-leader-map (kbd (car binding)) (cdr binding))))
+
+;; NOTE: BINDINGS must be quoted. A literal dotted pair in argument
+;; position is evaluated as a function call, so (\"o -\" . #'dired-jump)
+;; would try to call the string \"o -\".
+
 ;;; ### Evil
 
 ;; Doom's (evil +everywhere): the modal map replaces emacs-mode-map in
@@ -63,7 +100,10 @@
   ;; NOTE: there is no evil-set-default-keybindings in Evil 1.15; the
   ;; default bindings are installed by evil-mode itself.
   (evil-mode 1)
-  (add-hook 'after-make-frame-functions #'evil-mode)
+  ;; Bind SPC as leader in Evil states.
+  (dolist (state-map '(evil-normal-state-map evil-visual-state-map evil-motion-state-map))
+    (define-key (symbol-value state-map) (kbd "SPC") my-leader-map))
+  (add-hook 'after-make-frame-functions (lambda (frame) (evil-mode) (dolist (sm '(evil-normal-state-map evil-visual-state-map evil-motion-state-map)) (define-key (symbol-value sm) (kbd "SPC") my-leader-map))))
 
   ;; evil-collection restores Doom's "evil everywhere" behaviour: it adds
   ;; the right bindings/motion to magit, dired, org, term, help, etc.
@@ -83,44 +123,6 @@
   (unless (boundp 'evil-mode-buffers)
     (setq evil-mode-buffers nil)))
 
-;;; ### Leader
-
-;; Replaces Doom's `map! :leader'. Every prefix the user already knows
-;; is defined here so the rest of the configuration can bind into it.
-(defvar my-leader-map (make-sparse-keymap)
-  "Keymap for the leader key (SPC).")
-
-(define-key global-map (kbd "SPC") my-leader-map)
-
-;; Evil's own normal/visual/motion state maps shadow the global map: if we
-;; only define SPC there, Evil buffers never see the leader (and SPC falls
-;; back to scroll-down). Bind the leader in every state Evil is likely to be
-;; in, mirroring Doom's `general' setup.
-(with-eval-after-load 'evil
-  (dolist (state-map '(evil-normal-state-map evil-visual-state-map evil-motion-state-map))
-    (define-key (symbol-value state-map) (kbd "SPC") my-leader-map)))
-
-;; Restore Vim's default tab navigation (works on the visible tab bar),
-;; rather than a custom command.
-(with-eval-after-load 'evil
-  (define-key evil-normal-state-map (kbd "g t") #'tab-bar-switch-to-next-tab)
-  (define-key evil-normal-state-map (kbd "g T") #'tab-bar-switch-to-prev-tab))
-
-(defun my-leader (bindings)
-  "Bind BINDINGS, a quoted alist of (KEY . COMMAND), in `my-leader-map'.
-
-KEY is a string that may contain spaces (used as separators, Doom
-style); spaces are removed before binding, so \"o p\" binds the two
-key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
-  (declare (indent defun))
-  (dolist (binding bindings)
-    ;; `kbd' already understands the spaces Doom uses as separators, so
-    ;; "SPC ." becomes the two-key sequence <SPC> then ".".
-    (define-key my-leader-map (kbd (car binding)) (cdr binding))))
-
-;; NOTE: BINDINGS must be quoted. A literal dotted pair in argument
-;; position is evaluated as a function call, so (\"o -\" . #'dired-jump)
-;; would try to call the string \"o -\".
 (my-leader
  '(("SPC" . consult-buffer)
    ("o -"  . dired-jump)
