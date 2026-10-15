@@ -110,7 +110,7 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
  '(("SPC" . consult-buffer)
    ("o -"  . dired-jump)
    ("o t"  . project-switch-project)
-   ("o p"  . project-switch-project)
+   ("o p"  . project-dired)
    ("o f"  . find-file)
    ("o r"  . recentf)))
 
