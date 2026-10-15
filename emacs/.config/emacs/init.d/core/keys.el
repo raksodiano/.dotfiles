@@ -134,9 +134,14 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
 ;;; ### which-key
 
 ;; Built into Emacs 31; configured to appear as quickly as in Doom.
-(eval-after-load 'which-key
-  (setq which-key-idle-delay 0.2
-        which-key-max-display-length 30))
+(use-package which-key
+  :ensure nil
+  :custom
+  (which-key-idle-delay 0.2)
+  (which-key-max-display-length 30)
+  (which-key-setup-side-window-right)
+  :config
+  (which-key-mode 1))
 
 (provide 'my-keys)
 ;;; my-keys.el ends here
