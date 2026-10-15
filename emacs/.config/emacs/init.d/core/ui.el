@@ -208,9 +208,7 @@
      dashboard-insert-newline
      dashboard-insert-navigator
      dashboard-insert-newline
-     dashboard-insert-projects
-     dashboard-insert-bookmarks
-     dashboard-insert-recents
+     dashboard-insert-items
      dashboard-insert-newline
      dashboard-insert-init-info
      dashboard-insert-newline
@@ -261,8 +259,10 @@
 
 ;; Transparent terminal: keep the default face background unset in TTY
 ;; frames so the compositor shows through.
+;; In a terminal, leave the default background unspecified so the
+;; terminal emulator's own background shows through.
 (unless (display-graphic-p)
-  (set-face-background 'default "undefined"))
+  (set-face-background 'default nil))
 
 ;; Alpha 94/97, matching the previous Doom config; uncomment to restore.
 ;; (add-to-list 'default-frame-alist '(alpha . (94 . 97)))
