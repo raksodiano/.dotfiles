@@ -46,20 +46,12 @@
 ;; `evil-buffer-regexps' is the equivalent for buffers matched by name.
 (use-package evil
   :custom
-  (evil-emacs-state-modes
-   (append '(calendar-mode
-             dired-mode
-             gdb-mode
-             git-commit-mode
-             grep-mode
-             help-mode
-             info-mode
-             lisp-interaction-mode
-             special-mode
-             term-mode
-             text-mode
-             woman-mode)
-           evil-emacs-state-modes))
+  ;; Keep only Evil's built-in emacs state entries so the modes the user
+  ;; works with daily (dired, text, org, magit, ...) become modal rather
+  ;; than staying in "holy"/Emacs state.
+  (evil-emacs-state-modes (default-value 'evil-emacs-state-modes))
+  (evil-default-state 'normal)
+
   :config
   (define-key evil-normal-state-map (kbd "<M-left>") #'evil-backward-word)
   (define-key evil-normal-state-map (kbd "<M-right>") #'evil-forward-word)
