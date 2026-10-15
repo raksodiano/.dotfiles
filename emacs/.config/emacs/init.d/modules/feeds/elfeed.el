@@ -1,4 +1,3 @@
-
 ;;; elfeed.el -*- lexical-binding: t; -*-
 ;;; elfeed.el --- RSS (split out)
 
