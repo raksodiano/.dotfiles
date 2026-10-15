@@ -143,6 +143,20 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
   :config
   (which-key-mode 1))
 
+;; Ensure every major mode keeps SPC=leader in its local keymap.
+(defun my/bind-leader-for-current-buffer ()
+  "Bind SPC to the leader keymap in the current buffer."
+  (unless (or (minibufferp)
+              (derived-mode-p 'minibuffer-mode 'minibuffer-inactive-mode))
+    (local-set-key (kbd "SPC") my-leader-map)))
+(add-hook 'after-change-major-mode-hook #'my/bind-leader-for-current-buffer)
+(my/bind-leader-for-current-buffer)
+
+;; Cover buffers created before this module finished loading.
+(dolist (buffer (buffer-list))
+  (with-current-buffer buffer
+    (my/bind-leader-for-current-buffer)))
+
 (provide 'my-keys)
 ;;; my-keys.el ends here
 
@@ -262,4 +276,26 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
         (insert (format "  %s -> %S\n" (car pair) (cdr pair)))
         )
       (goto-char (point-min)))
+    (display-buffer buffer)))
+
+(defun my-leader-sanity-check ()
+  "Open a diagnostic buffer showing the leader binding for this buffer."
+  (interactive)
+  (let* ((local-spc (lookup-key (current-local-map) (kbd "SPC")))
+         (root-spc (lookup-key global-map (kbd "SPC")))
+         (evil-normal-spc (lookup-key evil-normal-state-map (kbd "SPC")))
+         (buffer (get-buffer-create "*leader-check*")))
+    (with-current-buffer buffer
+      (read-only-mode -1)
+      (erase-buffer)
+      (insert "major-mode: " (symbol-name major-mode) "\n")
+      (insert "current-local-map SPC:\n" (pp-to-string local-spc) "\n")
+      (insert "global SPC:\n" (pp-to-string root-spc) "\n")
+      (insert "evil-normal-state-map SPC:\n" (pp-to-string evil-normal-spc) "\n")
+      (insert (if (or evil-normal-spc local-spc root-spc)
+                  "status: SPC is bound in at least one active map\n"
+                "status: SPC appears to be unbound\n"))
+      (insert "my-leader-map branches: " (format "%s" (mapcar #'car my-leader-map)) "\n")
+      (goto-char (point-min))
+      (read-only-mode 1))
     (display-buffer buffer)))
