@@ -108,8 +108,9 @@ style); spaces are removed before binding, so \"o p\" binds the two
 key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
   (declare (indent defun))
   (dolist (binding bindings)
-    (let ((key (replace-regexp-in-string " +" "" (car binding))))
-      (define-key my-leader-map (kbd key) (cdr binding)))))
+    ;; `kbd' already understands the spaces Doom uses as separators, so
+    ;; "SPC ." becomes the two-key sequence <SPC> then ".".
+    (define-key my-leader-map (kbd (car binding)) (cdr binding)))))
 
 ;; NOTE: BINDINGS must be quoted. A literal dotted pair in argument
 ;; position is evaluated as a function call, so (\"o -\" . #'dired-jump)
