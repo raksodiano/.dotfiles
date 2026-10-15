@@ -51,6 +51,16 @@
 
 ;; `project' is built into Emacs now, but it no longer exposes a mutable
 ;; `project-keymap'; bind the switch/delete/current commands directly.
+(with-eval-after-load 'project
+  ;; Make switching projects open its dired (Doom's behaviour with
+  ;; projectile: the project's file tree appears).
+  (setq project-switch-commands
+        '((project-dired "Dired")
+          (project-find-file "Find file")
+          (project-find-regexp "Find regexp")
+          (project-find-dir "Find directory")
+          (project-vc-dir "VC-Dir")
+          (project-eshell "Eshell"))))
 (global-set-key (kbd "C-c p p") #'project-switch-project)
 (global-set-key (kbd "C-c p k") #'project-delete-project)
 (global-set-key (kbd "C-c p d") #'project-current)
