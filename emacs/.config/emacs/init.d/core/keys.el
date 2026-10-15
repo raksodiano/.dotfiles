@@ -49,7 +49,7 @@
   ;; Keep only Evil's built-in emacs state entries so the modes the user
   ;; works with daily (dired, text, org, magit, ...) become modal rather
   ;; than staying in "holy"/Emacs state.
-  (evil-emacs-state-modes (default-value 'evil-emacs-state-modes))
+  (evil-emacs-state-modes nil)
   (evil-default-state 'normal)
 
   :config
@@ -64,6 +64,14 @@
   ;; default bindings are installed by evil-mode itself.
   (evil-mode 1)
   (add-hook 'after-make-frame-functions #'evil-mode)
+
+  ;; evil-collection restores Doom's "evil everywhere" behaviour: it adds
+  ;; the right bindings/motion to magit, dired, org, term, help, etc.
+  ;; and moves them out of pure Emacs state.
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
 
   ;; Evil 1.15 declares evil-mode-buffers with (defvar evil-mode-buffers),
   ;; which marks it special but leaves it void, and evil-normal-post-command
