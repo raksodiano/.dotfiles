@@ -28,10 +28,17 @@
 ;; Same fonts as the Doom config: Cascadia Mono NF for code, Alegreya for
 ;; prose (variable-pitch in Org).
 (when (display-graphic-p)
-  (setq doom-font (font-spec :family "Cascadia Mono NF" :size 15)
+  (setq doom-font (font-spec :family "CaskaydiaMono NF" :size 15)
         doom-variable-pitch-font (font-spec :family "Alegreya" :size 18)
-        doom-big-font (font-spec :family "Cascadia Mono NF" :size 22))
+        doom-big-font (font-spec :family "CaskaydiaMono NF" :size 22))
 
+  ;; The historical Doom config named the family "Cascadia Mono NF", but
+  ;; this host's installed font is spelled "CaskaydiaMono NF". Apply it to
+  ;; the `default' face instead of only to the dead `doom-font' variable.
+  (set-face-attribute 'default nil :font doom-font)
+  (set-frame-font doom-font t t)
+
+  (set-face-attribute 'fixed-pitch nil :font doom-font)
   (set-face-attribute 'mode-line nil
                       :height 130 :inherit 'variable-pitch)
   (set-face-attribute 'mode-line-inactive nil
