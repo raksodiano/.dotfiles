@@ -87,6 +87,7 @@
                    (expand-file-name "eln-cache" my/emacs-cache)
                    (expand-file-name "auto-save" my/emacs-cache)
                    (expand-file-name "tramp" my/emacs-cache)
+                   (expand-file-name "auto-save-list" my/emacs-cache)
                    (expand-file-name "persp-confs" my/emacs-data)))
   (unless (file-directory-p dir)
     (make-directory dir t)))
@@ -101,6 +102,8 @@
 (setq auto-save-directory (expand-file-name "auto-save" my/emacs-cache)
       lockfile-directory my/emacs-cache
       tramp-auto-save-directory (expand-file-name "tramp" my/emacs-cache)
+      auto-save-list-file-prefix
+      (expand-file-name "auto-save-list/.saves-" my/emacs-cache)
       tramp-persistency-file-name
       (expand-file-name "tramp-persistency.el"
                        (expand-file-name "tramp" my/emacs-cache))

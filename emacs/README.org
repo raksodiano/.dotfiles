@@ -78,7 +78,3 @@ missing.
   =evil-emacs-state-modes=.
 - Window border widths must stay =0=, never =nil=: the window accessors
   return =nil= and doom-modeline subtracts them unguarded.
-
-* Migration
-The full migration plan, the package-by-package mapping and the phase
-history live in [[file:MIGRACION-EMACS.org][MIGRACION-EMACS.org]].
