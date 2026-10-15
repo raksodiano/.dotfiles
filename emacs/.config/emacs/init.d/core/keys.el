@@ -100,6 +100,11 @@
   (dolist (state-map '(evil-normal-state-map evil-visual-state-map evil-motion-state-map))
     (define-key (symbol-value state-map) (kbd "SPC") my-leader-map)))
 
+;; Vim's default "gt" / "gT" for tab navigation (Doom keeps these).
+(with-eval-after-load 'evil
+  (define-key evil-normal-state-map (kbd "g t") #'centaur-tabs-forward)
+  (define-key evil-normal-state-map (kbd "g T") #'centaur-tabs-backward))
+
 (defun my-leader (bindings)
   "Bind BINDINGS, a quoted alist of (KEY . COMMAND), in `my-leader-map'.
 
