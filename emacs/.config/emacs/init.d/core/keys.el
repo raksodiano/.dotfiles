@@ -95,11 +95,13 @@
 (defun my-leader (bindings)
   "Bind BINDINGS, a quoted alist of (KEY . COMMAND), in `my-leader-map'.
 
-For example:
-  (my-leader ((\"o -\" . dired-jump)))"
+KEY is a string that may contain spaces (used as separators, Doom
+style); spaces are removed before binding, so \"o p\" binds the two
+key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
   (declare (indent defun))
   (dolist (binding bindings)
-    (define-key my-leader-map (car binding) (cdr binding))))
+    (let ((key (replace-regexp-in-string " +" "" (car binding))))
+      (define-key my-leader-map (kbd key) (cdr binding)))))
 
 ;; NOTE: BINDINGS must be quoted. A literal dotted pair in argument
 ;; position is evaluated as a function call, so (\"o -\" . #'dired-jump)
