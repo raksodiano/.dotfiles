@@ -160,3 +160,16 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
    ("q Q"  . (lambda () (interactive) (kill-emacs)))
    ("o -"  . dired-jump)))
 
+;; ### Doom window bindings
+(my-leader
+ '(("w h" . windmove-left)
+   ("w j" . windmove-down)
+   ("w k" . windmove-up)
+   ("w l" . windmove-right)
+   ("w s" . split-window-below)
+   ("w v" . split-window-right)
+   ("w c" . delete-window)
+   ("w d" . delete-window)
+   ("w m" . delete-other-windows)
+   ("w u" . winner-undo)
+   ("w U" . winner-redo)))
