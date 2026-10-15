@@ -181,3 +181,20 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
    ("w m" . delete-other-windows)
    ("w u" . winner-undo)
    ("w U" . winner-redo)))
+
+
+;; general-override-mode-map (installed by general/evil-collection) sits in
+;; emulation-mode-map-alists and can shadow the leader in Evil buffers.
+(with-eval-after-load 'general
+  (when (boundp 'general-override-mode-map)
+    (define-key general-override-mode-map (kbd "SPC") my-leader-map)))
+
+;; Safeguard: SPC must be the leader everywhere, regardless of Evil/general
+;; overriding maps.
+(with-eval-after-load 'evil
+  (define-key global-map (kbd "SPC") my-leader-map)
+  (dolist (sm '(evil-normal-state-map evil-visual-state-map evil-motion-state-map))
+    (define-key (symbol-value sm) (kbd "SPC") my-leader-map))
+  (when (boundp 'general-override-mode-map)
+    (define-key general-override-mode-map (kbd "SPC") my-leader-map))
+  (general-override-mode +1))
