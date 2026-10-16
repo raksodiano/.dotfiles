@@ -1,0 +1,31 @@
+# Yazi main configuration. See `yazi --help` and the upstream docs for
+# every key; only non-default choices live here.
+
+[mgr]
+# Left / current / preview column widths.
+ratio = [1, 4, 3]
+# Natural sorting (file2 before file10) with directories first.
+sort_by = "natural"
+sort_dir_first = true
+# Show file sizes in the list.
+linemode = "size"
+
+[preview]
+# Do not wrap long lines in the text preview.
+wrap = "no"
+tab_size = 2
+# Image preview quality (Kitty graphics protocol is autodetected).
+image_filter = "lanczos3"
+image_quality = 75
+max_width = 600
+max_height = 900
+
+# Openers use the Yazi built-ins (edit/open/reveal); only the routing rules
+# below are customized so text always offers the editor first.
+[open]
+rules = [
+  { url = "*/", use = ["edit", "open", "reveal"] },
+  { mime = "text/*", use = ["edit", "open", "reveal"] },
+  { mime = "inode/empty", use = ["edit", "open", "reveal"] },
+  { url = "*", use = ["open", "reveal"] },
+]

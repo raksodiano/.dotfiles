@@ -1,0 +1,12 @@
+# Extra Yazi keybindings. Vim motions are already the defaults; these are
+# additions that only use built-in actions.
+
+[[manager.prepend_keymap]]
+on = "T"
+run = "shell \"$SHELL\" --block --confirm"
+desc = "Open a terminal here"
+
+[[manager.prepend_keymap]]
+on = ["g", "h"]
+run = "cd ~"
+desc = "Go to the home directory"

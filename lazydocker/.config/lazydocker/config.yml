@@ -1,0 +1,29 @@
+# Lazydocker configuration with the same Gruvbox theme as lazygit.
+# See https://github.com/jesseduffield/lazydocker/blob/master/docs/Config.md
+gui:
+  theme:
+    lightTheme: false
+    activeBorderColor:
+      - '#fabd2f'
+      - bold
+    inactiveBorderColor:
+      - '#928374'
+    searchingActiveBorderColor:
+      - '#fabd2f'
+      - bold
+    optionsTextColor:
+      - '#83a598'
+    selectedLineBgColor:
+      - '#3c3836'
+    cherryPickedCommitFgColor:
+      - '#83a598'
+    cherryPickedCommitBgColor:
+      - '#cc241d'
+    markedBaseCommitFgColor:
+      - '#83a598'
+    markedBaseCommitBgColor:
+      - '#b16286'
+    unstagedChangesColor:
+      - '#fb4934'
+    defaultFgColor:
+      - '#ebdbb2'

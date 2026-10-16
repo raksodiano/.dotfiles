@@ -55,6 +55,7 @@
     ("init.d/modules/org/roam.el"            . my-org-roam)
     ("init.d/modules/org/writer.el"          . my-org-writer)
     ("init.d/modules/org/alerts.el"          . my-org-alerts)
+    ("init.d/modules/org/slides.el"          . my-org-slides)
     ("init.d/modules/feeds/elfeed.el"        . my-elfeed)
     ("init.d/modules/media/pdf.el"           . my-pdf)
     ("init.d/modules/media/books.el"         . my-books)

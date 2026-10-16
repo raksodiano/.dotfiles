@@ -151,6 +151,12 @@
   :config
   (setq markdown-command "pandoc"))
 
+;; Comfortable preview keys under the SPC m prefix (SPC m m stays music).
+(my-leader
+ '(("m p" . markdown-live-preview-mode)
+   ("m v" . markdown-view-mode)
+   ("m e" . markdown-export)))
+
 ;;; ### Tree-sitter grammars to install
 
 ;; Ported from +my/treesit-grammars-to-install in lisp/lsp.el, trimmed to
