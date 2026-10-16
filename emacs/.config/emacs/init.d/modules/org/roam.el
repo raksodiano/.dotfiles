@@ -8,6 +8,7 @@
 (use-package org-roam
   :custom
   (org-roam-directory +my/org-notes-dir)
+  (org-roam-db-location (expand-file-name "org-roam.db" my/emacs-cache))
   (org-roam-completion-everywhere t)
   :config
   (org-roam-setup)

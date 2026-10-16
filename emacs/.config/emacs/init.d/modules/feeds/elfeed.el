@@ -10,7 +10,42 @@
 (use-package elfeed
   :custom
   (elfeed-search-filter "@7-days-ago +unread")
-  (elfeed-db-directory "~/.elfeed"))
+  (elfeed-db-directory "~/.elfeed")
+  :config
+  ;; No line numbers in feed lists or entries (like treemacs/vterm).
+  (add-hook 'elfeed-search-mode-hook
+            (lambda ()
+              (display-line-numbers-mode -1)
+              ;; Wrap long titles instead of cutting them at the panel edge.
+              (setq-local truncate-lines nil)))
+  (add-hook 'elfeed-show-mode-hook (lambda () (display-line-numbers-mode -1)))
+  ;; Vanilla windows: entries replace the list, `q' goes back.
+  ;; Entry readability, as in Doom (+rss-elfeed-wrap-h).
+  (add-hook 'elfeed-show-mode-hook #'my/elfeed-wrap-h)
+  (defun my/elfeed-wrap-h ()
+    "Wrap entry text for readability."
+    (setq-local truncate-lines nil
+                shr-use-fonts nil
+                shr-width 85))
+  ;; Doom's evil bindings for elfeed.
+  (with-eval-after-load 'evil
+    (evil-define-key 'normal elfeed-search-mode-map
+      "n" #'next-line
+      "p" #'previous-line
+      "q" #'kill-current-buffer
+      "r" #'revert-buffer
+      (kbd "M-RET") #'elfeed-search-browse-url)
+    (evil-define-key 'normal elfeed-show-mode-map
+      "n" #'elfeed-show-next
+      "p" #'elfeed-show-prev
+      "gc" #'my/elfeed-copy-link))
+  (defun my/elfeed-copy-link ()
+    "Copy the current entry link to clipboard (Doom's +rss/copy-link)."
+    (interactive)
+    (let ((link (elfeed-entry-link elfeed-show-entry)))
+      (when link
+        (kill-new link)
+        (message "Copied %s to clipboard" link)))))
 
 (use-package elfeed-org
   :after elfeed

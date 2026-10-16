@@ -306,6 +306,19 @@
      ("Recent Files:" . "Recent Files: (r)")))
   :config
   (dashboard-setup-startup-hook)
+  ;; Navigator row with note actions (Doom's dashboard had one too).
+  ;; Buttons activate with RET (or mouse); each is ("" title help action).
+  (setq dashboard-navigator-buttons
+        `((("" "New note" "Create or open a note"
+             ,(lambda (&rest _) (call-interactively #'org-roam-node-find)))
+           ("" "Capture" "Quick capture (SPC j c)"
+             ,(lambda (&rest _) (call-interactively #'org-capture)))
+           ("" "Journal" "Today's journal entry"
+             ,(lambda (&rest _) (call-interactively #'org-journal-new-entry)))
+           ("" "Search" "Search all notes"
+             ,(lambda (&rest _) (call-interactively #'deft)))
+           ("" "Feeds" "Read RSS feeds"
+             ,(lambda (&rest _) (call-interactively #'elfeed))))))
   ;; Jump commands that work even when a section is empty (dashboard only
   ;; generates its own when the section has items).
   (defun my/dashboard-jump-to-section (label)
@@ -346,7 +359,27 @@
       (kbd "p") #'my/dashboard-jump-to-projects
       (kbd "a") #'my/dashboard-jump-to-agenda
       (kbd "m") #'my/dashboard-jump-to-bookmarks
-      (kbd "r") #'my/dashboard-jump-to-recents)))
+      (kbd "r") #'my/dashboard-jump-to-recents
+      (kbd "RET") #'my/dashboard-press-button))
+  ;; RET activates widgets (navigator buttons, section items), which
+  ;; Evil's normal-state RET would otherwise swallow.
+  (defun my/dashboard-press-button ()
+    "Press the widget button at point, if any."
+    (interactive)
+    (let ((w (widget-at (point))))
+      (if w
+          (widget-button-press (point))
+        (forward-line 1))))
+  (define-key dashboard-mode-map (kbd "RET") #'my/dashboard-press-button)
+  ;; TAB cycles through buttons/items so RET can press them; in a
+  ;; read-only dashboard Evil's jump list is useless anyway.
+  (define-key dashboard-mode-map (kbd "TAB") #'widget-forward)
+  (define-key dashboard-mode-map (kbd "<backtab>") #'widget-backward)
+  (with-eval-after-load 'evil
+    (evil-define-key 'normal dashboard-mode-map
+      (kbd "RET") #'my/dashboard-press-button
+      (kbd "TAB") #'widget-forward
+      (kbd "<backtab>") #'widget-backward)))
 
 ;; Doom showed the dashboard instead of *scratch* on startup.
 (setq inhibit-startup-screen t

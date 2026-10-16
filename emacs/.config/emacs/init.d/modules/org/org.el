@@ -78,13 +78,17 @@
 
 ;; Deft (notes search)
 (use-package deft
-  :ensure nil
+  :commands (deft)
   :custom
   (deft-directory +my/org-base-dir)
   (deft-recursive t)
   (deft-extensions '("org" "md" "txt"))
   (deft-default-extension "org")
   (deft-ignore-file-regexp "\\.#\\|~$"))
+
+;; Doom's binding: SPC n d opens the notes search.
+(my-leader
+ '(("n d" . deft)))
 
 ;; Enable visual line mode in org buffers.
 (add-hook 'org-mode-hook #'visual-line-mode)

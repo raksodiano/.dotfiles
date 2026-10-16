@@ -88,6 +88,8 @@
                    (expand-file-name "auto-save" my/emacs-cache)
                    (expand-file-name "tramp" my/emacs-cache)
                    (expand-file-name "auto-save-list" my/emacs-cache)
+                   (expand-file-name "url" my/emacs-cache)
+                   (expand-file-name "url/cache" my/emacs-cache)
                    (expand-file-name "persp-confs" my/emacs-data)))
   (unless (file-directory-p dir)
     (make-directory dir t)))
@@ -105,6 +107,9 @@
 ;; Lock files and automatic saves.
 (setq auto-save-directory (expand-file-name "auto-save" my/emacs-cache)
       lockfile-directory my/emacs-cache
+      ;; url.el defaults to user-emacs-directory/url, which would pollute
+      ;; the repository. Keep cookies, history and cache under XDG cache.
+      url-configuration-directory (expand-file-name "url" my/emacs-cache)
       tramp-auto-save-directory (expand-file-name "tramp" my/emacs-cache)
       auto-save-list-file-prefix
       (expand-file-name "auto-save-list/.saves-" my/emacs-cache)
