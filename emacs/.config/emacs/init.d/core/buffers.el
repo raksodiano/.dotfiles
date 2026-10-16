@@ -471,8 +471,9 @@
 
 ;;; ### Customisation and bookmarks
 
-;; custom.el is not stowed, so it stays out of the repository.
-(setq custom-file (expand-file-name "custom.el" my/config-dir))
+;; custom.el holds generated Customize state, so it lives in XDG cache
+;; instead of the repository.
+(setq custom-file (expand-file-name "custom.el" my/emacs-cache))
 (when (file-exists-p custom-file)
   (load custom-file nil t))
 

@@ -90,6 +90,9 @@
                    (expand-file-name "auto-save-list" my/emacs-cache)
                    (expand-file-name "url" my/emacs-cache)
                    (expand-file-name "url/cache" my/emacs-cache)
+                   (expand-file-name "eshell" my/emacs-cache)
+                   (expand-file-name "transient" my/emacs-cache)
+                   (expand-file-name "emms" my/emacs-cache)
                    (expand-file-name "persp-confs" my/emacs-data)))
   (unless (file-directory-p dir)
     (make-directory dir t)))
@@ -123,7 +126,21 @@
       savehist-file
       (expand-file-name "savehist.eld" my/emacs-cache)
       save-place-file
-      (expand-file-name "saveplace" my/emacs-cache))
+      (expand-file-name "saveplace" my/emacs-cache)
+      ;; Anything below defaults to user-emacs-directory via
+      ;; locate-user-emacs-file and would pollute the repository.
+      bookmark-default-file
+      (expand-file-name "bookmarks.eld" my/emacs-data)
+      org-id-locations-file
+      (expand-file-name ".org-id-locations" my/emacs-cache)
+      abbrev-file-name
+      (expand-file-name "abbrev_defs" my/emacs-cache)
+      eshell-directory-name
+      (expand-file-name "eshell" my/emacs-cache)
+      transient-history-file
+      (expand-file-name "transient/history.el" my/emacs-cache)
+      emms-directory
+      (expand-file-name "emms" my/emacs-cache))
 
 ;; Activate the installed packages: without this their directories never
 ;; reach load-path and use-package cannot find them.
