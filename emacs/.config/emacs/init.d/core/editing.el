@@ -189,11 +189,45 @@
                         lang))))
     (pop-to-buffer buffer)))
 
+;;; ### Spell checking (hunspell)
+
+;; The dictionaries installed on this machine are en_US and es.
+(use-package flyspell
+  :hook ((text-mode . flyspell-mode)
+         (prog-mode . flyspell-prog-mode))
+  :custom
+  (ispell-program-name "hunspell")
+  (ispell-dictionary "en_US"))
+
+(defun my/ispell-toggle-dictionary ()
+  "Toggle the spell-check dictionary between en_US and es."
+  (interactive)
+  ;; Read the *global* dictionary: a buffer-local `ispell-local-dictionary'
+  ;; (e.g. left behind by a previous ispell-change-dictionary without C-u)
+  ;; would make the toggle read the same stale value forever while that
+  ;; buffer kept checking with the old dictionary.
+  (let ((new (if (equal ispell-dictionary "es") "en_US" "es")))
+    ;; Change the global default; kills the ispell process so the next
+    ;; spell check restarts with the new dictionary.
+    (ispell-change-dictionary new t)
+    ;; Make buffers carrying a stale buffer-local dictionary follow the
+    ;; new global one.
+    (dolist (buf (buffer-list))
+      (with-current-buffer buf
+        (when (local-variable-p 'ispell-local-dictionary)
+          (kill-local-variable 'ispell-local-dictionary))))
+    ;; Rescan the current buffer so stale wrong-word highlights are
+    ;; replaced by checks against the new dictionary right away.
+    (when (and (boundp 'flyspell-mode) flyspell-mode)
+      (flyspell-buffer))
+    (message "Spell dictionary: %s" new)))
+
 ;;; ### Leader bindings added in this file
 
 (my-leader
  '(("l t i" . my/install-all-treesit-grammars)
-   ("l t l" . my/list-treesit-grammars)))
+   ("l t l" . my/list-treesit-grammars)
+   ("l c" . my/ispell-toggle-dictionary)))
 
 (provide 'my-editing)
 ;;; my-editing.el ends here

@@ -80,12 +80,12 @@
         (centaur-tabs-mode +1))))
   (add-hook 'find-file-hook #'my/centaur-tabs-maybe-enable)
   (add-hook 'after-save-hook #'my/centaur-tabs-maybe-enable)
-  ;; Hide tabs in the dashboard buffer using centaur-tabs-local-mode.
-  (defun my/centaur-tabs-hide-on-dashboard ()
-    "Hide centaur-tabs in the dashboard buffer."
-    (when (string-match-p "\\*dashboard\\*" (buffer-name))
-      (centaur-tabs-local-mode 1)))
-  (add-hook 'dashboard-mode-hook #'my/centaur-tabs-hide-on-dashboard))
+  ;; The dashboard must never show the tab bar. Centaur-tabs checks
+  ;; this predicate every time it renders the bar, so the dashboard
+  ;; stays clean no matter when centaur-tabs-mode is enabled.
+  (setq centaur-tabs-hide-predicate
+        (lambda ()
+          (string-match-p "\\*dashboard\\*" (buffer-name)))))
 
 ;;; ### Workspaces
 
