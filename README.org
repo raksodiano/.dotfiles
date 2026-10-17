@@ -21,34 +21,48 @@ few command lines.
 * List of configurations:
 
 - bat ➔ A cat(1) clone with wings
+- btop ➔ Resource monitor
 - doom ➔ Doom Emacs configuration framework
+- emacs ➔ Emacs configuration (modular, vanilla)
 - fastfetch ➔ Fast system information tool
-- hyprland ➔ Hyprland compositor (wayland)
+- hyprland ➔ Hyprland compositor (Wayland, Lua config)
 - kitty ➔ GPU accelerated terminal
+- lazydocker ➔ Docker TUI
+- lazygit ➔ Git TUI
+- mpd ➔ Music Player Daemon (+ rmpc client)
 - noctalia ➔ Noctalia desktop shell
+- rmpc ➔ MPD client (Vim keys)
 - starship ➔ Cross-shell prompt
 - tmux ➔ Terminal multiplexer
 - tridactyl ➔ Vim-like browser navigation
+- yazi ➔ File manager (Vim keys)
 - yt-dlp ➔ Media downloader
-- zathura ➔ PDF viewer
-- zsh ➔ Customizable shell
+- zathura ➔ PDF viewer (Vim keys)
+- zsh ➔ Customizable shell (Oh My Zsh + Starship)
 
 * Available Dotfiles
 
-| Directory     | Description                        |
-|---------------+------------------------------------|
-| =bat/=        | bat (cat replacement)              |
-| =doom/=       | Doom Emacs config                  |
-| =fastfetch/=  | System info fetcher                |
-| =hyprland/=   | Hyprland compositor and Noctalia   |
-| =kitty/=      | Terminal emulator config           |
-| =noctalia/=   | Noctalia shell config and palette  |
-| =starship/=   | Cross-shell prompt                 |
-| =tmux/=       | Terminal multiplexer               |
-| =tridactyl/=  | Browser extension                  |
-| =yt-dlp/=     | Media downloader config            |
-| =zathura/=    | PDF viewer config                  |
-| =zsh/=        | Zsh shell config                   |
+| Directory       | Description                        |
+|-----------------+------------------------------------|
+| =bat/=          | bat (cat replacement)              |
+| =btop/=         | Resource monitor                   |
+| =doom/=         | Doom Emacs config                  |
+| =emacs/=        | Emacs config (modular)             |
+| =fastfetch/=    | System info fetcher                |
+| =hyprland/=     | Hyprland compositor (Lua)          |
+| =kitty/=        | Terminal emulator config           |
+| =lazydocker/=   | Docker TUI                         |
+| =lazygit/=      | Git TUI                            |
+| =mpd/=          | Music Player Daemon                |
+| =noctalia/=     | Noctalia shell config              |
+| =rmpc/=         | MPD client (Vim keys)              |
+| =starship/=     | Cross-shell prompt                 |
+| =tmux/=         | Terminal multiplexer               |
+| =tridactyl/=    | Browser extension                  |
+| =yazi/=         | File manager (Vim keys)            |
+| =yt-dlp/=       | Media downloader config            |
+| =zathura/=      | PDF viewer (Vim keys)              |
+| =zsh/=          | Zsh shell config                   |
 
 * Getting Started
 
@@ -87,11 +101,11 @@ You can now install any configurations you wish to copy using GNU Stow:
   # Make sure you are in the right directory
   cd .dotfiles
 
-  # Example to install the htop config
-  stow htop
+  # Example to install the btop config
+  stow btop
 
-  # Uninstall the htop config
-  stow -D htop
+  # Uninstall the btop config
+  stow -D btop
   #+END_SRC
 
 

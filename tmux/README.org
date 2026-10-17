@@ -1,0 +1,53 @@
+#+title: Tmux Configuration
+#+author: raksodiano
+
+* Overview
+
+Tmux configuration with TPM plugin manager, vim-style navigation, and a
+Gruvbox Material Hard theme applied via an external script.
+
+* Prefix
+
+=C-Space= (replaces the default =C-b=).
+
+* Keybindings
+
+| Binding      | Action                              |
+|--------------+-------------------------------------|
+| =prefix r=   | Reload config                       |
+| =C-h/j/k/l=  | Navigate panes (vim directions)     |
+| =M-h/j/k/l=  | Navigate panes (Alt + vim keys)     |
+| =prefix H/L= | Previous/next window                |
+| =S-Arrows=   | Resize panes (fine adjustment)      |
+| =prefix -=   | Split horizontally                  |
+| =prefix \=   | Split vertically                    |
+| =prefix c=   | New window                          |
+| =prefix b=   | Break pane to new window            |
+| =prefix t=   | Split with =nvim ~/Vaults/inbox.md= |
+| =v=          | Enter copy mode                     |
+| =C-v=        | Rectangle selection in copy mode    |
+| =y=          | Copy and exit copy mode             |
+
+* Plugins (TPM)
+
+- =tpm= -- plugin manager
+- =tmux-sensible= -- sensible defaults
+- =tmux-resurrect= -- save/restore sessions
+- =tmux-continuum= -- auto-save sessions
+- =tmux-sessionx= -- session management
+- =tmuxifier= -- session layout management
+- =tokyo-night-tmux= -- Tokyo Night theme
+- =tmux-mighty-scroll= -- smooth scrolling
+- =tmux-yank= -- copy to system clipboard
+
+* Theme
+
+Gruvbox Material Hard is applied via =~/.config/tmux/gruvbox-tmux.sh=, run
+after TPM loads plugins.
+
+* Other Settings
+
+- Status bar at top
+- Windows and panes numbered from 1
+- True color support (=xterm-256color:RGB=)
+- Mouse enabled

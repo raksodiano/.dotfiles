@@ -1,0 +1,30 @@
+#+title: Kitty Configuration
+#+author: raksodiano
+
+* Overview
+
+Kitty terminal emulator configuration with GeistMono Nerd Font, Noctalia theme,
+and a custom launch session.
+
+* Settings
+
+| Setting                     | Value              |
+|-----------------------------+--------------------|
+| Font                        | GeistMono Nerd Font|
+| Font size                   | 13.0               |
+| Cursor blink                | Disabled           |
+| Mouse hide delay            | 2.0s               |
+| Window decorations          | Hidden             |
+| Copy on select              | Enabled            |
+| Startup session             | =launch.conf=      |
+| Confirm on OS window close  | Disabled           |
+| Cursor trail                | 3 (decay 0.1/0.4)  |
+| Terminal type               | =xterm-256color=   |
+
+* Theme
+
+Includes =themes/noctalia.conf= for Gruvbox Material Hard colors.
+
+* Launch Session
+
+=startup_session launch.conf= defines the initial window layout on startup.

@@ -1,0 +1,39 @@
+#+title: Yazi Configuration
+#+author: raksodiano
+
+* Overview
+
+Yazi file manager configuration with natural sorting, custom open rules, and
+extra keybindings.
+
+* Manager Settings
+
+| Setting          | Value      | Description                          |
+|------------------+------------+--------------------------------------|
+| =ratio=          | =[1, 4, 3]=| Left / current / preview column widths |
+| =sort_by=        | =natural=  | Natural sorting (file2 < file10)     |
+| =sort_dir_first= | =true=     | Directories first                    |
+| =linemode=       | =size=     | Show file sizes in list              |
+
+* Preview
+
+| Setting          | Value     | Description                       |
+|------------------+-----------+-----------------------------------|
+| =wrap=           | =no=      | No line wrapping                  |
+| =tab_size=       | =2=       | Tab width                         |
+| =image_filter=   | =lanczos3=| Image scaling quality           |
+| =image_quality=  | =75=      | Image preview quality             |
+| =max_width=      | =600=     | Max preview image width           |
+| =max_height=     | =900=     | Max preview image height          |
+
+* Open Rules
+
+Text files always offer the editor first (=edit=), then =open=, then =reveal=.
+All other files use the default =open= and =reveal=.
+
+* Extra Keybindings
+
+| Key   | Action                        |
++-------+-------------------------------+
+| =T=   | Open terminal in current dir  |
+| =g h= | Go to home directory          |

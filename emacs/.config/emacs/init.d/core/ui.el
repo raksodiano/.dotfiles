@@ -79,7 +79,13 @@
       (when (cl-some #'buffer-file-name (buffer-list))
         (centaur-tabs-mode +1))))
   (add-hook 'find-file-hook #'my/centaur-tabs-maybe-enable)
-  (add-hook 'after-save-hook #'my/centaur-tabs-maybe-enable))
+  (add-hook 'after-save-hook #'my/centaur-tabs-maybe-enable)
+  ;; Hide tabs in the dashboard buffer using centaur-tabs-local-mode.
+  (defun my/centaur-tabs-hide-on-dashboard ()
+    "Hide centaur-tabs in the dashboard buffer."
+    (when (string-match-p "\\*dashboard\\*" (buffer-name))
+      (centaur-tabs-local-mode 1)))
+  (add-hook 'dashboard-mode-hook #'my/centaur-tabs-hide-on-dashboard))
 
 ;;; ### Workspaces
 

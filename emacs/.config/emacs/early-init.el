@@ -140,7 +140,15 @@
       transient-history-file
       (expand-file-name "transient/history.el" my/emacs-cache)
       emms-directory
-      (expand-file-name "emms" my/emacs-cache))
+      (expand-file-name "emms" my/emacs-cache)
+      ;; LSP session file must not pollute the repository.
+      lsp-session-file
+      (expand-file-name ".lsp-session-v1" my/emacs-cache)
+      ;; Backup files (~) must not be generated in the repository.
+      backup-directory-alist
+      `((".*" . ,(expand-file-name "backups" my/emacs-cache)))
+      auto-save-file-name-transforms
+      `((".*" ,(expand-file-name "auto-save" my/emacs-cache) t)))
 
 ;; Activate the installed packages: without this their directories never
 ;; reach load-path and use-package cannot find them.

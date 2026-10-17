@@ -1,0 +1,37 @@
+#+title: Zathura Configuration
+#+author: raksodiano
+
+* Overview
+
+Zathura PDF viewer configuration with Vim-style keybindings and a dark
+Gruvbox-like color scheme.
+
+* Keybindings
+
+| Key       | Action              |
+|-----------+---------------------|
+| =u=       | Scroll half-up     |
+| =d=       | Scroll half-down   |
+| =D=       | Toggle page mode   |
+| =r=       | Reload document    |
+| =R=       | Rotate page        |
+| =K=       | Zoom in            |
+| =J=       | Zoom out           |
+| =i=       | Recolor (dark mode)|
+| =C-i=     | Recolor (dark mode)|
+| =p=       | Print document     |
+
+* Appearance
+
+- Statusbar padding: 0 (horizontal and vertical)
+- Page padding: 1
+- Selection goes to system clipboard
+
+* Colors
+
+| Element          | Value                      |
+|------------------+----------------------------|
+| Default fg       | =#f0efeb= (off-white)      |
+| Default bg       | =rgba(26,29,33,0.95)=     |
+| Recolor dark     | =#f0efeb=                  |
+| Recolor light    | =rgba(26,29,33,0.0)=      |

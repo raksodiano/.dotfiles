@@ -1,0 +1,39 @@
+#+title: Hyprland Configuration
+#+author: raksodiano
+
+* Overview
+
+Hyprland configuration written in Lua, organized as a modular setup. The entry
+point is =hyprland.lua=, which loads all config modules in order and applies the
+Noctalia theme.
+
+* Structure
+
+| File                 | Purpose                                     |
+|----------------------+---------------------------------------------|
+| =hyprland.lua=       | Entry point, requires all config modules    |
+| =config/animations=  | Animation curves and timing                 |
+| =config/autostart=   | Programs launched on login                  |
+| =config/colors=      | Color palette                               |
+| =config/decorations= | Window decorations (rounding, blur, shadow) |
+| =config/variables=   | Variables used across other configs         |
+| =config/environment= | Environment variables                       |
+| =config/inputs=      | Keyboard, mouse, and touchpad settings      |
+| =config/binds=       | Keybindings (window, launcher, hardware)    |
+| =config/misc=        | Miscellaneous options                       |
+| =config/monitors=    | Monitor layout and scaling                  |
+| =config/windowrules= | Per-app rules (floating, opacity, etc.)     |
+| =config/workspaces=  | Workspace assignments per monitor           |
+| =noctalia.lua=       | Theme integration with Noctalia             |
+
+* Dependencies
+
+- Hyprland (Wayland compositor)
+- Noctalia (desktop shell / bar / widgets)
+- A Nerd Font for icons
+
+* Theme
+
+The Noctalia palette is applied via =require("noctalia").apply_theme()=, which
+sets the Gruvbox Material Hard colors on Hyprland's decoration and border
+settings.

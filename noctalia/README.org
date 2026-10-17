@@ -1,0 +1,37 @@
+#+title: Noctalia Configuration
+#+author: raksodiano
+
+* Overview
+
+Noctalia is a desktop shell built for Hyprland, providing a bar, widgets,
+system monitor, notifications, session management, and a control center.
+
+* Configuration
+
+| Section             | Purpose                                                                  |
+|---------------------+--------------------------------------------------------------------------|
+| =[bar.default]=     | Bar position, size, layout, and capsule groups                           |
+| =[shell]=           | Clipboard, systemd services, polkit, screenshots                         |
+| =[shell.panel]=     | Panel behavior near control center                                       |
+| =[shell.session]=   | Session actions (lock, logout, suspend, reboot, shutdown) with shortcuts |
+| =[system.monitor]=  | GPU polling interval                                                     |
+| =[theme]=           | Color mode and community palette                                         |
+| =[theme.templates]= | Generated theme files for downstream apps                                |
+| =[widget.*]=        | Individual widget config (clock, launcher, media, network, etc.)         |
+
+* Bar Layout
+
+- *Left:* workspaces, active window
+- *Center:* clock, notifications
+- *Right:* media, system temp (capsule), tray, status indicators (network,
+  bluetooth, volume, battery in a capsule), control center
+
+* Theme
+
+- Mode: =dark=
+- Palette: =Gruvbox Material Hard= (community theme)
+- Generated templates: btop, gtk3, gtk4, kcolorscheme, kitty, qt, alacritty
+
+* Screenshots
+
+Screenshots are piped to =swash= for clipboard capture.

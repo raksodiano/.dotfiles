@@ -46,16 +46,16 @@ not by the file names. That way a file can depend on anything listed
 above it without anybody having to invent a name like =02-ui.el=.
 
 * Key bindings
-| Key       | Command               |
-|-----------+-----------------------|
-| =SPC=     | leader                |
-| =SPC SPC= | consult-buffer        |
-| =SPC o -= | dired-jump            |
-| =SPC o p= | project-switch-project|
+| Key         | Command                      |
+|-------------+------------------------------|
+| =SPC=       | leader                       |
+| =SPC SPC=   | consult-buffer               |
+| =SPC o -=   | dired-jump                   |
+| =SPC o p=   | project-switch-project       |
 | =SPC l t i= | install tree-sitter grammars |
-| =C-c g=   | magit-status          |
-| =C-c C-f= | dirvish-open          |
-| =kj=      | escape                |
+| =C-c g=     | magit-status                 |
+| =C-c C-f=   | dirvish-open                 |
+| =kj=        | escape                       |
 
 * Commands
 | Command                          | Purpose                                         |
