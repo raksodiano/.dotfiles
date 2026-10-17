@@ -143,7 +143,30 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
   (which-key-max-display-length 30)
   (which-key-setup-side-window-right)
   :config
-  (which-key-mode 1))
+  (which-key-mode 1)
+  ;; Name the leader prefixes. The leader groups are plain
+  ;; `make-sparse-keymap' entries created by `my-leader', which carry no
+  ;; description, so which-key labels every one of them "+prefix" in the
+  ;; popup. Key-based replacements key off the *displayed* sequence, so
+  ;; they apply no matter which evil state map looked SPC up. Keep in
+  ;; sync with the prefixes bound in this file and the modules
+  ;; (buffers.el, editing.el, lsp.el, treesit.el, org.el, languagetool.el).
+  (which-key-add-key-based-replacements
+    "SPC b"   "+buffers"
+    "SPC c"   "+check"
+    "SPC d"   "+dirs"
+    "SPC f"   "+files"
+    "SPC g"   "+git"
+    "SPC l"   "+lsp"
+    "SPC l t" "+treesit"
+    "SPC m"   "+doc"
+    "SPC n"   "+notes"
+    "SPC o"   "+open"
+    "SPC p"   "+project"
+    "SPC q"   "+quit"
+    "SPC s"   "+search"
+    "SPC t"   "+tree"
+    "SPC w"   "+windows"))
 
 
 (provide 'my-keys)
