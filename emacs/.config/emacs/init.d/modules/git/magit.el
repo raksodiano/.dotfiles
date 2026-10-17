@@ -30,12 +30,23 @@
   (custom-set-faces
    '(magit-blame-hash ((t (:foreground "#7F7F7F"))))))
 
-;; Side-by-side diffs through git-delta.
+;; Side-by-side diffs through git-delta. The mode is enabled ONLY in
+;; actual diff buffers (magit-diff-mode, from which the commit/status
+;; diff sections also render): with the old `(magit-mode . ...)' hook
+;; the status buffer itself entered magit-delta-mode, and when the
+;; `delta' executable is missing every magit refresh died inside the
+;; ANSI rewriting, silently leaving the status buffer without the
+;; Untracked/Unstaged/Staged file sections (verified in batch with a
+;; magit-status dump: only "Recent commits" survived).
 (use-package magit-delta
-  :hook (magit-mode . magit-delta-mode)
+  :hook (magit-diff-mode . my/magit-delta-maybe-enable)
   :config
   (setq magit-delta-default-options
-        '("--side-by-side" "--line-numbers" "--navigate")))
+        '("--side-by-side" "--line-numbers" "--navigate"))
+  (defun my/magit-delta-maybe-enable ()
+    "Enable `magit-delta-mode' when the delta binary is present."
+    (when (executable-find "delta")
+      (magit-delta-mode +1))))
 
 ;; Ported from config.el: disable delta on very large diffs instead of
 ;; waiting for a huge ANSI escape sequence to be parsed.
@@ -51,14 +62,6 @@
               (if (<= (point-max) dan/magit-delta-point-max)
                   (apply orig-fun args)
                 (magit-delta-mode -1))))
-
-(advice-add 'magit-post-refresh-hook
-            :after
-            (lambda ()
-              "Enable delta automatically on small diffs."
-              (when (and (not magit-delta-mode)
-                         (<= (point-max) dan/magit-delta-point-max))
-                (magit-delta-mode +1))))
 
 ;;; ### Version control interface
 

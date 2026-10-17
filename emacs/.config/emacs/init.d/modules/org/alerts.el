@@ -75,5 +75,15 @@
               (when (> my/org-alert-notification-count 0)
                 (my/play-sound-by-severity 'high))))
 
+;; Notify when an org-to-PDF export finishes (moved from the old
+;; media/music.el module, which also held EMMS; exported with
+;; `org-latex-export-to-pdf').
+(defun my/org-export-pdf-alert (&rest _)
+  (alert "Org to PDF export completed"
+         :title "Org Export" :severity 'normal))
+
+(with-eval-after-load 'ox-latex
+  (advice-add 'org-latex-export-to-pdf :after #'my/org-export-pdf-alert))
+
 (provide 'my-org-alerts)
 ;;; alerts.el ends here

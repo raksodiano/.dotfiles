@@ -41,6 +41,14 @@
 
 (add-hook 'emacs-startup-hook #'my-restore-gc-threshold)
 
+;; gcmh relies on the thresholds set in early-init.el (gcmh-idle-delay,
+;; gcmh-high-cons-threshold): once startup finishes it owns the GC,
+;; dropping threshold during idle and raising right before allocations,
+;; which smooths out pauses during long editing sessions.
+;; NOTE: read-process-output-max is already 4MB above (LSP/elfeed).
+(use-package gcmh
+  :hook (emacs-startup . gcmh-mode))
+
 ;;; ### Frames and windows
 
 (setq frame-inhibit-implied-resize t)

@@ -92,7 +92,6 @@
                    (expand-file-name "url/cache" my/emacs-cache)
                    (expand-file-name "eshell" my/emacs-cache)
                    (expand-file-name "transient" my/emacs-cache)
-                   (expand-file-name "emms" my/emacs-cache)
                    (expand-file-name "persp-confs" my/emacs-data)))
   (unless (file-directory-p dir)
     (make-directory dir t)))
@@ -139,8 +138,6 @@
       (expand-file-name "eshell" my/emacs-cache)
       transient-history-file
       (expand-file-name "transient/history.el" my/emacs-cache)
-      emms-directory
-      (expand-file-name "emms" my/emacs-cache)
       ;; LSP session file must not pollute the repository.
       lsp-session-file
       (expand-file-name ".lsp-session-v1" my/emacs-cache)

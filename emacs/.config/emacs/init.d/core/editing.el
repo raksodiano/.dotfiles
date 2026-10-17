@@ -220,6 +220,10 @@
     ;; replaced by checks against the new dictionary right away.
     (when (and (boundp 'flyspell-mode) flyspell-mode)
       (flyspell-buffer))
+    ;; Keep the LanguageTool module (grammar checking) in the same
+    ;; language as hunspell; its default is "en-US".
+    (when (boundp 'flymake-languagetool-language)
+      (setq flymake-languagetool-language (if (equal new "es") "es" "en-US")))
     (message "Spell dictionary: %s" new)))
 
 ;;; ### Leader bindings added in this file

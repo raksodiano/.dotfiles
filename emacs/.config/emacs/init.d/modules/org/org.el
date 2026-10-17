@@ -93,5 +93,46 @@
 ;; Enable visual line mode in org buffers.
 (add-hook 'org-mode-hook #'visual-line-mode)
 
+;;; ### Attachments
+
+;; org-attach is built into Emacs 31. Attachments land in one shared,
+;; id-addressed directory under the org tree instead of next to each
+;; file, so git-tracked org notes stay clean. `C-c C-x a' on a heading
+;; opens the attach dispatcher (`SPC m a' also bound).
+(use-package org-attach
+  :ensure nil
+  :after org
+  :custom
+  (org-attach-id-dir (expand-file-name "data" +my/org-base-dir))
+  (org-attach-dir-relative nil)
+  (org-attach-auto-tag "ATTACH")
+  ;; Inherit attachments from parent nodes so sub-tasks see shared files.
+  (org-attach-use-inheritance 'selective)
+  (org-attach-store-link-p 'attached)
+  :config
+  (my-leader
+   '(("m a" . org-attach))))
+
+;;; ### Clock (trabajo cronometrado)
+
+;; Persistent clock: resumes across sessions instead of losing the
+;; current task on restart. The save file lives in XDG data, never in
+;; the repository.
+(use-package org-clock
+  :ensure nil
+  :after org
+  :custom
+  (org-clock-persist 'history)
+  (org-clock-persist-file (expand-file-name "org-clock-save.el" my/emacs-data))
+  (org-clock-into-drawer "LOGBOOK")
+  :config
+  ;; Resume the clock from the previous session, if any.
+  (org-clock-persistence-insinuate)
+  (my-leader
+   '(("m i" . org-clock-in)
+     ("m o" . org-clock-out)
+     ("m c" . org-clock-goto)
+     ("m x" . org-clock-cancel))))
+
 (provide 'my-org)
 ;;; org.el ends here

@@ -268,7 +268,12 @@
   :config
   (setq consult-dir-project-list-function #'consult-dir-projectile-dirs)
   (add-to-list 'consult-dir-sources 'consult-dir--source-tramp-ssh t)
-  (add-to-list 'consult-dir-sources 'consult-dir--source-tramp-local t))
+  (add-to-list 'consult-dir-sources 'consult-dir--source-tramp-local t)
+  ;; Directory history picker (replaces the removed MELPA package
+  ;; consult-dired-history; consult-dir already lists dired buffers,
+  ;; recentf dirs and projects).
+  (my-leader
+   '(("d h" . consult-dir))))
 
 (use-package consult-yasnippet
   :init
@@ -488,6 +493,33 @@
         dirvish-attributes
         (quote (vc-state subtree-state nerd-icons file-size))))
 
+
+;;; ### Persistent scratch
+
+;; The *scratch* buffer survives restarts: its contents are written to
+;; XDG data on shutdown and reinserted at startup.
+(defun my/scratch-state-file ()
+  "Path where *scratch* contents are persisted across sessions."
+  (expand-file-name "scratch-content.txt" my/emacs-data))
+
+(defun my/save-scratch ()
+  (when-let* ((buf (get-buffer "*scratch*"))
+              ((> (buffer-size buf) 0)))
+    (with-current-buffer buf
+      (write-region (point-min) (point-max)
+                    (my/scratch-state-file) nil 'silent))))
+
+(defun my/restore-scratch ()
+  (let ((file (my/scratch-state-file))
+        (buf (get-buffer "*scratch*")))
+    (when (and buf (file-exists-p file)
+               (not (buffer-modified-p buf)))
+      (with-current-buffer buf
+        (goto-char (point-min))
+        (insert-file-contents file)))))
+
+(add-hook 'kill-emacs-hook #'my/save-scratch)
+(add-hook 'emacs-startup-hook #'my/restore-scratch)
 
 (savehist-mode +1)
 

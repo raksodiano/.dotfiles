@@ -41,6 +41,11 @@
      "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i\n%a"
      :empty-lines 1)
 
+    ("l" "Web Link (org-protocol)" entry
+     (file+headline ,(expand-file-name "web/links.org" +my/org-notes-dir) "Web Links")
+     "* IDEA Read %:title\n:PROPERTIES:\n:CREATED: %U\n:SOURCE: %:link\n:END:\n%?\n"
+     :empty-lines 1 :mkdir t)
+
     ("g" "Games")
 
     ("gg" "Game's Notes" entry
@@ -59,6 +64,17 @@
 ;; Bind capture to SPC n? Use my-leader.
 (my-leader
  '(("j c" . org-capture)))
+
+;;; ### org-protocol (browser captures)
+
+;; Captures from the browser with a bookmarklet like:
+;;   javascript:location.href='org-protocol://capture?l&p=' +
+;;   encodeURIComponent(location.href) +
+;;   '&t=' + encodeURIComponent(document.title) +
+;;   '&b=' + encodeURIComponent(window.getSelection())
+;; The "l" template receives %:link / %:title / %:initial.
+(with-eval-after-load 'org
+  (require 'org-protocol nil t))
 
 (provide 'my-org-capture)
 ;;; capture.el ends here
