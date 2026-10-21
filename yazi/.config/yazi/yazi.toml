@@ -9,6 +9,8 @@ sort_by = "natural"
 sort_dir_first = true
 # Show file sizes in the list.
 linemode = "size"
+# Show hidden files (dotfiles) by default. Toggle at runtime with `.`.
+show_hidden = true
 
 [preview]
 # Do not wrap long lines in the text preview.

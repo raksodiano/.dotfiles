@@ -14,6 +14,7 @@ extra keybindings.
 | =sort_by=        | =natural=  | Natural sorting (file2 < file10)     |
 | =sort_dir_first= | =true=     | Directories first                    |
 | =linemode=       | =size=     | Show file sizes in list              |
+| =show_hidden=    | =true=     | Show hidden files (default on)       |
 
 * Preview
 
