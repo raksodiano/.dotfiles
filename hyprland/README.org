@@ -24,6 +24,7 @@ Noctalia theme.
 | =config/monitors=    | Monitor layout and scaling                  |
 | =config/windowrules= | Per-app rules (floating, opacity, etc.)     |
 | =config/workspaces=  | Workspace assignments per monitor           |
+| =config/auto-workspaces= | Auto-spawns a new empty workspace (n+1) at the end |
 | =noctalia.lua=       | Theme integration with Noctalia             |
 
 * Dependencies
