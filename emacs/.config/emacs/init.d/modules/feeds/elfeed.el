@@ -34,10 +34,13 @@
       "p" #'previous-line
       "q" #'kill-current-buffer
       "r" #'revert-buffer
-      (kbd "M-RET") #'elfeed-search-browse-url)
+      "v" #'elfeed-tube-mpv
+      (kbd "M-RET") #'my/elfeed-open-entry)
     (evil-define-key 'normal elfeed-show-mode-map
       "n" #'elfeed-show-next
       "p" #'elfeed-show-prev
+      "v" #'elfeed-tube-mpv
+      (kbd "M-RET") #'my/elfeed-open-entry
       "gc" #'my/elfeed-copy-link))
   (defun my/elfeed-copy-link ()
     "Copy the current entry link to clipboard (Doom's +rss/copy-link)."
@@ -101,14 +104,99 @@
 
 (with-eval-after-load 'elfeed
   (define-key elfeed-search-mode-map "d" #'elfeed-download-current-entry)
-  (define-key elfeed-search-mode-map "O" #'elfeed-search-browse-url))
+  (define-key elfeed-search-mode-map "O" #'my/elfeed-open-entry)
+  ;; Plain `v' ( evil status) in both feed views: play the entry in mpv.
+  (define-key elfeed-search-mode-map "v" #'elfeed-tube-mpv)
+  (define-key elfeed-show-mode-map "v" #'elfeed-tube-mpv))
 
 (use-package elfeed-tube
   :after elfeed
   :config
+  ;; `elfeed-tube-mpv' (separate package, autoloaded) owns the mpv playback:
+  ;; all options already have usable defaults (--force-window, --cache).
   (elfeed-tube-setup))
 
-(setq elfeed-tube-mpv-mpv-options '("--force-window=yes"))
+;; Open the entry under point: YouTube videos play in mpv, everything
+;; else behaves like the standard elfeed browsers. The routing is done
+;; by advising the *commands* (elfeed-show-visit, elfeed-search-browse-url,
+;; shr-browse-url for links inside the entry buffer), because RET on a
+;; rendered link is handled by the shr button text properties, not by the
+;; elfeed keymaps.
+(defconst my/elfeed-youtube-rx "youtube\\.com\\|youtu\\.be"
+  "Regexp matching YouTube video URLs.")
+
+(defun my/elfeed-youtube-entry-p (entry)
+  "Non-nil when ENTRY's link is a YouTube video URL."
+  (when-let* ((url (elfeed-entry-link entry)))
+    (string-match-p my/elfeed-youtube-rx url)))
+
+(defun my/elfeed-open-entry ()
+  "Open the current elfeed entry.
+YouTube entries go to mpv via `elfeed-tube-mpv' (search or show
+buffer both work); other entries use elfeed's regular browsing."
+  (interactive)
+  (let* ((entry (cond
+                 ((eq major-mode 'elfeed-show-mode) elfeed-show-entry)
+                 (t (car (elfeed-search-selected 'ignore-region))))))
+    (cond
+     ((my/elfeed-youtube-entry-p entry)
+      (elfeed-tube-mpv (point)))
+     ((eq major-mode 'elfeed-show-mode)
+      (elfeed-show-visit))
+     (t
+      (elfeed-search-browse-url)))))
+
+(defun my/elfeed-show-visit-a (orig &optional secondary)
+  "Route YouTube entries to mpv; visit the rest as usual."
+  (if (and elfeed-show-entry (my/elfeed-youtube-entry-p elfeed-show-entry))
+      (elfeed-tube-mpv (point))
+    (funcall orig secondary)))
+
+(defun my/elfeed-search-browse-url-a (orig)
+  "Route YouTube entries under point to mpv when browsing from search."
+  (let ((entry (car (elfeed-search-selected 'ignore-region))))
+    (if (my/elfeed-youtube-entry-p entry)
+        (elfeed-tube-mpv (point))
+      (funcall orig))))
+
+;; `evil-ret' (RET in evil normal state) follows the link through
+;; `push-button', whose contact point is the text-property button itself,
+;; bypassing every keymap and the other advised commands. Catch it there.
+(defun my/elfeed-push-button-a (orig &optional pos use-mouse-action)
+  "Route the button under POS to mpv when it is the entry's YouTube link."
+  (let* ((at (cond
+              ((integerp pos) pos)
+              ((eventp pos) (or (posn-point (event-start pos)) (point)))
+              (t (point))))
+         (url (get-text-property at 'shr-url)))
+    (if (and (derived-mode-p 'elfeed-show-mode)
+             url (string-match-p my/elfeed-youtube-rx url))
+        (elfeed-tube-mpv (point))
+      (funcall orig pos use-mouse-action))))
+
+;; Last net: any other path that ends in `browse-url' while inside an
+;; elfeed entry view sends YouTube to a plain mpv process.
+(defun my/elfeed-browse-url-a (orig url &rest args)
+  "Send YouTube URLs browsed from elfeed to mpv."
+  (if (and (stringp url)
+           (derived-mode-p 'elfeed-show-mode 'elfeed-search-mode)
+           (string-match-p my/elfeed-youtube-rx url))
+      (if (and elfeed-show-entry
+               (equal (elfeed-entry-link elfeed-show-entry) url))
+          (elfeed-tube-mpv (point))
+        (start-process "mpv" nil "mpv" "--force-window=yes" url))
+    (apply orig url args)))
+
+;; Load `elfeed-tube-mpv' eagerly so `elfeed-tube-mpv' is defined before
+;; any routing advice fires.
+(require 'elfeed-tube-mpv nil t)
+
+(advice-add 'elfeed-show-visit :around #'my/elfeed-show-visit-a)
+(advice-add 'elfeed-search-browse-url :around #'my/elfeed-search-browse-url-a)
+(advice-add 'push-button :around #'my/elfeed-push-button-a)
+(advice-add 'browse-url :around #'my/elfeed-browse-url-a)
+(with-eval-after-load 'shr
+  (advice-add 'shr-browse-url :around #'my/elfeed-shr-browse-url-a))
 
 (add-hook 'elfeed-show-mode-hook #'visual-fill-column-mode)
 
