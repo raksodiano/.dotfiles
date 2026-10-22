@@ -180,6 +180,44 @@ Signal an error unless NOERROR is non-nil."
           (persp-buffers persp)
         (buffer-list))))
 
+  ;;; Buffer navigation
+
+  (defun my/switch-buffer (n)
+    "Switch N buffers forward in the current workspace.
+A negative N switches backward instead.
+
+`next-buffer' and `previous-buffer' honour the frame's `buffer-predicate',
+which is how the walk stays inside the workspace. persp-mode installs a
+predicate whose buffer list is cached for two seconds, so the built-in
+commands reject buffers opened in the meantime and then stop dead on the
+first buffer the stale list allows. Run the walk against a predicate
+derived from the workspace list as it is right now."
+    (let ((members (seq-filter #'buffer-live-p (workspace-buffers))))
+      (cond
+       ((null members)
+        (user-error "No buffers in this workspace"))
+       ((null (cdr members))
+        (user-error "No other buffers in this workspace"))
+       (t
+        (let ((pred (frame-parameter nil 'buffer-predicate)))
+          (unwind-protect
+              (progn
+                (set-frame-parameter nil 'buffer-predicate
+                                     (lambda (buf) (memq buf members)))
+                (dotimes (_ (abs n))
+                  (if (< n 0) (previous-buffer 1 t) (next-buffer 1 t))))
+            (set-frame-parameter nil 'buffer-predicate pred)))))))
+
+  (defun my/next-buffer (&optional n)
+    "Switch N buffers forward in the current workspace."
+    (interactive "p")
+    (my/switch-buffer (or n 1)))
+
+  (defun my/previous-buffer (&optional n)
+    "Switch N buffers backward in the current workspace."
+    (interactive "p")
+    (my/switch-buffer (- (or n 1))))
+
   (defun add-buffer-to-workspace (buffer &optional workspace)
     "Add BUFFER to WORKSPACE, a perspective object (default: the current one)."
     (when (and persp-mode (buffer-live-p buffer))
@@ -581,6 +619,15 @@ When INHIBIT-KILL-P is non-nil, leave its buffers alive."
 
   (advice-add 'persp-delete-other-windows :around
               #'my/persp-delete-other-windows--around)
+
+  ;; `persp-set-frame-buffer-predicate' caches the workspace's buffer list
+  ;; and only clears that cache from a two-second timer. Until the timer
+  ;; fires, the frame's `buffer-predicate' rejects buffers visited in the
+  ;; meantime and `other-buffer' (used by `bury-buffer', `kill-this-buffer'
+  ;; and the built-in `next-buffer') falls back to a stale buffer. Drop the
+  ;; cache as soon as the buffer list changes instead.
+  (add-hook 'buffer-list-update-hook
+            (lambda () (setq persp-frame-buffer-predicate-buffer-list-cache nil)))
 
   (persp-mode +1))
 

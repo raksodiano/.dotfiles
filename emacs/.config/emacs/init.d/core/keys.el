@@ -184,8 +184,12 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
    ("b k"  . kill-this-buffer)
    ("b K"  . (lambda () (interactive) (mapc #'kill-buffer (delq (current-buffer) (buffer-list)))))
    ("b l"  . ibuffer)
-   ("b n"  . next-buffer)
-   ("b p"  . previous-buffer)
+   ;; Workspace-aware cycling; defined in ui.el next to the workspace
+   ;; library. Plain `next-buffer' is unusable here: persp-mode's frame
+   ;; `buffer-predicate' caches the buffer list for two seconds and the
+   ;; built-in walk stops on the first buffer the stale list allows.
+   ("b n"  . my/next-buffer)
+   ("b p"  . my/previous-buffer)
    ("f f"  . find-file)
    ("f r"  . recentf-open-files)
    ("f p"  . project-find-file)
@@ -216,6 +220,25 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
    ("w m" . delete-other-windows)
    ("w u" . winner-undo)
    ("w U" . winner-redo)))
+
+;; The `SPC w' page already says the keys manage windows, so which-key only
+;; needs the action. Without replacements it repeats the command names
+;; ("windmove-left", "split-window-right", "delete-other-windows", ...),
+;; which restate the page and hide what the key actually does.
+(which-key-add-key-based-replacements
+  "SPC w h" "left"
+  "SPC w j" "down"
+  "SPC w k" "up"
+  "SPC w l" "right"
+  "SPC w s" "split below"
+  "SPC w -" "split below"
+  "SPC w v" "split right"
+  "SPC w /" "split right"
+  "SPC w d" "close"
+  "SPC w c" "close"
+  "SPC w m" "close others"
+  "SPC w u" "undo"
+  "SPC w U" "redo")
 
 
 (defun my-leader-sanity-check ()
