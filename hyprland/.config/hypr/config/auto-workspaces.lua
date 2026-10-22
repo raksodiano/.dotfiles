@@ -1,16 +1,4 @@
--- Auto-generating "tail" workspaces.
---
--- Keeps the invariant: there is always one empty workspace right after the
--- highest-numbered workspace that has windows. When every workspace has at
--- least one window (i.e. the tail got filled), a new workspace numbered
--- max + 1 is spawned at the end.
---
--- Hyprland destroys numeric workspaces as soon as they turn empty and
--- inactive, so a trailing empty workspace cannot just be created. The trick
--- used here is a `persistent = true` workspace rule for the tail id: work
--- covered by it survive while empty. The rule moves along: once the tail
--- receives a window, its rule is disabled and a new persistent rule for
--- tail + 1 is created.
+-- Keep one empty workspace always at the end of the list.
 
 local TAIL_EVENTS = {
     "window.open",
@@ -42,8 +30,7 @@ end
 local function set_tail(id)
     if tail_id == id then return end
     if tail_rule then tail_rule:set_enabled(false) end
-    -- Assign tail_id first: enabling the rule may emit workspace.created,
-    -- which reenters update() and must not spawn a duplicate rule.
+    -- tail_id first: enabling the rule may emit workspace.created (reentry).
     tail_id = id
     tail_rule = hl.workspace_rule({ workspace = id, persistent = true })
 end
@@ -52,8 +39,7 @@ local function update()
     set_tail(highest_occupied() + 1)
 end
 
--- Also sync on reload/start: after a config reload there is no window event
--- to kick off the invariant, so run it directly.
+-- Sync once on config reload/start.
 update()
 
 for _, event in ipairs(TAIL_EVENTS) do

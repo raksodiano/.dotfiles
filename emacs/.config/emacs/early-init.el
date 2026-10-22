@@ -21,8 +21,7 @@
 
 ;;; ### Package archives
 
-;; NOTE: elpa.elpa.org no longer resolves and elpa.nongnu.org/packages was
-;; moved to elpa.nongnu.org/nongnu. Both verified on 2026-10-14.
+;; nongnu: elpa.elpa.org no longer resolves, packages now live at /nongnu.
 (defconst my/package-archives
   '(("gnu"    . "https://elpa.gnu.org/packages/")
     ("melpa" . "https://melpa.org/packages/")

@@ -105,23 +105,16 @@
 (with-eval-after-load 'elfeed
   (define-key elfeed-search-mode-map "d" #'elfeed-download-current-entry)
   (define-key elfeed-search-mode-map "O" #'my/elfeed-open-entry)
-  ;; Plain `v' ( evil status) in both feed views: play the entry in mpv.
+;; `v' plays the entry with mpv in both views.
   (define-key elfeed-search-mode-map "v" #'elfeed-tube-mpv)
   (define-key elfeed-show-mode-map "v" #'elfeed-tube-mpv))
 
 (use-package elfeed-tube
   :after elfeed
   :config
-  ;; `elfeed-tube-mpv' (separate package, autoloaded) owns the mpv playback:
-  ;; all options already have usable defaults (--force-window, --cache).
   (elfeed-tube-setup))
 
-;; Open the entry under point: YouTube videos play in mpv, everything
-;; else behaves like the standard elfeed browsers. The routing is done
-;; by advising the *commands* (elfeed-show-visit, elfeed-search-browse-url,
-;; shr-browse-url for links inside the entry buffer), because RET on a
-;; rendered link is handled by the shr button text properties, not by the
-;; elfeed keymaps.
+;; Route YouTube entries to mpv; the rest browses normally.
 (defconst my/elfeed-youtube-rx "youtube\\.com\\|youtu\\.be"
   "Regexp matching YouTube video URLs.")
 
@@ -131,9 +124,8 @@
     (string-match-p my/elfeed-youtube-rx url)))
 
 (defun my/elfeed-open-entry ()
-  "Open the current elfeed entry.
-YouTube entries go to mpv via `elfeed-tube-mpv' (search or show
-buffer both work); other entries use elfeed's regular browsing."
+  "Open the entry under point.
+YouTube entries play in mpv, others browse normally."
   (interactive)
   (let* ((entry (cond
                  ((eq major-mode 'elfeed-show-mode) elfeed-show-entry)
@@ -159,9 +151,7 @@ buffer both work); other entries use elfeed's regular browsing."
         (elfeed-tube-mpv (point))
       (funcall orig))))
 
-;; `evil-ret' (RET in evil normal state) follows the link through
-;; `push-button', whose contact point is the text-property button itself,
-;; bypassing every keymap and the other advised commands. Catch it there.
+;; RET in evil normal state follows entry links via `push-button'.
 (defun my/elfeed-push-button-a (orig &optional pos use-mouse-action)
   "Route the button under POS to mpv when it is the entry's YouTube link."
   (let* ((at (cond
@@ -174,8 +164,7 @@ buffer both work); other entries use elfeed's regular browsing."
         (elfeed-tube-mpv (point))
       (funcall orig pos use-mouse-action))))
 
-;; Last net: any other path that ends in `browse-url' while inside an
-;; elfeed entry view sends YouTube to a plain mpv process.
+;; Fallback for any other browse-url call from an elfeed view.
 (defun my/elfeed-browse-url-a (orig url &rest args)
   "Send YouTube URLs browsed from elfeed to mpv."
   (if (and (stringp url)
@@ -187,8 +176,7 @@ buffer both work); other entries use elfeed's regular browsing."
         (start-process "mpv" nil "mpv" "--force-window=yes" url))
     (apply orig url args)))
 
-;; Load `elfeed-tube-mpv' eagerly so `elfeed-tube-mpv' is defined before
-;; any routing advice fires.
+;; Load it before the routing advices can fire.
 (require 'elfeed-tube-mpv nil t)
 
 (advice-add 'elfeed-show-visit :around #'my/elfeed-show-visit-a)
