@@ -10,6 +10,10 @@
 
 ;;; ### Grammar table
 
+(defconst my/treesit-grammar-dir
+  (expand-file-name "tree-sitter" my/emacs-data)
+  "Directory where tree-sitter grammars are installed.")
+
 (defvar my/treesit-grammars-to-install
   '(python javascript typescript tsx go rust json yaml markdown markdown-inline
     php html css toml bash)
@@ -44,7 +48,7 @@
   (message "Installing tree-sitter grammars...")
   (dolist (lang my/treesit-grammars-to-install)
     (condition-case err
-        (treesit-install-language-grammar lang)
+        (treesit-install-language-grammar lang my/treesit-grammar-dir)
       (error (message "my/treesit: could not install %s: %s"
                       lang (error-message-string err)))))
   (message "my/treesit: grammar installation started."))
@@ -90,6 +94,10 @@
   :config
   (setq treesit-auto-install t
         treesit-font-lock-level 4)
+  ;; Make the interactive default for `treesit-install-language-grammar'
+  ;; point at the XDG data directory instead of user-emacs-directory.
+  (setq treesit--install-language-grammar-out-dir-history
+        (list my/treesit-grammar-dir))
   (dolist (entry my/treesit-language-sources)
     (add-to-list 'treesit-language-source-alist entry))
   ;; Prefer tree-sitter major modes over the classical ones when available.

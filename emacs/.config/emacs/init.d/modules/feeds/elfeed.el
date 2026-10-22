@@ -10,7 +10,6 @@
 (use-package elfeed
   :custom
   (elfeed-search-filter "@7-days-ago +unread")
-  (elfeed-db-directory "~/.elfeed")
   :config
   ;; No line numbers in feed lists or entries (like treemacs/vterm).
   (add-hook 'elfeed-search-mode-hook

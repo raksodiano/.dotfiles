@@ -91,7 +91,22 @@
                    (expand-file-name "url/cache" my/emacs-cache)
                    (expand-file-name "eshell" my/emacs-cache)
                    (expand-file-name "transient" my/emacs-cache)
-                   (expand-file-name "persp-confs" my/emacs-data)))
+                   (expand-file-name "auctex" my/emacs-cache)
+                   (expand-file-name "image-dired" my/emacs-cache)
+                   (expand-file-name "dirvish" my/emacs-cache)
+                   (expand-file-name "ellama" my/emacs-cache)
+                   (expand-file-name "request" my/emacs-cache)
+                   (expand-file-name "emms" my/emacs-cache)
+                   (expand-file-name "persp-confs" my/emacs-data)
+                   (expand-file-name "themes" my/emacs-data)
+                   (expand-file-name "lsp" my/emacs-data)
+                   (expand-file-name "elfeed" my/emacs-data)
+                   (expand-file-name "eww" my/emacs-data)
+                   (expand-file-name "tree-sitter" my/emacs-data)
+                   (expand-file-name "ellama/blueprints" my/emacs-data)
+                   (expand-file-name "ellama/skills" my/emacs-data)
+                   (expand-file-name "projectile-sessions" my/emacs-data)
+                   (expand-file-name "gnupg" package-user-dir)))
   (unless (file-directory-p dir)
     (make-directory dir t)))
 
@@ -119,7 +134,7 @@
                        (expand-file-name "tramp" my/emacs-cache))
       recentf-save-file
       (expand-file-name "recentf.eld" my/emacs-cache)
-      project-remember-data-file
+      project-list-file
       (expand-file-name "projects.eld" my/emacs-cache)
       savehist-file
       (expand-file-name "savehist.eld" my/emacs-cache)
@@ -137,6 +152,76 @@
       (expand-file-name "eshell" my/emacs-cache)
       transient-history-file
       (expand-file-name "transient/history.el" my/emacs-cache)
+      transient-levels-file
+      (expand-file-name "transient/levels.el" my/emacs-cache)
+      transient-values-file
+      (expand-file-name "transient/values.el" my/emacs-cache)
+      ;; Other built-in state that defaults to user-emacs-directory.
+      calc-settings-file
+      (expand-file-name "calc.el" my/emacs-data)
+      diary-file
+      (expand-file-name "diary" my/emacs-data)
+      nsm-settings-file
+      (expand-file-name "network-security.eld" my/emacs-data)
+      package-quickstart-file
+      (expand-file-name "package-quickstart.el" my/emacs-cache)
+      ;; User-created custom themes are data, not cache, but they must not
+      ;; live in the stowed config directory either.
+      custom-theme-directory
+      (file-name-as-directory (expand-file-name "themes" my/emacs-data))
+      ;; AUCTeX extracts macro information into `TeX-auto-global'.
+      TeX-auto-global
+      (file-name-as-directory (expand-file-name "auctex" my/emacs-cache))
+      ;; lsp-mode downloads server binaries here (not package data, so it
+      ;; belongs under XDG data rather than the repository).
+      lsp-server-install-dir
+      (expand-file-name "lsp" my/emacs-data)
+      ;; image-dired and eww are not configured elsewhere, but if invoked
+      ;; they must not create directories in the repository.
+      image-dired-dir
+      (file-name-as-directory (expand-file-name "image-dired" my/emacs-cache))
+      eww-bookmarks-directory
+      (file-name-as-directory (expand-file-name "eww" my/emacs-data))
+      elfeed-db-directory
+      (expand-file-name "elfeed" my/emacs-data)
+      ;; Tree-sitter: `treesit-install-language-grammar' defaults to
+      ;; user-emacs-directory/tree-sitter when OUT-DIR is nil.
+      treesit-extra-load-path
+      (list (expand-file-name "tree-sitter" my/emacs-data))
+      ;; Projectile (used by treemacs-projectile and consult-dir).
+      projectile-known-projects-file
+      (expand-file-name "projectile-bookmarks.eld" my/emacs-cache)
+      projectile-frecency-file
+      (expand-file-name "projectile-frecency.eld" my/emacs-cache)
+      projectile-session-directory
+      (file-name-as-directory
+       (expand-file-name "projectile-sessions" my/emacs-data))
+      ;; Dirvish previews and thumbnails are regenerable cache.
+      dirvish-cache-dir
+      (file-name-as-directory (expand-file-name "dirvish" my/emacs-cache))
+      ;; Ellama: downloaded prompts are cache; blueprints, skills, trust
+      ;; store and audit log are user data.
+      ellama-community-prompts-file
+      (expand-file-name "ellama/community-prompts.csv" my/emacs-cache)
+      ellama-blueprint-global-dir
+      (expand-file-name "ellama/blueprints" my/emacs-data)
+      ellama-skills-global-path
+      (expand-file-name "ellama/skills" my/emacs-data)
+      ellama-tools-irreversible-project-trust-store-file
+      (expand-file-name "ellama/irreversible-trust.el" my/emacs-data)
+      ellama-tools-dlp-audit-log-file
+      (expand-file-name "ellama/dlp-audit.jsonl" my/emacs-data)
+      ;; Built-in/lazy packages whose defaults point at
+      ;; user-emacs-directory.
+      nov-save-place-file
+      (expand-file-name "nov-places" my/emacs-data)
+      mc/list-file
+      (expand-file-name "mc-lists.el" my/emacs-cache)
+      request-storage-directory
+      (file-name-as-directory (expand-file-name "request" my/emacs-cache))
+      ;; EMMS is installed even though this configuration does not use it.
+      emms-directory
+      (file-name-as-directory (expand-file-name "emms" my/emacs-cache))
       ;; LSP session file must not pollute the repository.
       lsp-session-file
       (expand-file-name ".lsp-session-v1" my/emacs-cache)
@@ -145,6 +230,10 @@
       `((".*" . ,(expand-file-name "backups" my/emacs-cache)))
       auto-save-file-name-transforms
       `((".*" ,(expand-file-name "auto-save" my/emacs-cache) t)))
+
+;; package.el computes this from `user-emacs-directory' when it loads, so it
+;; must be pointed at the real package directory explicitly.
+(setq package-gnupghome-dir (expand-file-name "gnupg" package-user-dir))
 
 ;; Activate the installed packages: without this their directories never
 ;; reach load-path and use-package cannot find them.

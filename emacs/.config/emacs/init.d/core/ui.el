@@ -121,7 +121,8 @@ Like Doom's `+workspaces-data-file', it lives in `persp-save-dir'.")
   :custom
   ;; The default is (persp-confs/ user-emacs-directory), which is a symlink
   ;; into the dotfiles git repository. Keep workspace state out of it.
-  (persp-save-dir (expand-file-name "persp-confs" my/emacs-data))
+  (persp-save-dir (file-name-as-directory
+                   (expand-file-name "persp-confs" my/emacs-data)))
   :config
   ;; persp-mode does NOT create this directory; every save or workspace
   ;; switch fails with "No such file or directory" until it exists.

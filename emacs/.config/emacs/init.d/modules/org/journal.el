@@ -14,6 +14,14 @@
   (org-journal-time-format "")
   (org-journal-enable-agenda-integration t))
 
+;; `org-journal--cache-file' is a defconst computed from
+;; `user-emacs-directory' when the package loads, so it cannot be set with
+;; `:custom'. Override it afterwards to keep the cache out of the repo.
+(with-eval-after-load 'org-journal
+  (with-no-warnings
+    (setq org-journal--cache-file
+          (expand-file-name "org-journal.cache" my/emacs-cache))))
+
 (defvar +my/org-journal-work-dir (expand-file-name "work" +my/org-journal-dir)
   "Directory for work journal entries.")
 
