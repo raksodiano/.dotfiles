@@ -165,6 +165,7 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
     "SPC p"   "+project"
     "SPC q"   "+quit"
     "SPC s"   "+search"
+    "SPC TAB" "+workspace"
     "SPC t"   "+tree"
     "SPC w"   "+windows"))
 
@@ -175,8 +176,11 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
 ;; ### Doom-like common bindings (basic)
 (my-leader
  '(("SPC" . consult-buffer)
-   ("b b"  . consult-buffer)
-   ("b B"  . consult-buffer-other-window)
+   ;; Doom's workspaces module replaces the plain buffer switchers on the
+   ;; buffer map with workspace-aware ones.
+   ("b b"  . persp-switch-to-buffer)
+   ("b B"  . switch-to-buffer)
+   ("b I"  . buffers)
    ("b k"  . kill-this-buffer)
    ("b K"  . (lambda () (interactive) (mapc #'kill-buffer (delq (current-buffer) (buffer-list)))))
    ("b l"  . ibuffer)

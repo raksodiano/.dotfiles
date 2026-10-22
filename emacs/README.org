@@ -50,6 +50,23 @@ above it without anybody having to invent a name like =02-ui.el=.
 |-------------+------------------------------|
 | =SPC=       | leader                       |
 | =SPC SPC=   | consult-buffer               |
+| =SPC TAB=   | workspace prefix             |
+| =SPC TAB n= | new workspace                |
+| =SPC TAB N= | new named workspace          |
+| =SPC TAB .= | switch workspace             |
+| =SPC TAB d= | kill workspace               |
+| =SPC TAB r= | rename workspace             |
+| =SPC TAB ]= | next workspace               |
+| =SPC TAB [= | previous workspace           |
+| =SPC TAB s= | save workspace to file       |
+| =SPC TAB l= | load workspace from file     |
+| =SPC q s=   | save session (all workspaces) |
+| =SPC q l=   | restore session              |
+| =M-1=..=M-9= | switch to workspace 1..9    |
+| =M-0=       | switch to last workspace     |
+| =C-t=       | new workspace                |
+| =C-S-t=     | display workspace tabs       |
+| =C-c C-w=   | persp-mode command prefix    |
 | =SPC o -=   | dired-jump                   |
 | =SPC o p=   | project-switch-project       |
 | =SPC l t i= | install tree-sitter grammars |
