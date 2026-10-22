@@ -417,6 +417,74 @@
 (global-set-key (kbd "C-c p p") #'project-switch-project)
 (global-set-key (kbd "C-c p k") #'project-delete-project)
 (global-set-key (kbd "C-c p d") #'project-current)
+(global-set-key (kbd "C-c p a") #'project-remember-project)
+(global-set-key (kbd "C-c p l") #'my/project-list)
+
+;; `project' remembers roots but only offers switching from a key binding: the
+;; add/forget commands never made it into the menus and there is no list
+;; command at all. Doom's project module had both, so provide them here.
+;; `project-remember-project' interactively asks for a directory (via
+;; `project-current' with a prompt) and accepts plain directories that are
+;; not under version control as "transient" projects.
+(require 'project)
+
+(defvar my/project-list-buffer "*Projects*"
+  "Buffer used by `my/project-list'.")
+
+(define-derived-mode my/projects-mode tabulated-list-mode "Projects"
+  "Major mode listing the projects `project' remembers.
+\\<my/projects-mode-map>RET switches to the project on this line,
+d forgets it, g refreshes the list."
+  (setq tabulated-list-format [("Project" 0 t)]
+        tabulated-list-padding 2)
+  (add-hook 'tabulated-list-revert-hook #'my/projects--refresh nil t)
+  (tabulated-list-init-header))
+
+(defun my/projects--refresh ()
+  "Fill the table with the known project roots."
+  (setq tabulated-list-entries
+        (mapcar (lambda (root) (list root (vector root)))
+                (sort (copy-sequence (project-known-project-roots)) #'string<))))
+
+(defun my/project-list ()
+  "List the projects `project' remembers."
+  (interactive)
+  (let ((buffer (get-buffer-create my/project-list-buffer)))
+    (with-current-buffer buffer
+      (my/projects-mode)
+      (tabulated-list-revert))
+    (pop-to-buffer buffer)))
+
+(defun my/projects-open ()
+  "Switch to the project on the current line."
+  (interactive)
+  (let ((root (tabulated-list-get-id)))
+    (unless root (user-error "No project on this line"))
+    (project-switch-project root)))
+
+(defun my/projects-forget ()
+  "Forget the project on the current line."
+  (interactive)
+  (let ((root (tabulated-list-get-id)))
+    (unless root (user-error "No project on this line"))
+    (project-forget-project root)
+    (tabulated-list-revert)))
+
+(define-key my/projects-mode-map (kbd "RET") #'my/projects-open)
+(define-key my/projects-mode-map (kbd "d") #'my/projects-forget)
+(define-key my/projects-mode-map (kbd "a") #'project-remember-project)
+
+;; Evil's normal-state map takes precedence over a local map, so `d' would run
+;; evil-delete on a read-only buffer. Bind the actions for that state too, as
+;; the dashboard does in ui.el.
+(with-eval-after-load 'evil
+  (evil-define-key 'normal my/projects-mode-map
+    (kbd "RET") #'my/projects-open
+    (kbd "d") #'my/projects-forget
+    (kbd "a") #'project-remember-project
+    ;; `g' is an evil prefix, so the mode's own `tabulated-list-revert'
+    ;; binding would never run.
+    (kbd "g") #'tabulated-list-revert))
 
 ;; ripgrep is consult's content search backend when installed; current
 ;; consult needs no setup call (the old consult-ripgrep-setup is gone).

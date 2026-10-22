@@ -131,7 +131,12 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
    ("o f"  . find-file)
    ("o r"  . recentf)
    ;; Doom keeps project switching on SPC p p; SPC o t is the terminal.
-   ("p p"  . project-switch-project)))
+   ("p p"  . project-switch-project)
+   ;; Adding and listing projects: `project-remember-project' prompts for a
+   ;; directory, `my/project-list' browses the remembered ones (buffers.el).
+   ("p a"  . project-remember-project)
+   ("p l"  . my/project-list)
+   ("p d"  . project-forget-project)))
 
 ;;; ### which-key
 
@@ -151,23 +156,204 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
   ;; they apply no matter which evil state map looked SPC up. Keep in
   ;; sync with the prefixes bound in this file and the modules
   ;; (buffers.el, editing.el, lsp.el, treesit.el, org.el, languagetool.el).
+  ;; NOTE: no leading "+" in these labels. which-key already prepends
+  ;; `which-key-prefix-prefix' ("+") to every keymap entry, so "+buffers"
+  ;; here rendered as "++buffers" in the popup.
   (which-key-add-key-based-replacements
-    "SPC b"   "+buffers"
-    "SPC c"   "+check"
-    "SPC d"   "+dirs"
-    "SPC f"   "+files"
-    "SPC g"   "+git"
-    "SPC l"   "+lsp"
-    "SPC l t" "+treesit"
-    "SPC m"   "+doc"
-    "SPC n"   "+notes"
-    "SPC o"   "+open"
-    "SPC p"   "+project"
-    "SPC q"   "+quit"
-    "SPC s"   "+search"
-    "SPC TAB" "+workspace"
-    "SPC t"   "+tree"
-    "SPC w"   "+windows"))
+    "SPC b"   "buffers"
+    "SPC c"   "check"
+    "SPC d"   "dirs"
+    "SPC f"   "files"
+    "SPC g"   "git"
+    "SPC l"   "lsp"
+    "SPC l t" "treesit"
+    "SPC m"   "doc"
+    "SPC n"   "notes"
+    "SPC n j" "journal"
+    "SPC n r" "roam"
+    "SPC o"   "open"
+    "SPC o W" "writer"
+    "SPC p"   "project"
+    "SPC q"   "quit"
+    "SPC s"   "search"
+    "SPC TAB" "workspace"
+    "SPC t"   "tree"
+    "SPC w"   "windows"
+    "SPC x"   "writing"
+    "SPC y"   "ai")
+
+  ;; Leaf labels. With no replacement which-key prints the command name, so
+  ;; the popup repeats the page ("persp-switch-to-buffer" under +buffers,
+  ;; "org-roam-node-find" under +roam, "my/next-buffer" anywhere) instead of
+  ;; saying what the key does. The page header already names the topic; each
+  ;; line is only the action. Deferred bindings (detached, writer) are listed
+  ;; too: replacements do not depend on the command being loaded.
+  (which-key-add-key-based-replacements
+    ;; buffers
+    "SPC b b" "switch in workspace"
+    "SPC b B" "switch in all"
+    "SPC b I" "list in workspace"
+    "SPC b l" "list all"
+    "SPC b k" "kill"
+    "SPC b K" "kill others"
+    "SPC b n" "next"
+    "SPC b p" "previous"
+    ;; files
+    "SPC f f" "open"
+    "SPC f r" "recent"
+    "SPC f p" "find in project"
+    ;; project
+    "SPC p p" "switch"
+    "SPC p a" "add"
+    "SPC p l" "list"
+    "SPC p d" "forget"
+    ;; open
+    "SPC o -" "dired here"
+    "SPC o f" "file"
+    "SPC o p" "project tree"
+    "SPC o r" "recent files"
+    "SPC o t" "terminal"
+    "SPC o P" "passwords"
+    "SPC o s" "sessions"
+    "SPC o S" "list sessions"
+    "SPC o W f" "focus section"
+    "SPC o W s" "split view"
+    "SPC o W w" "toggle"
+    "SPC o W q" "exit focus"
+    ;; search and git
+    "SPC s s" "ripgrep"
+    "SPC s l" "line"
+    "SPC s b" "line, current buffer"
+    "SPC g g" "status"
+    "SPC g d" "dispatch"
+    ;; tree, check, capture, act
+    "SPC t t" "toggle"
+    "SPC t k" "keycast"
+    "SPC c l" "correct text"
+    "SPC c c" "compile"
+    "SPC c C" "recompile"
+    "SPC j c" "capture"
+    "SPC a" "act on thing"
+    "SPC SPC" "buffer"
+    "SPC <" "buffer in all"
+    "SPC ," "buffer in workspace"
+    ;; doc
+    "SPC m a" "attach"
+    "SPC m i" "clock in"
+    "SPC m o" "clock out"
+    "SPC m c" "clock goto"
+    "SPC m x" "clock cancel"
+    "SPC m e" "export"
+    "SPC m v" "view"
+    "SPC m p" "live preview"
+    "SPC m s" "slides"
+    ;; notes
+    "SPC n d" "search notes"
+    "SPC n p" "pomodoro"
+    "SPC n P" "stop pomodoro"
+    "SPC n r f" "find node"
+    "SPC n r i" "insert link"
+    "SPC n r c" "capture"
+    "SPC n r l" "backlinks"
+    "SPC n j p" "today"
+    "SPC n j w" "work"
+    ;; lsp and treesit
+    "SPC l i" "install servers"
+    "SPC l l" "list servers"
+    "SPC l s" "status"
+    "SPC l d" "doctor"
+    "SPC l +" "install for this mode"
+    "SPC l c" "dictionary"
+    "SPC l t i" "install all"
+    "SPC l t l" "list"
+    "SPC l t d" "doctor"
+    "SPC l t e" "ensure installed"
+    ;; writing
+    "SPC x w" "writer room"
+    "SPC x o" "centered text"
+    "SPC _ t" "synonyms"
+    ;; ai
+    "SPC y i" "install models"
+    "SPC y c" "chat"
+    "SPC y w" "write"
+    "SPC y t" "translate"
+    "SPC y s" "summarize"
+    "SPC y r" "review code"
+    "SPC y C" "complete code"
+    "SPC y a" "add code"
+    "SPC y e" "edit code"
+    "SPC y p" "proofread"
+    "SPC y g" "fix grammar"
+    "SPC y d" "define word"
+    "SPC y l" "make list"
+    "SPC y P" "provider"
+    ;; dirs, feeds and docker
+    "SPC d d" "containers"
+    "SPC d h" "directory"
+    "SPC d e" "feeds"
+    "SPC d u" "update feeds"
+    "SPC d v" "play in mpv"
+    ;; quit
+    "SPC q q" "quit"
+    "SPC q Q" "quit, no save"
+    "SPC q s" "save session"
+    "SPC q l" "load session"
+    ;; workspaces
+    "SPC TAB TAB" "list"
+    "SPC TAB ." "switch to"
+    "SPC TAB `" "last used"
+    "SPC TAB n" "new"
+    "SPC TAB N" "new named"
+    "SPC TAB l" "load saved"
+    "SPC TAB s" "save"
+    "SPC TAB x" "clear session"
+    "SPC TAB d" "delete"
+    "SPC TAB D" "delete saved"
+    "SPC TAB r" "rename"
+    "SPC TAB R" "restore session"
+    "SPC TAB ]" "right"
+    "SPC TAB [" "left"
+    "SPC TAB 1" "workspace 1"
+    "SPC TAB 2" "workspace 2"
+    "SPC TAB 3" "workspace 3"
+    "SPC TAB 4" "workspace 4"
+    "SPC TAB 5" "workspace 5"
+    "SPC TAB 6" "workspace 6"
+    "SPC TAB 7" "workspace 7"
+    "SPC TAB 8" "workspace 8"
+    "SPC TAB 9" "workspace 9"
+    "SPC TAB 0" "last workspace")
+
+  ;; Prefixes outside the leader that which-key also renders. Same rule: the
+  ;; prefix says where the keys live, each entry says what it does.
+  (which-key-add-key-based-replacements
+    "C-c p"   "project"
+    "C-c p p" "switch"
+    "C-c p a" "add"
+    "C-c p l" "list"
+    "C-c p k" "delete"
+    "C-c p d" "current"
+    "C-c m"   "multiple cursors"
+    "C-c g"   "status"
+    "C-c C-g" "dispatch"
+    "C-c M-g" "file dispatch"
+    "C-c C-f" "open directory"
+    "C-c C-d" "directory at point"
+    "C-c C-p" "parent directory"
+    "C-c e"   "chat"
+    "M-&"     "shell command"
+    ;; `M-<digit>' is the workspace switcher (see ui.el); the command names
+    ;; are `switch-to-0'..`switch-to-8', counted from zero.
+    "M-1" "workspace 1"
+    "M-2" "workspace 2"
+    "M-3" "workspace 3"
+    "M-4" "workspace 4"
+    "M-5" "workspace 5"
+    "M-6" "workspace 6"
+    "M-7" "workspace 7"
+    "M-8" "workspace 8"
+    "M-9" "workspace 9"
+    "M-0" "last workspace"))
 
 
 (provide 'my-keys)
