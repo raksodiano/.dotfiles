@@ -33,6 +33,7 @@
       "p" #'previous-line
       "q" #'kill-current-buffer
       "r" #'revert-buffer
+      "u" #'elfeed-update
       "v" #'elfeed-tube-mpv
       (kbd "M-RET") #'my/elfeed-open-entry)
     (evil-define-key 'normal elfeed-show-mode-map
@@ -191,9 +192,7 @@ YouTube entries play in mpv, others browse normally."
 (run-at-time nil (* 60 60) #'elfeed-update)
 
 (my-leader
- '(("d e" . elfeed)
-   ("d u" . elfeed-update)
-   ("d v" . elfeed-tube-mpv)))
+ '(("o e" . elfeed)))
 
 (provide 'my-elfeed)
 ;;; elfeed.el ends here

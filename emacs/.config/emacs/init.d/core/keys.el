@@ -209,6 +209,7 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
     "SPC p d" "forget"
     ;; open
     "SPC o -" "dired here"
+    "SPC o e" "feeds"
     "SPC o f" "file"
     "SPC o p" "project tree"
     "SPC o r" "recent files"
@@ -287,12 +288,9 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
     "SPC y d" "define word"
     "SPC y l" "make list"
     "SPC y P" "provider"
-    ;; dirs, feeds and docker
+    ;; dirs and docker
     "SPC d d" "containers"
     "SPC d h" "directory"
-    "SPC d e" "feeds"
-    "SPC d u" "update feeds"
-    "SPC d v" "play in mpv"
     ;; quit
     "SPC q q" "quit"
     "SPC q Q" "quit, no save"
