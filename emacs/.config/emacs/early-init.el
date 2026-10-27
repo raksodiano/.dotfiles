@@ -1,63 +1,50 @@
 ;;; early-init.el -*- lexical-binding: t; -*-
-;;; early-init.el --- Package bootstrap and performance tuning  -*- lexical-binding: t; -*-
-;;; Migrated from Doom Emacs. Runs before the main init file.
+;;; early-init.el --- Package bootstrap, native comp & GC tuning
 
 ;;; Commentary:
-;; This file is loaded before the package system finishes loading, so it is
-;; the right place to register archives, enable native compilation and tune
-;; the garbage collector. Keep it small: every line here is on the critical
-;; path of every startup.
+;; Runs before the main init. Every line here hits startup, so keep it short.
+;; Sets up archives, native compilation, GC, and keeps runtime state in XDG dirs.
 
 ;;; Code:
 
-;; evil-collection requires this before Evil loads.
+;; evil-collection needs this before Evil loads.
 (setq evil-want-keybinding nil)
-;; Hide chrome before any frame is created, so the menu/tool/scroll bars
-;; never flash in a GUI session.
+;; Hide chrome before any frame exists — no menu/tool/scroll bar flash.
 (menu-bar-mode -1)
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
-
 ;;; ### Package archives
 
-;; nongnu: elpa.elpa.org no longer resolves, packages now live at /nongnu.
+;; nongnu moved: elpa.elpa.org is gone.
 (defconst my/package-archives
   '(("gnu"    . "https://elpa.gnu.org/packages/")
     ("melpa" . "https://melpa.org/packages/")
     ("nongnu" . "https://elpa.nongnu.org/nongnu/"))
   "Package archives used by `package-refresh-contents'.")
 
-;; Set these before package.el loads its own defaults.
-;; package-archives does not exist until package.el is loaded.
 (require 'package)
 (unless (equal package-archives my/package-archives)
   (setq package-archives my/package-archives))
 
-;; Emacs 30+ compiles installed packages to native code automatically. This is
-;; what Doom used to provide via el-pa; we get it from package.el instead.
+;; Native comp built-in since Emacs 30.
 (setq package-always-enable-native-comp t)
 
-;; Do not re-download the index on every startup; `M-x package-refresh-all'
-;; is explicit now.
+;; Don't refresh index on start; use `M-x package-refresh-all'.
 (setq package-enable-at-startup nil)
 
 ;;; ### Garbage collection
 
-;; Large thresholds while loading the config, then relaxed once the startup
-;; finishes (see `my-restore-gc-threshold' in init.d/core/defaults.el).
+;; High during load, relaxed after startup.
 (setq gc-cons-threshold (* 16 1024 1024))
 
-;; gcmh is provided by the gcmh package, but the variable is safe to set here
-;; because it is read at runtime.
+;; gcmh takes over GC after startup.
 (setq gcmh-idle-delay 5
       gcmh-high-cons-threshold (* 128 1024 1024))
 
 ;;; ### Package location
 
-;; Keep package installs under XDG data instead of ~/.emacs.d.
-;; package-user-dir must be set, not just user-install-directory: package.el
-;; computes it once at load time.
+;; Put packages in XDG data dir, not ~/.emacs.d.
 (setq user-install-directory
       (expand-file-name "elpa" (or (getenv "XDG_DATA_HOME")
                                    (expand-file-name "~/.local/share")))
@@ -65,10 +52,7 @@
 
 ;;; ### Runtime state
 
-;; The configuration directory is a symlink into a git repository (it is
-;; managed with stow), so anything Emacs writes at runtime must be kept
-;; out of it. By default these land in the config directory and show up
-;; as hundreds of untracked files.
+;; Config is a stow symlink to git — keep runtime writes in XDG dirs.
 (defconst my/xdg-cache
   (or (getenv "XDG_CACHE_HOME") (expand-file-name "~/.cache"))
   "XDG cache directory.")
@@ -115,128 +99,72 @@
       native-comp-eln-load-path
       (list (expand-file-name "eln-cache" my/emacs-cache)
             (or (getenv "EMACS_LOAD_PATH") ""))
-      ;; Async compilation chatter (e.g. third-party "function not known
-      ;; to be defined" notes) must not pop up as warnings; real errors
-      ;; still surface in *Async-native-compile-log*.
       native-comp-async-report-warnings-errors 'silent)
 
-;; Lock files and automatic saves.
+;; Lock files, auto-saves, and other state — keep out of the repo.
 (setq auto-save-directory (expand-file-name "auto-save" my/emacs-cache)
       lockfile-directory my/emacs-cache
-      ;; url.el defaults to user-emacs-directory/url, which would pollute
-      ;; the repository. Keep cookies, history and cache under XDG cache.
       url-configuration-directory (expand-file-name "url" my/emacs-cache)
       tramp-auto-save-directory (expand-file-name "tramp" my/emacs-cache)
-      auto-save-list-file-prefix
-      (expand-file-name "auto-save-list/.saves-" my/emacs-cache)
-      tramp-persistency-file-name
-      (expand-file-name "tramp-persistency.el"
-                       (expand-file-name "tramp" my/emacs-cache))
-      recentf-save-file
-      (expand-file-name "recentf.eld" my/emacs-cache)
-      project-list-file
-      (expand-file-name "projects.eld" my/emacs-cache)
-      savehist-file
-      (expand-file-name "savehist.eld" my/emacs-cache)
-      save-place-file
-      (expand-file-name "saveplace" my/emacs-cache)
-      ;; Anything below defaults to user-emacs-directory via
-      ;; locate-user-emacs-file and would pollute the repository.
-      bookmark-default-file
-      (expand-file-name "bookmarks.eld" my/emacs-data)
-      org-id-locations-file
-      (expand-file-name ".org-id-locations" my/emacs-cache)
-      abbrev-file-name
-      (expand-file-name "abbrev_defs" my/emacs-cache)
-      eshell-directory-name
-      (expand-file-name "eshell" my/emacs-cache)
-      transient-history-file
-      (expand-file-name "transient/history.el" my/emacs-cache)
-      transient-levels-file
-      (expand-file-name "transient/levels.el" my/emacs-cache)
-      transient-values-file
-      (expand-file-name "transient/values.el" my/emacs-cache)
-      ;; Other built-in state that defaults to user-emacs-directory.
-      calc-settings-file
-      (expand-file-name "calc.el" my/emacs-data)
-      diary-file
-      (expand-file-name "diary" my/emacs-data)
-      nsm-settings-file
-      (expand-file-name "network-security.eld" my/emacs-data)
-      package-quickstart-file
-      (expand-file-name "package-quickstart.el" my/emacs-cache)
-      ;; User-created custom themes are data, not cache, but they must not
-      ;; live in the stowed config directory either.
-      custom-theme-directory
-      (file-name-as-directory (expand-file-name "themes" my/emacs-data))
-      ;; AUCTeX extracts macro information into `TeX-auto-global'.
-      TeX-auto-global
-      (file-name-as-directory (expand-file-name "auctex" my/emacs-cache))
-      ;; lsp-mode downloads server binaries here (not package data, so it
-      ;; belongs under XDG data rather than the repository).
-      lsp-server-install-dir
-      (expand-file-name "lsp" my/emacs-data)
-      ;; image-dired and eww are not configured elsewhere, but if invoked
-      ;; they must not create directories in the repository.
-      image-dired-dir
-      (file-name-as-directory (expand-file-name "image-dired" my/emacs-cache))
-      eww-bookmarks-directory
-      (file-name-as-directory (expand-file-name "eww" my/emacs-data))
-      elfeed-db-directory
-      (expand-file-name "elfeed" my/emacs-data)
-      ;; Tree-sitter: `treesit-install-language-grammar' defaults to
-      ;; user-emacs-directory/tree-sitter when OUT-DIR is nil.
-      treesit-extra-load-path
-      (list (expand-file-name "tree-sitter" my/emacs-data))
-      ;; Projectile (used by treemacs-projectile and consult-dir).
-      projectile-known-projects-file
-      (expand-file-name "projectile-bookmarks.eld" my/emacs-cache)
-      projectile-frecency-file
-      (expand-file-name "projectile-frecency.eld" my/emacs-cache)
-      projectile-session-directory
-      (file-name-as-directory
-       (expand-file-name "projectile-sessions" my/emacs-data))
-      ;; Dirvish previews and thumbnails are regenerable cache.
-      dirvish-cache-dir
-      (file-name-as-directory (expand-file-name "dirvish" my/emacs-cache))
-      ;; Ellama: downloaded prompts are cache; blueprints, skills, trust
-      ;; store and audit log are user data.
-      ellama-community-prompts-file
-      (expand-file-name "ellama/community-prompts.csv" my/emacs-cache)
-      ellama-blueprint-global-dir
-      (expand-file-name "ellama/blueprints" my/emacs-data)
-      ellama-skills-global-path
-      (expand-file-name "ellama/skills" my/emacs-data)
-      ellama-tools-irreversible-project-trust-store-file
-      (expand-file-name "ellama/irreversible-trust.el" my/emacs-data)
-      ellama-tools-dlp-audit-log-file
-      (expand-file-name "ellama/dlp-audit.jsonl" my/emacs-data)
-      ;; Built-in/lazy packages whose defaults point at
-      ;; user-emacs-directory.
-      nov-save-place-file
-      (expand-file-name "nov-places" my/emacs-data)
-      mc/list-file
-      (expand-file-name "mc-lists.el" my/emacs-cache)
-      request-storage-directory
-      (file-name-as-directory (expand-file-name "request" my/emacs-cache))
-      ;; EMMS is installed even though this configuration does not use it.
-      emms-directory
-      (file-name-as-directory (expand-file-name "emms" my/emacs-cache))
-      ;; LSP session file must not pollute the repository.
-      lsp-session-file
-      (expand-file-name ".lsp-session-v1" my/emacs-cache)
-      ;; Backup files (~) must not be generated in the repository.
-      backup-directory-alist
-      `((".*" . ,(expand-file-name "backups" my/emacs-cache)))
-      auto-save-file-name-transforms
-      `((".*" ,(expand-file-name "auto-save" my/emacs-cache) t)))
+      auto-save-list-file-prefix (expand-file-name "auto-save-list/.saves-" my/emacs-cache)
+      tramp-persistency-file-name (expand-file-name "tramp-persistency.el" my/emacs-cache)
+      recentf-save-file (expand-file-name "recentf.eld" my/emacs-cache)
+      project-list-file (expand-file-name "projects.eld" my/emacs-cache)
+      savehist-file (expand-file-name "savehist.eld" my/emacs-cache)
+      save-place-file (expand-file-name "saveplace" my/emacs-cache)
+      bookmark-default-file (expand-file-name "bookmarks.eld" my/emacs-data)
+      org-id-locations-file (expand-file-name ".org-id-locations" my/emacs-cache)
+      abbrev-file-name (expand-file-name "abbrev_defs" my/emacs-cache)
+      eshell-directory-name (expand-file-name "eshell" my/emacs-cache)
+      transient-history-file (expand-file-name "transient/history.el" my/emacs-cache)
+      transient-levels-file (expand-file-name "transient/levels.el" my/emacs-cache)
+      transient-values-file (expand-file-name "transient/values.el" my/emacs-cache)
+      calc-settings-file (expand-file-name "calc.el" my/emacs-data)
+      diary-file (expand-file-name "diary" my/emacs-data)
+      nsm-settings-file (expand-file-name "network-security.eld" my/emacs-data)
+      package-quickstart-file (expand-file-name "package-quickstart.el" my/emacs-cache)
+      custom-theme-directory (file-name-as-directory (expand-file-name "themes" my/emacs-data))
+      TeX-auto-global (file-name-as-directory (expand-file-name "auctex" my/emacs-cache))
+      lsp-server-install-dir (expand-file-name "lsp" my/emacs-data)
+      image-dired-dir (file-name-as-directory (expand-file-name "image-dired" my/emacs-cache))
+      eww-bookmarks-directory (file-name-as-directory (expand-file-name "eww" my/emacs-data))
+      elfeed-db-directory (expand-file-name "elfeed" my/emacs-data)
+      treesit-extra-load-path (list (expand-file-name "tree-sitter" my/emacs-data))
+      projectile-known-projects-file (expand-file-name "projectile-bookmarks.eld" my/emacs-cache)
+      projectile-frecency-file (expand-file-name "projectile-frecency.eld" my/emacs-cache)
+      projectile-session-directory (file-name-as-directory (expand-file-name "projectile-sessions" my/emacs-data))
+      dirvish-cache-dir (file-name-as-directory (expand-file-name "dirvish" my/emacs-cache))
+      ellama-community-prompts-file (expand-file-name "ellama/community-prompts.csv" my/emacs-cache)
+      ellama-blueprint-global-dir (expand-file-name "ellama/blueprints" my/emacs-data)
+      ellama-skills-global-path (expand-file-name "ellama/skills" my/emacs-data)
+      ellama-tools-irreversible-project-trust-store-file (expand-file-name "ellama/irreversible-trust.el" my/emacs-data)
+      ellama-tools-dlp-audit-log-file (expand-file-name "ellama/dlp-audit.jsonl" my/emacs-data)
+      nov-save-place-file (expand-file-name "nov-places" my/emacs-data)
+      mc/list-file (expand-file-name "mc-lists.el" my/emacs-cache)
+      request-storage-directory (file-name-as-directory (expand-file-name "request" my/emacs-cache))
+      emms-directory (file-name-as-directory (expand-file-name "emms" my/emacs-cache))
+      lsp-session-file (expand-file-name ".lsp-session-v1" my/emacs-cache)
+      backup-directory-alist `((".*" . ,(expand-file-name "backups" my/emacs-cache)))
+      auto-save-file-name-transforms `((".*" ,(expand-file-name "auto-save" my/emacs-cache) t)))
 
-;; package.el computes this from `user-emacs-directory' when it loads, so it
-;; must be pointed at the real package directory explicitly.
+;;; ### Credentials
+
+;; Every credential used inside Emacs (gptel, agent-shell, aidermacs,
+;; ERC, jabber, ...) lives in ~/.secrets/, one file per service; see
+;; modules/tools/secrets.el. auth-source only searches the files named
+;; here, so the directory is scanned: a new file is picked up without
+;; editing this list. Runs before any module, because gptel, agent-shell
+;; and aidermacs all look their keys up through auth-source.
+(setq auth-sources
+      (append (let ((dir (expand-file-name ".secrets" "~")))
+                (when (file-directory-p dir)
+                  (directory-files dir t "\\`[^.]")))
+              auth-sources))
+
+;; Point package.el at real package dir.
 (setq package-gnupghome-dir (expand-file-name "gnupg" package-user-dir))
 
-;; Activate the installed packages: without this their directories never
-;; reach load-path and use-package cannot find them.
+;; Activate packages so their dirs hit load-path.
 (package-initialize)
 
 (provide 'early-init)

@@ -3,47 +3,45 @@
 #+STARTUP: overview
 #+LANGUAGE: en
 
-Vanilla Emacs configuration migrated from Doom Emacs, managed with GNU Stow.
+Vanilla Emacs config, migrated from Doom and managed with GNU Stow.
 
 * Installation
 #+begin_src bash
 # 1. Dependencies (CachyOS / Arch)
 paru -S emacs git-delta ripgrep fd
 
-# 2. Link the configuration into ~/.config/emacs
+# 2. Link the config
 cd ~/.dotfiles && stow emacs
 
-# 3. First launch: packages are installed automatically
+# 3. Launch — packages install themselves
 emacs
 #+end_src
 
 * Layout
 #+begin_quote
 ~/.config/emacs/
-├── early-init.el       archives, native compilation, GC tuning
-├── init.el             the load order, then loads init.d/
+├── early-init.el       archives, native comp, GC tuning
+├── init.el             load order, then loads init.d/
 ├── init.d/
-│   ├── core/           the foundation: everything else depends on it
-│   │   ├── defaults.el   encoding, performance, directory scaffolding
-│   │   ├── keys.el       evil, leader keymap, which-key
+│   ├── core/           foundation — everything depends on this
+│   │   ├── defaults.el   encoding, perf, directories
+│   │   ├── keys.el       evil, leader, which-key
 │   │   ├── ui.el         theme, modeline, tabs, workspaces, fonts
 │   │   ├── buffers.el    completion, dired, dirvish, large files
 │   │   └── editing.el    snippets, cursors, formatting, tree-sitter
-│   └── modules/        one directory per optional domain
+│   └── modules/        optional domains (load on demand)
 │       ├── git/          magit, magit-delta, vc-git
-│       ├── langs/        LSP and tree-sitter                (phase 2)
-│       ├── org/          org, capture, journal, latex, hugo,
-│       │                 roam, writer, alerts               (phase 3)
-│       ├── feeds/        elfeed                              (phase 4)
-│       ├── media/        pdf, books, music                  (phase 4)
-│       ├── ai/           ellama                             (phase 5)
-│       └── tools/        detached, pass                     (phase 6)
+│       ├── langs/        LSP & tree-sitter
+│       ├── org/          org, capture, journal, latex, hugo, roam
+│       ├── feeds/        elfeed
+│       ├── media/        pdf, books, music
+│       ├── ai/           display, ellama, gptel, agent-shell, aidermacs
+│       └── tools/        detached, pass
 └── assets/             sounds, images, LaTeX classes, RSS feeds
 #+end_quote
 
-Files are grouped by domain, but /the load order is decided in init.el/,
-not by the file names. That way a file can depend on anything listed
-above it without anybody having to invent a name like =02-ui.el=.
+Files are grouped by domain; load order lives in =init.el=, not filenames.
+No =02-ui.el= naming needed.
 
 * Key bindings
 | Key         | Command                      |
@@ -68,8 +66,15 @@ above it without anybody having to invent a name like =02-ui.el=.
 | =C-S-t=     | display workspace tabs       |
 | =C-c C-w=   | persp-mode command prefix    |
 | =SPC o -=   | dired-jump                   |
-| =SPC o p=   | project-switch-project       |
+| =SPC o p=   | project tree (dired)         |
+| =SPC p p=   | switch project               |
 | =SPC l t i= | install tree-sitter grammars |
+| =SPC y e=   | ellama prefix (chat, code, ...) |
+| =SPC y e c= | ellama chat                  |
+| =SPC y y=   | gptel chat                   |
+| =SPC y A=   | gptel file-editing agent     |
+| =SPC y S=   | agent-shell                  |
+| =SPC y a=   | aidermacs (Aider)            |
 | =C-c g=     | magit-status                 |
 | =C-c C-f=   | dirvish-open                 |
 | =kj=        | escape                       |
@@ -85,13 +90,56 @@ The installer covers Python (into =~/.emacs-lsp-venv=), npm, cargo and
 go servers, and says what it could not install because the toolchain is
 missing.
 
-* Notes for this Emacs version
-- Emacs 31 no longer evaluates literal dotted pairs in argument position.
-  Quote every data table: =(my-leader '(("o -" . dired-jump)))=.
-- =elpa.elpa.org= no longer resolves; NonGNU ELPA lives at
-  =https://elpa.nongnu.org/nongnu/=.
-- Evil 1.15 has no =evil-set-default-keybindings= and no
-  =evil-mode-disable=; disabling Evil per mode goes through
-  =evil-emacs-state-modes=.
-- Window border widths must stay =0=, never =nil=: the window accessors
-  return =nil= and doom-modeline subtracts them unguarded.
+* Credentials
+All secrets (LLM keys, IRC, XMPP, git, email…) live in =~/.secrets/=,
+outside the repo. =early-init.el= registers it as =auth-sources=, so
+any package using =auth-source= picks them up automatically — no extra
+config needed.
+
+One file per service (all loaded at startup); the =machine= field
+selects the entry, not the filename:
+
+#+begin_src bash
+~/.secrets/llm     ~/.secrets/irc     ~/.secrets/xmpp
+#+end_src
+
+#+begin_src authinfo
+# ~/.secrets/llm
+machine api.example.com login apikey password YOUR_API_KEY
+machine api.another-service.com login apikey password YOUR_API_KEY
+
+# ~/.secrets/irc
+machine irc.example.net login youruser password YOUR_PASSWORD
+
+# ~/.secrets/xmpp
+machine xmpp.example.org login youruser password YOUR_PASSWORD
+#+end_src
+
+Add =.gpg= to encrypt a file (Emacs handles decrypt on read).
+Directory is created 700.
+
+Shortcuts:
+
+| Key       | Command                       |
+|-----------+-------------------------------|
+|=SPC o C=  | browse =~/.secrets/=            |
+|=SPC o A=  | add a credential (prompts)    |
+
+=gptel= and =agent-shell= read keys from there. =gptel= defaults to
+NVIDIA NIM; Ollama stays selectable in =gptel-menu=. =agent-shell=
+providers (Claude, Codex, Gemini, DeepSeek) pull exclusively from
+=~/.secrets/= — add the =machine= hosts from =modules/ai/agent-shell.el=
+with =SPC o A=.
+
+=aidermacs= works the same way: =modules/ai/aidermacs.el= exports the
+provider keys from =~/.secrets/= (=my/aidermacs-key-vars=) as the
+environment variables Aider expects, for the Aider process only. It
+needs the =aider= executable (=pipx install aider-chat=), which Emacs
+does not install, and keeps the =.aider*= chat history in XDG cache
+instead of inside the project.
+
+* Notes for Emacs 31+
+- Dotted pairs in arg position must be quoted: =(my-leader '(("o -" . dired-jump)))=.
+- NonGNU ELPA moved to =https://elpa.nongnu.org/nongnu/=.
+- Evil 1.15: no =evil-set-default-keybindings= or =evil-mode-disable=; use =evil-emacs-state-modes= to disable per mode.
+- Window border widths must be =0=, not =nil= — doom-modeline subtracts them unguarded.

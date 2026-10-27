@@ -1,11 +1,9 @@
 ;;; my-editing.el -*- lexical-binding: t; -*-
-;;; my-editing.el --- Editing behaviour, snippets and formatting  -*- lexical-binding: t; -*-
+;;; my-editing.el --- Editing, snippets & formatting
 
 ;;; Commentary:
-;; Ported from Doom's :editor module, the tree-sitter settings in
-;; lisp/lsp.el and the LaTeX/Markdown/Web/KDL sections of config.el.
-;; Doom's `format +onsave' is reimplemented locally because
-;; +format-on-save-enabled-modes was a Doom variable.
+;; Ported from Doom's :editor, tree-sitter, LaTeX/Markdown/Web/KDL.
+;; Format-on-save reimplemented locally.
 
 ;;; Code:
 

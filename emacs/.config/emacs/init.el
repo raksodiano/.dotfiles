@@ -1,11 +1,9 @@
 ;;; init.el -*- lexical-binding: t; -*-
-;;; init.el --- Entry point  -*- lexical-binding: t; -*-
-;;; Migrated from Doom Emacs (init.el + config.el).
+;;; init.el --- Entry point
 
 ;;; Commentary:
-;; Everything lives in init.d/. This file only locates the directory, loads
-;; the files in lexical order and sets up the few hooks that need to run
-;; early. See `M-x checkdoc' conventions: files here should be short.
+;; Everything lives in init.d/. This file just finds dirs, loads modules in
+;; order, and sets a few early hooks.
 
 ;;; Code:
 
@@ -33,11 +31,8 @@
 
 ;;; ### Startup order
 
-;; init.d/ has two entries: core/ is the foundation everything else
-;; builds on, modules/ holds one directory per optional domain. The load
-;; order is decided here, not by the file names: a file may depend on
-;; anything listed above it (core/editing.el needs my-leader from
-;; core/keys.el).
+;; init.d/ split into core/ (foundation) and modules/ (optional). Load order
+;; is here, not by filenames — later files can depend on earlier ones.
 (defconst my/init-files
   '(("init.d/core/defaults.el"               . my-defaults)
     ("init.d/core/keys.el"                   . my-keys)
@@ -65,6 +60,10 @@
     ("init.d/modules/media/pdf.el"           . my-pdf)
     ("init.d/modules/media/books.el"         . my-books)
     ("init.d/modules/ai/ellama.el"           . my-ellama)
+    ("init.d/modules/ai/display.el"          . my-ai-display)
+    ("init.d/modules/ai/gptel.el"            . my-gptel)
+    ("init.d/modules/ai/agent-shell.el"      . my-agent-shell)
+    ("init.d/modules/ai/aidermacs.el"        . my-aidermacs)
     ("init.d/modules/tools/detached.el"      . my-detached)
     ("init.d/modules/tools/pass.el"          . my-pass)
     ("init.d/modules/tools/treemacs.el"      . my-treemacs)

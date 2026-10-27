@@ -1,9 +1,8 @@
 ;;; my-defaults.el -*- lexical-binding: t; -*-
-;;; my-defaults.el --- Encoding, performance and general behaviour  -*- lexical-binding: t; -*-
+;;; my-defaults.el --- Encoding, performance & general behaviour
 
 ;;; Commentary:
-;; Ported from Doom's config.el. These settings have no package dependencies
-;; and must be loaded before anything else.
+;; No package deps, loaded first. Ported from Doom's config.el.
 
 ;;; Code:
 

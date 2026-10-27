@@ -1,16 +1,9 @@
 ;;; my-buffers.el -*- lexical-binding: t; -*-
-;;; my-buffers.el --- Buffers, files and completion  -*- lexical-binding: t; -*-
+;;; my-buffers.el --- Buffers, files & completion
 
 ;;; Commentary:
-;; Ported from Doom's :emacs and :completion modules plus the Dired, consult
-;; and vlf sections of config.el.
-;;
-;; NOTE: consult, consult-buffering, project, dired and flyspell are built
-;; into Emacs 31, so they are configured with eval-after-load instead of
-;; use-package (which would try to install them from an archive). The
-;; :buffer-templates API and consult-buffer-save-window-config no longer
-;; exist in current consult. The `capefy' package was folded into `cape';
-;; the completion-at-point backends are wired directly instead.
+;; Ported from Doom's :emacs/:completion + Dired/consult/vlf. Built-ins
+;; (consult, project, dired) use eval-after-load; Corfu+Cape replace Company.
 
 ;;; Code:
 

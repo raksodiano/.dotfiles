@@ -1,10 +1,9 @@
 ;;; my-ui.el -*- lexical-binding: t; -*-
-;;; my-ui.el --- Theme, modeline, tabs, fonts and window chrome  -*- lexical-binding: t; -*-
+;;; my-ui.el --- Theme, modeline, tabs, fonts & chrome
 
 ;;; Commentary:
-;; Ported from Doom's config.el and Doom's :ui module. Doom's noctalia theme
-;; is dropped in favour of gruvbox; every other visual preference (fonts,
-;; modeline options, tab bar, line numbers, blink cursor) is preserved.
+;; Ported from Doom's config.el and :ui. Uses gruvbox-dark-hard; fonts,
+;; modeline, tabs, line numbers, blink cursor kept as in Doom.
 
 ;;; Code:
 

@@ -1,5 +1,5 @@
 ;;; ellama.el -*- lexical-binding: t; -*-
-;;; ellama.el --- AI via Ollama/Ellama (split out)
+;;; ellama.el --- AI via Ollama/Ellama
 
 ;;; Code:
 
@@ -91,21 +91,33 @@
     (dolist (model models)
       (my/install-ollama-model-with-progress model))))
 
-(my-leader
- '(("y i" . my/install-all-ellama-models)
-   ("y c" . ellama-chat)
-   ("y w" . ellama-write)
-   ("y t" . ellama-translate)
-   ("y s" . ellama-summarize)
-   ("y r" . ellama-code-review)
-   ("y C" . ellama-code-complete)
-   ("y a" . ellama-code-add)
-   ("y e" . ellama-code-edit)
-   ("y p" . ellama-proofread)
-   ("y g" . ellama-improve-grammar)
-   ("y d" . ellama-define-word)
-   ("y l" . ellama-make-list)
-   ("y P" . ellama-provider-select)))
+(defvar my/ellama-leader-map (make-sparse-keymap)
+  "Keymap for Ellama under `SPC y e'.")
+
+(with-eval-after-load 'my-keys
+  (define-key my-leader-map (kbd "y e") my/ellama-leader-map))
+
+(defun my/ellama-leader (bindings)
+  "Bind BINDINGS under `my/ellama-leader-map'."
+  (declare (indent defun))
+  (dolist (binding bindings)
+    (define-key my/ellama-leader-map (kbd (car binding)) (cdr binding))))
+
+(my/ellama-leader
+ '(("i" . my/install-all-ellama-models)
+   ("c" . ellama-chat)
+   ("w" . ellama-write)
+   ("t" . ellama-translate)
+   ("s" . ellama-summarize)
+   ("r" . ellama-code-review)
+   ("C" . ellama-code-complete)
+   ("a" . ellama-code-add)
+   ("e" . ellama-code-edit)
+   ("p" . ellama-proofread)
+   ("g" . ellama-improve-grammar)
+   ("d" . ellama-define-word)
+   ("l" . ellama-make-list)
+   ("P" . ellama-provider-select)))
 
 (provide 'my-ellama)
 ;;; ellama.el ends here

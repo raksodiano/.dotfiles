@@ -1,10 +1,10 @@
 ;;; my-keys.el -*- lexical-binding: t; -*-
-;;; my-keys.el --- Modal editing and key bindings  -*- lexical-binding: t; -*-
+;;; my-keys.el --- Modal editing & key bindings
 
 ;;; Commentary:
 ;; Ported from Doom's config.el.
 ;;
-;; NOTE: the current Evil (1.15) renamed its variables and keymaps:
+;; NOTE: Evil 1.15 renamed some variables/keymaps:
 ;; `evil-normal-map' is now `evil-normal-state-map', `evil-escape-delay'
 ;; became `evil-esc-delay', and `evil-escape-key-sequence' no longer
 ;; exists. The third-party `evil-escape' package restores that variable,
