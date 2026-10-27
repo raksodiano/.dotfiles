@@ -19,12 +19,11 @@
   (org-directory +my/org-base-dir)
   (org-clock-sound (expand-file-name "sounds/bell.wav" my/assets-dir))
   (org-edit-src-content-indentation 2)
-  ;; org-agenda-files assigned in :config to avoid opening missing dirs early.
+  ;; Org promotes/demotes with M-<left>/M-<right>. Meow leaves those keys
+  ;; unbound in normal state, so the local map is consulted.
   :config
-  (eval-after-load 'evil
-    (evil-define-key 'normal org-mode-map
-      (kbd "<M-left>") #'org-do-promote
-      (kbd "<M-right>") #'org-do-demote)))
+  (define-key org-mode-map (kbd "<M-left>") #'org-do-promote)
+  (define-key org-mode-map (kbd "<M-right>") #'org-do-demote))
 
 ;; Agenda custom commands based on work directory.
 (setq org-agenda-files-work

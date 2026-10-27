@@ -17,19 +17,19 @@
         calibredb-library-alist (list +my/library-dir)
         calibredb-format-all-the-icons t))
 
-;; Keybindings in calibredb-search-mode.
+;; Keybindings in calibredb-search-mode. The mode runs in Meow motion
+;; state, so its local map is not shadowed by the normal-state keys.
 (with-eval-after-load 'calibredb
-  (evil-define-key 'normal calibredb-search-mode-map
-    (kbd "RET") #'calibredb-find-file
-    "?" #'calibredb-dispatch
-    "a" #'calibredb-add
-    "d" #'calibredb-remove
-    "j" #'calibredb-next-entry
-    "k" #'calibredb-previous-entry
-    "l" #'calibredb-open-file-with-default-tool
-    "s" #'calibredb-set-metadata-dispatch
-    "S" #'calibredb-switch-library
-    "q" #'calibredb-search-quit))
+  (define-key calibredb-search-mode-map (kbd "RET") #'calibredb-find-file)
+  (define-key calibredb-search-mode-map (kbd "?") #'calibredb-dispatch)
+  (define-key calibredb-search-mode-map (kbd "a") #'calibredb-add)
+  (define-key calibredb-search-mode-map (kbd "d") #'calibredb-remove)
+  (define-key calibredb-search-mode-map (kbd "j") #'calibredb-next-entry)
+  (define-key calibredb-search-mode-map (kbd "k") #'calibredb-previous-entry)
+  (define-key calibredb-search-mode-map (kbd "l") #'calibredb-open-file-with-default-tool)
+  (define-key calibredb-search-mode-map (kbd "s") #'calibredb-set-metadata-dispatch)
+  (define-key calibredb-search-mode-map (kbd "S") #'calibredb-switch-library)
+  (define-key calibredb-search-mode-map (kbd "q") #'calibredb-search-quit))
 
 (provide 'my-books)
 ;;; books.el ends here

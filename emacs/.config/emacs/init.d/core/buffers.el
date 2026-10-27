@@ -151,7 +151,7 @@
                            #'completion--in-region)
                          args)))
 
-  ;; Doom binds these only with (evil +everywhere); Evil is everywhere here.
+  ;; Doom's vertico extras: keep them available in every state.
   (define-key vertico-map (kbd "M-RET") #'vertico-exit-input)
   (define-key vertico-map (kbd "C-SPC") #'+vertico/embark-preview)
   (define-key vertico-map (kbd "C-j") #'vertico-next)
@@ -212,8 +212,6 @@
 (use-package consult
   :init
   (define-key global-map [remap bookmark-jump] #'consult-bookmark)
-  (define-key global-map [remap evil-show-marks] #'consult-mark)
-  (define-key global-map [remap evil-show-registers] #'consult-register)
   (define-key global-map [remap goto-line] #'consult-goto-line)
   (define-key global-map [remap imenu] #'consult-imenu)
   (define-key global-map [remap Info-search] #'consult-info)
@@ -466,18 +464,9 @@ d forgets it, g refreshes the list."
 (define-key my/projects-mode-map (kbd "RET") #'my/projects-open)
 (define-key my/projects-mode-map (kbd "d") #'my/projects-forget)
 (define-key my/projects-mode-map (kbd "a") #'project-remember-project)
-
-;; Evil's normal-state map takes precedence over a local map, so `d' would run
-;; evil-delete on a read-only buffer. Bind the actions for that state too, as
-;; the dashboard does in ui.el.
-(with-eval-after-load 'evil
-  (evil-define-key 'normal my/projects-mode-map
-    (kbd "RET") #'my/projects-open
-    (kbd "d") #'my/projects-forget
-    (kbd "a") #'project-remember-project
-    ;; `g' is an evil prefix, so the mode's own `tabulated-list-revert'
-    ;; binding would never run.
-    (kbd "g") #'tabulated-list-revert))
+;; The mode runs in Meow motion state, so this local map is not shadowed
+;; by the normal-state bindings; keep `g' on the table refresh.
+(define-key my/projects-mode-map (kbd "g") #'tabulated-list-revert)
 
 ;; ripgrep is consult's content search backend when installed; current
 ;; consult needs no setup call (the old consult-ripgrep-setup is gone).

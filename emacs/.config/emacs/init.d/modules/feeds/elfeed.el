@@ -26,22 +26,20 @@
     (setq-local truncate-lines nil
                 shr-use-fonts nil
                 shr-width 85))
-  ;; Doom's evil bindings for elfeed.
-  (with-eval-after-load 'evil
-    (evil-define-key 'normal elfeed-search-mode-map
-      "n" #'next-line
-      "p" #'previous-line
-      "q" #'kill-current-buffer
-      "r" #'revert-buffer
-      "u" #'elfeed-update
-      "v" #'elfeed-tube-mpv
-      (kbd "M-RET") #'my/elfeed-open-entry)
-    (evil-define-key 'normal elfeed-show-mode-map
-      "n" #'elfeed-show-next
-      "p" #'elfeed-show-prev
-      "v" #'elfeed-tube-mpv
-      (kbd "M-RET") #'my/elfeed-open-entry
-      "gc" #'my/elfeed-copy-link))
+  ;; Doom's elfeed bindings. Both modes run in Meow motion state, so
+  ;; their local maps are not shadowed by the normal-state keys.
+  (define-key elfeed-search-mode-map (kbd "n") #'next-line)
+  (define-key elfeed-search-mode-map (kbd "p") #'previous-line)
+  (define-key elfeed-search-mode-map (kbd "q") #'kill-current-buffer)
+  (define-key elfeed-search-mode-map (kbd "r") #'revert-buffer)
+  (define-key elfeed-search-mode-map (kbd "u") #'elfeed-update)
+  (define-key elfeed-search-mode-map (kbd "v") #'elfeed-tube-mpv)
+  (define-key elfeed-search-mode-map (kbd "M-RET") #'my/elfeed-open-entry)
+  (define-key elfeed-show-mode-map (kbd "n") #'elfeed-show-next)
+  (define-key elfeed-show-mode-map (kbd "p") #'elfeed-show-prev)
+  (define-key elfeed-show-mode-map (kbd "v") #'elfeed-tube-mpv)
+  (define-key elfeed-show-mode-map (kbd "M-RET") #'my/elfeed-open-entry)
+  (define-key elfeed-show-mode-map (kbd "g c") #'my/elfeed-copy-link)
   (defun my/elfeed-copy-link ()
     "Copy the current entry link to clipboard (Doom's +rss/copy-link)."
     (interactive)
@@ -151,7 +149,7 @@ YouTube entries play in mpv, others browse normally."
         (elfeed-tube-mpv (point))
       (funcall orig))))
 
-;; RET in evil normal state follows entry links via `push-button'.
+;; RET follows entry links via `push-button' in the show buffer.
 (defun my/elfeed-push-button-a (orig &optional pos use-mouse-action)
   "Route the button under POS to mpv when it is the entry's YouTube link."
   (let* ((at (cond

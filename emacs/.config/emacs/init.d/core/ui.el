@@ -60,7 +60,10 @@
   (doom-modeline-lsp t)
   (doom-modeline-workspace-name t)
   :config
-  (doom-modeline-mode +1))
+  (doom-modeline-mode +1)
+  ;; Meow appends its state indicator to the mode line. Must run after
+  ;; doom-modeline installs `mode-line-format'.
+  (meow-setup-indicator))
 
 ;;; ### Tabs
 
@@ -86,7 +89,11 @@
   ;; stays clean no matter when centaur-tabs-mode is enabled.
   (setq centaur-tabs-hide-predicate
         (lambda ()
-          (string-match-p "\\*dashboard\\*" (buffer-name)))))
+          (string-match-p "\\*dashboard\\*" (buffer-name))))
+  ;; Vim moved between tabs with `g t'/`g T'; Meow uses `g' to cancel a
+  ;; selection, so the tab keys live on a `C-c' prefix instead.
+  (define-key global-map (kbd "C-c t") #'centaur-tabs-forward-tab)
+  (define-key global-map (kbd "C-c T") #'centaur-tabs-backward-tab))
 
 ;;; ### Workspaces
 
@@ -664,11 +671,8 @@ When INHIBIT-KILL-P is non-nil, leave its buffers alive."
    ("q s"     . save-session)
    ("q l"     . load-session)))
 
-;; Doom binds these in normal state only; M-<digit> is global so it also
-;; works from other Evil states and from the minibuffer's parent maps.
-(with-eval-after-load 'evil
-  (define-key evil-normal-state-map (kbd "C-t") #'new)
-  (define-key evil-normal-state-map (kbd "C-S-t") #'display))
+;; `C-t'/`C-S-t' create and display workspaces from Meow normal state.
+;; The bindings live in keys.el, next to the state maps they belong to.
 
 (dotimes (i 9)
   (global-set-key (kbd (format "M-%d" (1+ i)))
@@ -722,15 +726,19 @@ When INHIBIT-KILL-P is non-nil, leave its buffers alive."
 (add-hook 'prog-mode-hook #'hl-line-mode)
 (add-hook 'text-mode-hook #'hl-line-mode)
 
-;; Cursor shape and color per Evil state, gruvbox-tinted like Doom.
-(with-eval-after-load 'evil
-  (setq evil-normal-state-cursor '(box "#b8bb26")
-        evil-insert-state-cursor '(bar "#fb4934")
-        evil-visual-state-cursor '(hbar "#fabd2f")
-        evil-replace-state-cursor '(hbar "#fb4934")
-        evil-motion-state-cursor '(box "#83a598")
-        evil-emacs-state-cursor '(box "#d3869b")
-        evil-operator-state-cursor '(hbar "#b8bb26")))
+;; Cursor shape and color per Meow state, gruvbox-tinted like Doom.
+(with-eval-after-load 'meow
+  (setq meow-cursor-type-normal 'box
+        meow-cursor-type-insert 'bar
+        meow-cursor-type-motion 'box
+        meow-cursor-type-beacon 'hbar)
+  (set-face-attribute 'meow-normal-cursor nil :background "#b8bb26")
+  (set-face-attribute 'meow-insert-cursor nil :background "#fb4934")
+  (set-face-attribute 'meow-motion-cursor nil :background "#83a598")
+  (set-face-attribute 'meow-beacon-cursor nil :background "#fabd2f")
+  ;; Repaint now instead of waiting for the next state switch.
+  (when (bound-and-true-p meow-mode)
+    (meow-update-display)))
 
 ;;; ### Doom eye-candy modules
 
@@ -903,21 +911,13 @@ When INHIBIT-KILL-P is non-nil, leave its buffers alive."
     "Jump to the dashboard Recent Files section."
     (interactive)
     (my/dashboard-jump-to-section "Recent Files:"))
-  ;; Plain bindings cover non-Evil states; Evil normal-state bindings win
-  ;; over evil's own keys (e.g. "p" pastes) inside the dashboard.
+  ;; The dashboard runs in Meow motion state, so its local map is not
+  ;; shadowed by the normal-state bindings.
   (define-key dashboard-mode-map (kbd "p") #'my/dashboard-jump-to-projects)
   (define-key dashboard-mode-map (kbd "a") #'my/dashboard-jump-to-agenda)
   (define-key dashboard-mode-map (kbd "m") #'my/dashboard-jump-to-bookmarks)
   (define-key dashboard-mode-map (kbd "r") #'my/dashboard-jump-to-recents)
-  (with-eval-after-load 'evil
-    (evil-define-key 'normal dashboard-mode-map
-      (kbd "p") #'my/dashboard-jump-to-projects
-      (kbd "a") #'my/dashboard-jump-to-agenda
-      (kbd "m") #'my/dashboard-jump-to-bookmarks
-      (kbd "r") #'my/dashboard-jump-to-recents
-      (kbd "RET") #'my/dashboard-press-button))
-  ;; RET activates widgets (navigator buttons, section items), which
-  ;; Evil's normal-state RET would otherwise swallow.
+  ;; RET activates widgets (navigator buttons, section items).
   (defun my/dashboard-press-button ()
     "Press the widget button at point, if any."
     (interactive)
@@ -926,15 +926,9 @@ When INHIBIT-KILL-P is non-nil, leave its buffers alive."
           (widget-button-press (point))
         (forward-line 1))))
   (define-key dashboard-mode-map (kbd "RET") #'my/dashboard-press-button)
-  ;; TAB cycles through buttons/items so RET can press them; in a
-  ;; read-only dashboard Evil's jump list is useless anyway.
+  ;; TAB cycles through buttons/items so RET can press them.
   (define-key dashboard-mode-map (kbd "TAB") #'widget-forward)
-  (define-key dashboard-mode-map (kbd "<backtab>") #'widget-backward)
-  (with-eval-after-load 'evil
-    (evil-define-key 'normal dashboard-mode-map
-      (kbd "RET") #'my/dashboard-press-button
-      (kbd "TAB") #'widget-forward
-      (kbd "<backtab>") #'widget-backward)))
+  (define-key dashboard-mode-map (kbd "<backtab>") #'widget-backward))
 
 ;; Doom showed the dashboard instead of *scratch* on startup.
 (setq inhibit-startup-screen t

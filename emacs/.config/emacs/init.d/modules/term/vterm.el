@@ -26,6 +26,9 @@
   :config
   ;; No line numbers in the terminal (like treemacs).
   (add-hook 'vterm-mode-hook (lambda () (display-line-numbers-mode -1)))
+  ;; The buffer runs in Meow insert state, where ESC switches to normal.
+  ;; Keep a way to send a literal ESC to the shell.
+  (define-key vterm-mode-map (kbd "C-c C-e") #'vterm-send-escape)
   ;; The native module needs cmake + libvterm; compile on first use.
   (unless (require 'vterm-module nil t)
     (when (fboundp 'vterm-module-compile)

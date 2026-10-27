@@ -1,5 +1,5 @@
 ;;; treemacs.el -*- lexical-binding: t; -*-
-;;; treemacs.el --- Treemacs project drawer (added for Evil everywhere)
+;;; treemacs.el --- Treemacs project drawer
 
 ;;; Code:
 
@@ -13,21 +13,12 @@
         (expand-file-name "treemacs-persist-at-last-error" my/emacs-cache))
   (treemacs-follow-mode t)
   (treemacs-filewatch-mode t)
-  (add-hook 'treemacs-mode-hook #'(lambda () (display-line-numbers-mode -1))))
-
-(use-package treemacs-evil
-  :after (treemacs evil)
-  :config
-  ;; The kj escape chord must never fire in the tree: ESC runs
-  ;; keyboard-escape-quit, which deletes dedicated side windows, so
-  ;; mashing j/k closed treemacs "by itself".
-  (add-to-list 'evil-escape-excluded-states 'treemacs)
-  ;; treemacs-evil leaves root navigation unbound, so going above the
-  ;; project root is impossible. Bind dired-style keys for it.
-  (evil-define-key 'treemacs treemacs-mode-map
-    "-" #'treemacs-root-up
-    "u" #'treemacs-root-up
-    "+" #'treemacs-root-down))
+  (add-hook 'treemacs-mode-hook #'(lambda () (display-line-numbers-mode -1)))
+  ;; Upstream leaves root navigation unbound. Dired-style keys are safe in
+  ;; Meow motion state (j/k stay with Meow).
+  (define-key treemacs-mode-map (kbd "-") #'treemacs-root-up)
+  (define-key treemacs-mode-map (kbd "u") #'treemacs-root-up)
+  (define-key treemacs-mode-map (kbd "+") #'treemacs-root-down))
 
 (use-package treemacs-projectile
   :after (treemacs projectile)

@@ -35,14 +35,21 @@
   (add-hook 'org-tree-slide-play-hook #'my/slides-start)
   (add-hook 'org-tree-slide-stop-hook #'my/slides-stop)
 
-  ;; Vim-style deck motion under Evil. The minor mode itself toggles,
-  ;; so q quits by turning it off.
-  (with-eval-after-load 'evil
-    (when (boundp 'org-tree-slide-mode-map)
-      (evil-define-key 'normal org-tree-slide-mode-map
-        "n" #'org-tree-slide-move-next-tree
-        "p" #'org-tree-slide-move-previous-tree
-        "q" #'org-tree-slide-mode))))
+  ;; The deck's n/p/q bindings live in its local map. Switch the buffer to
+  ;; Meow motion state while presenting so the normal-state keys do not
+  ;; shadow them; return to normal state when the presentation stops.
+  (add-hook 'org-tree-slide-play-hook
+            (lambda ()
+              (when (fboundp 'meow-motion-mode)
+                (meow-motion-mode 1))))
+  (add-hook 'org-tree-slide-stop-hook
+            (lambda ()
+              (when (fboundp 'meow-normal-mode)
+                (meow-normal-mode 1))))
+  (when (boundp 'org-tree-slide-mode-map)
+    (define-key org-tree-slide-mode-map (kbd "n") #'org-tree-slide-move-next-tree)
+    (define-key org-tree-slide-mode-map (kbd "p") #'org-tree-slide-move-previous-tree)
+    (define-key org-tree-slide-mode-map (kbd "q") #'org-tree-slide-mode)))
 
 (defun my/slides-toggle ()
   "Start or stop presenting the current Org buffer as slides."

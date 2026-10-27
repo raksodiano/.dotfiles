@@ -38,8 +38,7 @@
   :after detached
   :config
   (my-leader
-   '(("o S" . detached-list-sessions)))
-  (evil-set-initial-state 'detached-list-mode 'emacs))
+   '(("o S" . detached-list-sessions))))
 
 (provide 'my-detached)
 ;;; detached.el ends here

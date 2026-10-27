@@ -1,17 +1,20 @@
 ;;; my-keys.el -*- lexical-binding: t; -*-
-;;; my-keys.el --- Modal editing & key bindings
+;;; my-keys.el --- Modal editing (Meow) and key bindings
 
 ;;; Commentary:
 ;; Ported from Doom's config.el.
 ;;
-;; NOTE: Evil 1.15 renamed some variables/keymaps:
-;; `evil-normal-map' is now `evil-normal-state-map', `evil-escape-delay'
-;; became `evil-esc-delay', and `evil-escape-key-sequence' no longer
-;; exists. The third-party `evil-escape' package restores that variable,
-;; so the "kj" escape sequence the user is used to is preserved.
+;; Meow replaces the Evil stack. It is a selection-first modal layer on
+;; top of vanilla Emacs keymaps: normal state for editing buffers,
+;; motion state for read-only/special buffers, insert state for
+;; terminals. See `meow-mode-state-list' below.
 ;;
-;; The `general' package was dropped on purpose: its leader-key API is
-;; gone in the current release, and plain keymaps are easier to audit
+;; `SPC' keeps opening the Doom-style leader defined in this file. Meow
+;; binds `SPC' to its keypad by default, so the leader is rebound to
+;; `my-leader-map' and the keypad moves to `M-SPC'.
+;;
+;; The old `general' package was dropped on purpose: its leader-key API
+;; is gone in the current release, and plain keymaps are easier to audit
 ;; during a migration.
 
 ;;; Code:
@@ -22,66 +25,116 @@
       use-package-always-update-on-changelog nil
       use-package-always-pin nil)
 
-;;; ### Evil
+;;; ### Meow
 
-;; Doom's (evil +everywhere): the modal map replaces emacs-mode-map in
-;; every buffer except the ones listed below.
-(setq-default evil-move-cursor-back nil
-      evil-want-fine-undo t
-      evil-case-fold-search t)
-
-;; NOTE: package variables belong in :custom, not :init. :init runs
-;; before the package is loaded, so a defcustom would overwrite the value.
-(use-package evil-escape
-  :custom
-  (evil-escape-key-sequence "kj")
-  (evil-escape-delay 0.1)
+;; Meow replaces Evil. It is selection-first and sits on top of vanilla
+;; keymaps, so most package bindings keep working unchanged. The leader
+;; and the state bindings are configured in `my/meow-setup'.
+(use-package meow
+  :ensure t
   :config
-  (evil-escape-mode 1))
+  (defun my/meow-setup ()
+    "Doom-like QWERTY layout for Meow."
+    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
 
-;; NOTE: Evil 1.15 removed evil-mode-disable. Disabling Evil in a buffer
-;; is now done by listing the major mode in `evil-emacs-state-modes',
-;; which already covers magit-*, org-agenda-mode, ediff-mode, pdf-view-mode,
-;; occur-mode, package-menu-mode, recentf-dialog-mode and the reftex modes.
-;; `evil-buffer-regexps' is the equivalent for buffers matched by name.
-(use-package evil
-  :custom
-  ;; Keep only Evil's built-in emacs state entries so the modes the user
-  ;; works with daily (dired, text, org, magit, ...) become modal rather
-  ;; than staying in "holy"/Emacs state.
-  (evil-emacs-state-modes nil)
-  (evil-default-state 'normal)
+    (meow-define-keys 'motion
+      '("j" . meow-next)
+      '("k" . meow-prev))
 
-  :config
-  (define-key evil-normal-state-map (kbd "<M-left>") #'evil-backward-word)
-  (define-key evil-normal-state-map (kbd "<M-right>") #'evil-forward-word)
-  (global-set-key (kbd "C-=") 'text-scale-increase)
-  (global-set-key (kbd "C--") 'text-scale-decrease)
-  ;; Turn Evil on. Evil has no global minor mode, so it is enabled here
-  ;; and re-enabled for every new frame; evil-escape-mode does nothing
-  ;; useful while evil-mode is off.
-  ;; NOTE: there is no evil-set-default-keybindings in Evil 1.15; the
-  ;; default bindings are installed by evil-mode itself.
-  (evil-mode 1)
-  (add-hook 'after-make-frame-functions #'evil-mode)
+    (meow-normal-define-key
+     '("0" . meow-expand-0)
+     '("9" . meow-expand-9)
+     '("8" . meow-expand-8)
+     '("7" . meow-expand-7)
+     '("6" . meow-expand-6)
+     '("5" . meow-expand-5)
+     '("4" . meow-expand-4)
+     '("3" . meow-expand-3)
+     '("2" . meow-expand-2)
+     '("1" . meow-expand-1)
+     '("-" . negative-argument)
+     '(";" . meow-reverse)
+     '("," . meow-inner-of-thing)
+     '("." . meow-bounds-of-thing)
+     '("[" . meow-beginning-of-thing)
+     '("]" . meow-end-of-thing)
+     '("a" . meow-append)
+     '("A" . meow-open-below)
+     '("b" . meow-back-word)
+     '("B" . meow-back-symbol)
+     '("c" . meow-change)
+     '("d" . meow-delete)
+     '("D" . meow-backward-delete)
+     '("e" . meow-next-word)
+     '("E" . meow-next-symbol)
+     '("f" . meow-find)
+     '("g" . meow-cancel-selection)
+     '("G" . meow-grab)
+     '("h" . meow-left)
+     '("H" . meow-left-expand)
+     '("i" . meow-insert)
+     '("I" . meow-open-above)
+     '("j" . meow-next)
+     '("J" . meow-next-expand)
+     '("k" . meow-prev)
+     '("K" . meow-prev-expand)
+     '("l" . meow-right)
+     '("L" . meow-right-expand)
+     '("m" . meow-join)
+     '("n" . meow-search)
+     '("o" . meow-block)
+     '("O" . meow-to-block)
+     '("p" . meow-yank)
+     '("q" . meow-quit)
+     '("Q" . meow-goto-line)
+     '("r" . meow-replace)
+     '("R" . meow-swap-grab)
+     '("s" . meow-kill)
+     '("t" . meow-till)
+     '("u" . meow-undo)
+     '("U" . meow-undo-in-selection)
+     '("v" . meow-visit)
+     '("w" . meow-mark-word)
+     '("W" . meow-mark-symbol)
+     '("x" . meow-line)
+     '("X" . meow-goto-line)
+     '("y" . meow-save)
+     '("Y" . meow-sync-grab)
+     '("z" . meow-pop-selection)
+     '("'" . repeat)
+     '("<escape>" . ignore)))
 
-  ;; evil-collection restores Doom's "evil everywhere" behaviour: it adds
-  ;; the right bindings/motion to magit, dired, org, term, help, etc.
-  ;; and moves them out of pure Emacs state.
-(use-package evil-collection
-  :after evil
-  :config
-  (evil-collection-init))
+  (my/meow-setup)
 
-  ;; Evil 1.15 declares evil-mode-buffers with (defvar evil-mode-buffers),
-  ;; which marks it special but leaves it void, and evil-normal-post-command
-  ;; reads it through evil-initializing-p on every command in Normal state:
-  ;;   Error in post-command-hook (evil-normal-post-command):
-  ;;   (void-variable evil-mode-buffers)
-  ;; Verified present in both NonGNU ELPA and MELPA. Give it a value
-  ;; until upstream fixes the declaration.
-  (unless (boundp 'evil-mode-buffers)
-    (setq evil-mode-buffers nil)))
+  ;; States for buffers where a package owns the keys. Terminals go
+  ;; straight to insert; read-only modes get Meow's sparse motion map so
+  ;; their own bindings (dired, magit, elfeed, ...) keep working.
+  (dolist (entry
+           '((vterm-mode . insert)
+             (term-mode . insert)
+             (eshell-mode . insert)
+             (comint-mode . insert)
+             (special-mode . motion)
+             (magit-mode . motion)
+             (dired-mode . motion)
+             (wdired-mode . normal)
+             (elfeed-search-mode . motion)
+             (elfeed-show-mode . motion)
+             (pdf-view-mode . motion)
+             (nov-mode . motion)
+             (org-agenda-mode . motion)
+             (treemacs-mode . motion)
+             (dashboard-mode . motion)
+             (calibredb-search-mode . motion)
+             (detached-list-mode . motion)
+             (my/projects-mode . motion)))
+    (add-to-list 'meow-mode-state-list entry))
+
+  (meow-global-mode 1))
+
+;; Text scale is not modal; keep the old global shortcuts.
+(global-set-key (kbd "C-=") #'text-scale-increase)
+(global-set-key (kbd "C--") #'text-scale-decrease)
 
 ;;; ### Leader
 
@@ -90,53 +143,61 @@
 (defvar my-leader-map (make-sparse-keymap)
   "Keymap for the leader key (SPC).")
 
-;; Doom-like modal leader: SPC opens the leader ONLY in Evil's
-;; normal/visual/motion/emacs states. It is deliberately NOT bound in
-;; `global-map', in local maps, or in insert state, so SPC keeps inserting
-;; a space while typing (minibuffer narrowing like "find file" needs it).
-(defconst my-leader-state-maps
-  '(evil-normal-state-map evil-visual-state-map
-    evil-motion-state-map evil-emacs-state-map)
-  "Evil state maps where SPC opens `my-leader-map'.")
+;; SPC opens the leader only in Meow normal/motion state, never in insert
+;; state or the minibuffer, so SPC keeps inserting a space while typing.
+;; The actual bindings live after `my-leader' because the map must exist
+;; first.
 
-(with-eval-after-load 'evil
-  (dolist (state-map my-leader-state-maps)
-    (define-key (symbol-value state-map) (kbd "SPC") my-leader-map)))
-
-;; Restore Vim's default tab navigation (works on the visible tab bar),
-;; rather than a custom command.
-(with-eval-after-load 'evil
-  (define-key evil-normal-state-map (kbd "g t") #'centaur-tabs-forward-tab)
-  (define-key evil-normal-state-map (kbd "g T") #'centaur-tabs-backward-tab))
+;; Tab navigation moved off Evil's `g t'/`g T' (Meow uses `g' for
+;; cancel-selection) to `C-c t'/`C-c T'.
 
 (defun my-leader (bindings)
   "Bind BINDINGS, a quoted alist of (KEY . COMMAND), in `my-leader-map'.
 
-KEY is a string that may contain spaces (used as separators, Doom
-style); spaces are removed before binding, so \"o p\" binds the two
-key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
+KEY is a string understood by `kbd'; spaces are key separators, so
+\"o p\" binds the two-key sequence `o', `p'. The token \"SPC\" denotes
+the leader key itself."
   (declare (indent defun))
   (dolist (binding bindings)
     ;; `kbd' already understands the spaces Doom uses as separators, so
     ;; "SPC ." becomes the two-key sequence <SPC> then ".".
     (define-key my-leader-map (kbd (car binding)) (cdr binding))))
 
+;;; ### Meow bindings that need `my-leader-map'
+
+;; Meow is loaded above, but the leader map is defined here. Bind SPC to
+;; the existing Doom-style leader, move Meow's keypad to M-SPC, and keep
+;; the old workspace and redo shortcuts on the normal-state map.
+(with-eval-after-load 'meow
+  (define-key meow-normal-state-keymap (kbd "SPC") my-leader-map)
+  (define-key meow-motion-state-keymap (kbd "SPC") my-leader-map)
+  (define-key meow-normal-state-keymap (kbd "M-SPC") #'meow-keypad)
+  (define-key meow-motion-state-keymap (kbd "M-SPC") #'meow-keypad)
+  (define-key meow-normal-state-keymap (kbd "C-t") #'new)
+  (define-key meow-normal-state-keymap (kbd "C-S-t") #'display)
+  (define-key meow-normal-state-keymap (kbd "C-r") #'undo-fu-only-redo))
+
 ;; NOTE: BINDINGS must be quoted. A literal dotted pair in argument
 ;; position is evaluated as a function call, so (\"o -\" . #'dired-jump)
 ;; would try to call the string \"o -\".
 (my-leader
  '(("SPC" . consult-buffer)
-   ("o -"  . dired-jump)
-   ("o p"  . project-dired)
-   ("o f"  . find-file)
-   ("o r"  . recentf)
+   ("?"   . meow-cheatsheet)
+   ("o -" . dired-jump)
+   ("o p" . project-dired)
+   ("o f" . find-file)
+   ("o r" . recentf)
    ;; Doom keeps project switching on SPC p p; SPC o t is the terminal.
-   ("p p"  . project-switch-project)
+   ("p p" . project-switch-project)
    ;; Adding and listing projects: `project-remember-project' prompts for a
    ;; directory, `my/project-list' browses the remembered ones (buffers.el).
-   ("p a"  . project-remember-project)
-   ("p l"  . my/project-list)
-   ("p d"  . project-forget-project)))
+   ("p a" . project-remember-project)
+   ("p l" . my/project-list)
+   ("p d" . project-forget-project)
+   ;; Evil exposed marks/registers through `' and `"; Meow has no
+   ;; equivalent state commands, so keep consult's pickers under search.
+   ("s m" . consult-mark)
+   ("s r" . consult-register)))
 
 ;;; ### which-key
 
@@ -153,7 +214,7 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
   ;; `make-sparse-keymap' entries created by `my-leader', which carry no
   ;; description, so which-key labels every one of them "+prefix" in the
   ;; popup. Key-based replacements key off the *displayed* sequence, so
-  ;; they apply no matter which evil state map looked SPC up. Keep in
+  ;; they apply no matter which Meow state map looked SPC up. Keep in
   ;; sync with the prefixes bound in this file and the modules
   ;; (buffers.el, editing.el, lsp.el, treesit.el, org.el, languagetool.el).
   ;; NOTE: no leading "+" in these labels. which-key already prepends
@@ -222,9 +283,12 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
     "SPC o W w" "toggle"
     "SPC o W q" "exit focus"
     ;; search and git
+    "SPC ?"   "cheatsheet"
     "SPC s s" "ripgrep"
     "SPC s l" "line"
     "SPC s b" "line, current buffer"
+    "SPC s m" "marks"
+    "SPC s r" "registers"
     "SPC g g" "status"
     "SPC g d" "dispatch"
     ;; tree, check, capture, act
@@ -338,6 +402,8 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
     "C-c C-f" "open directory"
     "C-c C-d" "directory at point"
     "C-c C-p" "parent directory"
+    "C-c t"   "tab right"
+    "C-c T"   "tab left"
     "C-c e"   "chat"
     "M-&"     "shell command"
     ;; `M-<digit>' is the workspace switcher (see ui.el); the command names
@@ -433,9 +499,11 @@ key sequence `o', `p'. The token \"SPC\" denotes the leader key itself."
       (read-only-mode -1)
       (erase-buffer)
       (insert (format "major-mode: %s\n" (symbol-name major-mode)))
+      (insert (format "meow state: %s\n" meow--current-state))
       (insert (format "current-local-map SPC: %S\n" (lookup-key (current-local-map) (kbd "SPC"))))
       (insert (format "global SPC: %S\n" (lookup-key global-map (kbd "SPC"))))
-      (insert (format "evil-normal-state-map SPC: %S\n" (lookup-key evil-normal-state-map (kbd "SPC"))))
+      (insert (format "meow-normal SPC: %S\n" (lookup-key meow-normal-state-keymap (kbd "SPC"))))
+      (insert (format "meow-motion SPC: %S\n" (lookup-key meow-motion-state-keymap (kbd "SPC"))))
       (goto-char (point-min))
       (read-only-mode 1))
     (display-buffer buffer)))

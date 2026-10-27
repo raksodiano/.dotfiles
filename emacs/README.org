@@ -25,7 +25,7 @@ emacs
 ├── init.d/
 │   ├── core/           foundation — everything depends on this
 │   │   ├── defaults.el   encoding, perf, directories
-│   │   ├── keys.el       evil, leader, which-key
+│   │   ├── keys.el       meow, leader, which-key
 │   │   ├── ui.el         theme, modeline, tabs, workspaces, fonts
 │   │   ├── buffers.el    completion, dired, dirvish, large files
 │   │   └── editing.el    snippets, cursors, formatting, tree-sitter
@@ -46,8 +46,11 @@ No =02-ui.el= naming needed.
 * Key bindings
 | Key         | Command                      |
 |-------------+------------------------------|
-| =SPC=       | leader                       |
+| =SPC=       | leader (normal/motion state) |
 | =SPC SPC=   | consult-buffer               |
+| =SPC ?=     | Meow cheatsheet              |
+| =M-SPC=     | Meow keypad                  |
+| =ESC=       | leave insert state           |
 | =SPC TAB=   | workspace prefix             |
 | =SPC TAB n= | new workspace                |
 | =SPC TAB N= | new named workspace          |
@@ -64,6 +67,8 @@ No =02-ui.el= naming needed.
 | =M-0=       | switch to last workspace     |
 | =C-t=       | new workspace                |
 | =C-S-t=     | display workspace tabs       |
+| =C-c t=     | next buffer tab              |
+| =C-c T=     | previous buffer tab          |
 | =C-c C-w=   | persp-mode command prefix    |
 | =SPC o -=   | dired-jump                   |
 | =SPC o p=   | project tree (dired)         |
@@ -77,7 +82,6 @@ No =02-ui.el= naming needed.
 | =SPC y a=   | aidermacs (Aider)            |
 | =C-c g=     | magit-status                 |
 | =C-c C-f=   | dirvish-open                 |
-| =kj=        | escape                       |
 
 * Commands
 | Command                          | Purpose                                         |
@@ -141,5 +145,6 @@ instead of inside the project.
 * Notes for Emacs 31+
 - Dotted pairs in arg position must be quoted: =(my-leader '(("o -" . dired-jump)))=.
 - NonGNU ELPA moved to =https://elpa.nongnu.org/nongnu/=.
-- Evil 1.15: no =evil-set-default-keybindings= or =evil-mode-disable=; use =evil-emacs-state-modes= to disable per mode.
+- Meow replaces Evil: =SPC= is the leader, =M-SPC= the keypad, and
+  =meow-mode-state-list= picks normal/motion/insert per major mode.
 - Window border widths must be =0=, not =nil= — doom-modeline subtracts them unguarded.

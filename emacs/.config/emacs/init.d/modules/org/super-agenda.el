@@ -5,7 +5,8 @@
 ;; org-super-agenda groups the default agenda view using the todo
 ;; keywords defined in org/org.el (TODO NEXT PROJ WAIT IDEA EVENT |
 ;; DONE CANCELLED), so the daily agenda stops being a flat wall of
-;; tasks. evil-collection already provides the agenda motions.
+;; tasks. The agenda runs in Meow motion state, so its own motions keep
+;; working.
 
 ;;; Code:
 
