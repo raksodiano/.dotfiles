@@ -34,11 +34,17 @@
 ;;; ### Garbage collection
 
 ;; High during load, relaxed after startup.
-(setq gc-cons-threshold (* 16 1024 1024))
+(setq gc-cons-threshold (* 100 1024 1024))
 
 ;; gcmh takes over GC after startup.
 (setq gcmh-idle-delay 5
       gcmh-high-cons-threshold (* 128 1024 1024))
+
+;; Túnel de GC: después del inicio, permite un GC más rápido.
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq gc-cons-threshold (* 2 1024 1024))
+            (message "GC post-startup %S MB" (/ gc-cons-threshold 1024 1024))))
 
 ;;; ### Package location
 
@@ -164,6 +170,11 @@
 
 ;; Activate packages so their dirs hit load-path.
 (package-initialize)
+
+;; Quickstart puede no estar instalado en todos los sistemas; 
+;; permitir un inicio de Emacs normal sin él.
+(when (fboundp 'package-quickstart-install)
+  (package-quickstart-install t))
 
 (provide 'early-init)
 ;;; early-init.el ends here
