@@ -1,0 +1,41 @@
+#+title: MPD Configuration
+#+author: raksodiano
+
+* Overview
+
+MPD (Music Player Daemon) configuration for local music playback via PipeWire,
+with rmpc as the client interface.
+
+* Server Settings
+
+| Setting            | Value                     |
+|--------------------+---------------------------|
+| Bind address       | =127.0.0.1= (localhost)   |
+| Port               | =6600=                    |
+| Music directory    | =~/Music=                 |
+| Log level          | =notice=                  |
+| Auto-update        | =yes= (depth 5)           |
+| Follow symlinks    | =yes= (inside and outside)|
+
+* Runtime Files
+
+All runtime files are kept outside the repository:
+
+- Database: =~/.local/share/mpd/database=
+- Playlists: =~/.local/share/mpd/playlists=
+- State: =~/.local/share/mpd/state=
+- Logs: =~/.cache/mpd/log=
+- PID: =~/.cache/mpd/pid=
+
+* Audio Output
+
+PipeWire via PulseAudio interface:
+#+begin_example
+type: pulse
+name: PipeWire
+#+end_example
+
+* Client
+
+[[https://github.com/djrm/rmpc][rmpc]] is the terminal client, configured with Vim
+keybindings and Gruvbox Material Hard theme.

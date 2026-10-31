@@ -1,0 +1,49 @@
+#+title: Zsh Configuration
+#+author: raksodiano
+
+* Overview
+
+Zsh configuration using Oh My Zsh with the =gnzh= theme, Starship prompt, and
+several plugins for productivity.
+
+* Framework
+
+- Oh My Zsh (=~/.oh-my-zsh=)
+- Starship (cross-shell prompt, =eval "$(starship init zsh)"=)
+
+* Theme
+
+=gnzh= (Oh My Zsh theme)
+
+* Plugins
+
+| Plugin                         | Purpose                       |
+|--------------------------------+-------------------------------|
+| =git=                          | Git aliases and functions     |
+| =git-prompt=                   | Git info in prompt            |
+| =gitignore=                    | =.gitignore= file handling    |
+| =gnu-utils=                    | GNU coreutils aliases         |
+| =sudo=                         | =Esc Esc= for sudo            |
+| =zsh-autosuggestions=          | Fish-style suggestions        |
+| =zsh-navigation-tools=         | Enhanced navigation widgets   |
+| =zsh-history-substring-search= | History search with =Up/Down= |
+| =zsh-syntax-highlighting=      | Command syntax highlighting   |
+| =zsh-interactive-cd=           | Interactive =cd= with FZF     |
+
+* Aliases
+
+| Alias  | Command                    |
+|--------+----------------------------|
+| =cat=  | =bat=                      |
+| =ls=   | =eza=                      |
+| =l=    | =ls -l=                    |
+| =la=   | =ls -a=                    |
+| =lla=  | =ls -la=                   |
+| =lt=   | =ls --tree=                |
+| =doom= | =~/.config/emacs/bin/doom= |
+
+* PATH Additions
+
+- =~/.volta/bin= (Volta JavaScript toolchain manager)
+- =~/.local/bin= (user scripts)
+- =~/.opencode/bin= (OpenCode CLI)

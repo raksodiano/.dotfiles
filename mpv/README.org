@@ -1,0 +1,36 @@
+#+title: MPV Configuration
+#+author: raksodiano
+
+* Overview
+
+MPV media player configuration with high-quality playback, hardware decoding,
+and Vim-style keybindings (see =input.conf=).
+
+* Playback
+
+| Setting                 | Value       | Description                      |
+|-------------------------+-------------+----------------------------------|
+| =profile=               | =gpu-hq=    | High-quality video output        |
+| =hwdec=                 | =auto-safe= | Hardware decoding when available |
+| =save-position-on-quit= | =yes=       | Remember playback position       |
+| =volume-max=            | =150=       | Louder ceiling for quiet videos  |
+
+* Subtitles
+
+- Auto-load external subtitle files (=sub-auto=fuzzy=)
+- Preferred languages: English, Spanish (=slang=en,es=)
+
+* Streaming
+
+Quality capped at 1080p via yt-dlp:
+#+begin_example
+bv*[height<=1080]+ba/b
+#+end_example
+
+* Screenshots
+
+Saved to =~/Pictures/mpv-%F-%P= in PNG format.
+
+* Watch Later
+
+State stored in =~/.local/share/mpv/watch-later=.
