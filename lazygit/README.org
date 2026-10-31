@@ -1,0 +1,25 @@
+#+title: Lazygit Configuration
+#+author: raksodiano
+
+* Overview
+
+Lazygit terminal UI for Git, configured with a Gruvbox Material Hard color
+theme.
+
+* Theme
+
+| Element                      | Color                    |
+|------------------------------+--------------------------|
+| Active border                | =#fabd2f= (yellow, bold) |
+| Inactive border              | =#928374= (gray)         |
+| Options text                 | =#83a598= (blue-gray)    |
+| Selected line background     | =#3c3836= (dark gray)    |
+| Cherry-picked commit (fg/bg) | =#83a598= / =#cc241d=    |
+| Marked base commit (fg/bg)   | =#83a598= / =#b16286=    |
+| Unstaged changes             | =#fb4934= (red)          |
+| Default foreground           | =#ebdbb2= (cream)        |
+
+* Note
+
+Lazygit maintains real local state in =~/.config/lazygit=, so it is not
+managed by GNU Stow (see =justfile=).

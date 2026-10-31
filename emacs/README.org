@@ -1,0 +1,150 @@
+#+TITLE: Emacs configuration
+#+OPTIONS: toc:2 num:t ^:{}
+#+STARTUP: overview
+#+LANGUAGE: en
+
+Vanilla Emacs config, migrated from Doom and managed with GNU Stow.
+
+* Installation
+#+begin_src bash
+# 1. Dependencies (CachyOS / Arch)
+paru -S emacs git-delta ripgrep fd
+
+# 2. Link the config
+cd ~/.dotfiles && stow emacs
+
+# 3. Launch — packages install themselves
+emacs
+#+end_src
+
+* Layout
+#+begin_quote
+~/.config/emacs/
+├── early-init.el       archives, native comp, GC tuning
+├── init.el             load order, then loads init.d/
+├── init.d/
+│   ├── core/           foundation — everything depends on this
+│   │   ├── defaults.el   encoding, perf, directories
+│   │   ├── keys.el       meow, leader, which-key
+│   │   ├── ui.el         theme, modeline, tabs, workspaces, fonts
+│   │   ├── buffers.el    completion, dired, dirvish, large files
+│   │   └── editing.el    snippets, cursors, formatting, tree-sitter
+│   └── modules/        optional domains (load on demand)
+│       ├── git/          magit, magit-delta, vc-git
+│       ├── langs/        LSP & tree-sitter
+│       ├── org/          org, capture, journal, latex, hugo, roam
+│       ├── feeds/        elfeed
+│       ├── media/        pdf, books, music
+│       ├── ai/           display, ellama, gptel, agent-shell, aidermacs
+│       └── tools/        detached, pass
+└── assets/             sounds, images, LaTeX classes, RSS feeds
+#+end_quote
+
+Files are grouped by domain; load order lives in =init.el=, not filenames.
+No =02-ui.el= naming needed.
+
+* Key bindings
+| Key         | Command                      |
+|-------------+------------------------------|
+| =SPC=       | leader (normal/motion state) |
+| =SPC SPC=   | consult-buffer               |
+| =SPC ?=     | Meow cheatsheet              |
+| =M-SPC=     | Meow keypad                  |
+| =ESC=       | leave insert state           |
+| =SPC TAB=   | workspace prefix             |
+| =SPC TAB n= | new workspace                |
+| =SPC TAB N= | new named workspace          |
+| =SPC TAB .= | switch workspace             |
+| =SPC TAB d= | kill workspace               |
+| =SPC TAB r= | rename workspace             |
+| =SPC TAB ]= | next workspace               |
+| =SPC TAB [= | previous workspace           |
+| =SPC TAB s= | save workspace to file       |
+| =SPC TAB l= | load workspace from file     |
+| =SPC q s=   | save session (all workspaces) |
+| =SPC q l=   | restore session              |
+| =M-1=..=M-9= | switch to workspace 1..9    |
+| =M-0=       | switch to last workspace     |
+| =C-t=       | new workspace                |
+| =C-S-t=     | display workspace tabs       |
+| =C-c t=     | next buffer tab              |
+| =C-c T=     | previous buffer tab          |
+| =C-c C-w=   | persp-mode command prefix    |
+| =SPC o -=   | dired-jump                   |
+| =SPC o p=   | project tree (dired)         |
+| =SPC p p=   | switch project               |
+| =SPC l t i= | install tree-sitter grammars |
+| =SPC y e=   | ellama prefix (chat, code, ...) |
+| =SPC y e c= | ellama chat                  |
+| =SPC y y=   | gptel chat                   |
+| =SPC y A=   | gptel file-editing agent     |
+| =SPC y S=   | agent-shell                  |
+| =SPC y a=   | aidermacs (Aider)            |
+| =C-c g=     | magit-status                 |
+| =C-c C-f=   | dirvish-open                 |
+
+* Commands
+| Command                          | Purpose                                         |
+|----------------------------------+-------------------------------------------------|
+| =M-x my/init-status=             | which modules are loaded, pending or broken     |
+| =M-x my/install-lsp-servers=     | install the language servers the config expects |
+| =C-u M-x my/install-lsp-servers= | same, but only report what is missing           |
+
+The installer covers Python (into =~/.emacs-lsp-venv=), npm, cargo and
+go servers, and says what it could not install because the toolchain is
+missing.
+
+* Credentials
+All secrets (LLM keys, IRC, XMPP, git, email…) live in =~/.secrets/=,
+outside the repo. =early-init.el= registers it as =auth-sources=, so
+any package using =auth-source= picks them up automatically — no extra
+config needed.
+
+One file per service (all loaded at startup); the =machine= field
+selects the entry, not the filename:
+
+#+begin_src bash
+~/.secrets/llm     ~/.secrets/irc     ~/.secrets/xmpp
+#+end_src
+
+#+begin_src authinfo
+# ~/.secrets/llm
+machine api.example.com login apikey password YOUR_API_KEY
+machine api.another-service.com login apikey password YOUR_API_KEY
+
+# ~/.secrets/irc
+machine irc.example.net login youruser password YOUR_PASSWORD
+
+# ~/.secrets/xmpp
+machine xmpp.example.org login youruser password YOUR_PASSWORD
+#+end_src
+
+Add =.gpg= to encrypt a file (Emacs handles decrypt on read).
+Directory is created 700.
+
+Shortcuts:
+
+| Key       | Command                       |
+|-----------+-------------------------------|
+|=SPC o C=  | browse =~/.secrets/=            |
+|=SPC o A=  | add a credential (prompts)    |
+
+=gptel= and =agent-shell= read keys from there. =gptel= defaults to
+NVIDIA NIM; Ollama stays selectable in =gptel-menu=. =agent-shell=
+providers (Claude, Codex, Gemini, DeepSeek) pull exclusively from
+=~/.secrets/= — add the =machine= hosts from =modules/ai/agent-shell.el=
+with =SPC o A=.
+
+=aidermacs= works the same way: =modules/ai/aidermacs.el= exports the
+provider keys from =~/.secrets/= (=my/aidermacs-key-vars=) as the
+environment variables Aider expects, for the Aider process only. It
+needs the =aider= executable (=pipx install aider-chat=), which Emacs
+does not install, and keeps the =.aider*= chat history in XDG cache
+instead of inside the project.
+
+* Notes for Emacs 31+
+- Dotted pairs in arg position must be quoted: =(my-leader '(("o -" . dired-jump)))=.
+- NonGNU ELPA moved to =https://elpa.nongnu.org/nongnu/=.
+- Meow replaces Evil: =SPC= is the leader, =M-SPC= the keypad, and
+  =meow-mode-state-list= picks normal/motion/insert per major mode.
+- Window border widths must be =0=, not =nil= — doom-modeline subtracts them unguarded.
