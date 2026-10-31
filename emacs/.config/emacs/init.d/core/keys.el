@@ -175,7 +175,11 @@ the leader key itself."
   (define-key meow-motion-state-keymap (kbd "M-SPC") #'meow-keypad)
   (define-key meow-normal-state-keymap (kbd "C-t") #'new)
   (define-key meow-normal-state-keymap (kbd "C-S-t") #'display)
-  (define-key meow-normal-state-keymap (kbd "C-r") #'undo-fu-only-redo))
+  (define-key meow-normal-state-keymap (kbd "C-r") #'undo-fu-only-redo)
+  ;; Completion is not modal: the same key works in both states. Corfu
+  ;; shows the candidates, and Cape provides the extra backends.
+  (define-key meow-normal-state-keymap (kbd "C-M-i") #'completion-at-point)
+  (define-key meow-motion-state-keymap (kbd "C-M-i") #'completion-at-point))
 
 ;; NOTE: BINDINGS must be quoted. A literal dotted pair in argument
 ;; position is evaluated as a function call, so (\"o -\" . #'dired-jump)
@@ -198,6 +202,49 @@ the leader key itself."
    ;; equivalent state commands, so keep consult's pickers under search.
    ("s m" . consult-mark)
    ("s r" . consult-register)))
+
+;;; ### Cape (completion at point)
+
+;; Cape backends are registered in buffers.el. These keys run them
+;; interactively from normal state, where typing a word first is not an
+;; option. `C-M-i' keeps the plain `completion-at-point' entry point.
+(my-leader
+ '(("i d" . cape-dabbrev)
+   ("i f" . cape-file)
+   ("i l" . cape-line)
+   ("i h" . cape-history)
+   ("i s" . cape-elisp-symbol)
+   ("i b" . cape-elisp-block)
+   ("i a" . cape-abbrev)))
+
+;;; ### Documentation
+
+;; The configuration manual is README.org, one level above the config
+;; directory in the dotfiles repository. Resolve the symlink first so
+;; this also works when ~/.config/emacs is stowed.
+(defun my/open-config-docs ()
+  "Open *manual.org* – manual de referencia de la configuración.
+  Este archivo se localiza en `../../docs/manual.org` con respecto
+  a la raíz del repositorio de dotfiles." 
+  (interactive)
+  (let ((file (expand-file-name "../../docs/manual.org"
+                                (file-truename my/config-dir))))
+    (if (file-exists-p file)
+        (find-file file)
+      (user-error "Manual no encontrado: %s" file))))
+
+;; `SPC h' mirrors the usual help prefix: the manual, Info manuals and
+;; the describe commands, all reachable from Meow normal state.
+(my-leader
+ '(("h r" . my/open-config-docs)
+   ("h i" . info)
+   ("h m" . info-display-manual)
+   ("h f" . describe-function)
+   ("h v" . describe-variable)
+   ("h k" . describe-key)
+   ("h p" . describe-package)
+   ("h o" . describe-symbol)
+   ("h b" . describe-bindings)))
 
 ;;; ### which-key
 
@@ -226,6 +273,7 @@ the leader key itself."
     "SPC d"   "dirs"
     "SPC f"   "files"
     "SPC g"   "git"
+    "SPC h"   "help"
     "SPC l"   "lsp"
     "SPC l t" "treesit"
     "SPC m"   "doc"
@@ -268,16 +316,29 @@ the leader key itself."
     "SPC p a" "add"
     "SPC p l" "list"
     "SPC p d" "forget"
+    ;; help and documentation
+    "SPC h r" "config manual"
+    "SPC h i" "Info manuals"
+    "SPC h m" "Info manual by name"
+    "SPC h f" "describe function"
+    "SPC h v" "describe variable"
+    "SPC h k" "describe key"
+    "SPC h p" "describe package"
+    "SPC h o" "describe symbol"
+    "SPC h b" "bindings"
     ;; open
     "SPC o -" "dired here"
     "SPC o e" "feeds"
     "SPC o f" "file"
     "SPC o p" "project tree"
     "SPC o r" "recent files"
+    "SPC o u" "URL as org"
     "SPC o t" "terminal"
     "SPC o P" "passwords"
     "SPC o s" "sessions"
     "SPC o S" "list sessions"
+    "SPC o C" "credentials"
+    "SPC o A" "add credential"
     "SPC o W f" "focus section"
     "SPC o W s" "split view"
     "SPC o W w" "toggle"
@@ -291,14 +352,24 @@ the leader key itself."
     "SPC s r" "registers"
     "SPC g g" "status"
     "SPC g d" "dispatch"
-    ;; tree, check, capture, act
+    ;; tree, check, capture, act, completion
     "SPC t t" "toggle"
     "SPC t k" "keycast"
     "SPC c l" "correct text"
     "SPC c c" "compile"
     "SPC c C" "recompile"
+    "SPC c s" "spelling"
+    "SPC c j" "jinx"
     "SPC j c" "capture"
     "SPC a" "act on thing"
+    "SPC i" "complete at point"
+    "SPC i d" "dabbrev"
+    "SPC i f" "file name"
+    "SPC i l" "line from buffer"
+    "SPC i h" "history"
+    "SPC i s" "elisp symbol"
+    "SPC i b" "elisp block"
+    "SPC i a" "abbrev"
     "SPC SPC" "buffer"
     "SPC <" "buffer in all"
     "SPC ," "buffer in workspace"
@@ -312,10 +383,15 @@ the leader key itself."
     "SPC m v" "view"
     "SPC m p" "live preview"
     "SPC m s" "slides"
+    "SPC m d" "image from clipboard"
+    "SPC m D" "image from URL"
+    "SPC m E" "pandoc export"
     ;; notes
     "SPC n d" "search notes"
     "SPC n p" "pomodoro"
     "SPC n P" "stop pomodoro"
+    "SPC n l" "insert link"
+    "SPC n w" "web page"
     "SPC n r f" "find node"
     "SPC n r i" "insert link"
     "SPC n r c" "capture"
@@ -329,6 +405,10 @@ the leader key itself."
     "SPC l d" "doctor"
     "SPC l +" "install for this mode"
     "SPC l c" "dictionary"
+    "SPC l S" "symbols"
+    "SPC l F" "file symbols"
+    "SPC l E" "diagnostics"
+    "SPC l e" "file diagnostics"
     "SPC l t i" "install all"
     "SPC l t l" "list"
     "SPC l t d" "doctor"
@@ -336,6 +416,9 @@ the leader key itself."
     ;; writing
     "SPC x w" "writer room"
     "SPC x o" "centered text"
+    "SPC x m" "mixed pitch"
+    "SPC x j" "jinx toggle"
+    "SPC x h" "hugo"
     "SPC _ t" "synonyms"
     ;; ai
     "SPC y i" "install models"
@@ -431,7 +514,7 @@ the leader key itself."
    ("b b"  . persp-switch-to-buffer)
    ("b B"  . switch-to-buffer)
    ("b I"  . buffers)
-   ("b k"  . kill-this-buffer)
+   ("b k"  . kill-current-buffer)
    ("b K"  . (lambda () (interactive) (mapc #'kill-buffer (delq (current-buffer) (buffer-list)))))
    ("b l"  . ibuffer)
    ;; Workspace-aware cycling; defined in ui.el next to the workspace
@@ -468,6 +551,8 @@ the leader key itself."
    ("w c" . delete-window)
    ("w d" . delete-window)
    ("w m" . delete-other-windows)
+   ;; `k' is windmove-up, so kill-buffer-and-window takes the shifted key.
+   ("w K" . kill-buffer-and-window)
    ("w u" . winner-undo)
    ("w U" . winner-redo)))
 
@@ -487,6 +572,7 @@ the leader key itself."
   "SPC w d" "close"
   "SPC w c" "close"
   "SPC w m" "close others"
+  "SPC w K" "kill buffer + window"
   "SPC w u" "undo"
   "SPC w U" "redo")
 

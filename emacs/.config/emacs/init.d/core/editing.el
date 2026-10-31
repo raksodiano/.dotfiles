@@ -55,43 +55,17 @@
 
 ;;; ### Formatting on save
 
-;; Replaces Doom's (format +onsave) and the +format-on-save-enabled-modes
-;; list that lived in lisp/lsp.el.
+;; Replaces Doom's (format +onsave). Apheleia picks the right formatter
+;; per mode and formats real buffers on save.
+(use-package apheleia
+  :config
+  (apheleia-global-mode 1))
 
-(defvar my/format-on-save-modes
-  '(python-mode js-mode typescript-mode c-mode c++-mode
-    sh-mode json-mode yaml-mode)
-  "Modes whose buffers are formatted before saving.")
-
-(defcustom my/black-args '("-q")
-  "Command-line arguments passed to black."
-  :type '(repeat string))
-
-(defun my-buffer-formatter ()
-  "Return the formatter command for the current buffer, or nil."
-  (cond
-   ((derived-mode-p 'python-mode)
-    (when (executable-find "black") (cons "black" my/black-args)))
-   ((derived-mode-p '(js-mode typescript-mode))
-    (when (executable-find "prettier") (list "prettier" "--write")))
-   ((derived-mode-p 'json-mode)
-    (when (executable-find "python") (list "python" "-m" "json.tool")))
-   ((derived-mode-p 'sh-mode)
-    (when (executable-find "shfmt") (list "shfmt" "-i=2" "-w")))
-   (t nil)))
-
-(defun my-format-on-save ()
-  "Format the current buffer with its formatter, if one is available."
-  (interactive)
-  (let ((command (my-buffer-formatter))
-        (file (or (buffer-file-name) (buffer-name))))
-    (when (and command (file-exists-p file))
-      (save-buffer)
-      (apply #'call-process command nil nil nil file)
-      (revert-buffer :ignore-auto :noconfirm :preserve-modes t)
-      (set-buffer-modified-p nil))))
-
-(add-hook 'before-save-hook #'my-format-on-save nil t)
+;; EditorConfig support is built into Emacs 31; only the mode is needed.
+(use-package editorconfig
+  :ensure nil
+  :config
+  (editorconfig-mode 1))
 
 ;;; ### Tree-sitter
 
@@ -197,6 +171,15 @@
   (ispell-program-name "hunspell")
   (ispell-dictionary "en_US"))
 
+;; Better correction flow than the default flyspell popup: works from
+;; normal state and keeps the minibuffer in charge.
+(use-package flyspell-correct
+  :after flyspell
+  :commands (flyspell-correct-at-point
+             flyspell-correct-previous
+             flyspell-correct-next
+             flyspell-correct-wrapper))
+
 (defun my/ispell-toggle-dictionary ()
   "Toggle the spell-check dictionary between en_US and es."
   (interactive)
@@ -229,7 +212,8 @@
 (my-leader
  '(("l t i" . my/install-all-treesit-grammars)
    ("l t l" . my/list-treesit-grammars)
-   ("l c" . my/ispell-toggle-dictionary)))
+   ("l c" . my/ispell-toggle-dictionary)
+   ("c s" . flyspell-correct-wrapper)))
 
 (provide 'my-editing)
 ;;; my-editing.el ends here

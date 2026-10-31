@@ -295,6 +295,14 @@ install nothing."
   (lsp-ui-sideline-enable nil)
   (lsp-ui-peek-enable t))
 
+;; Consult front-ends for LSP symbols and diagnostics.
+(use-package consult-lsp
+  :after (consult lsp-mode)
+  :commands (consult-lsp-symbols
+             consult-lsp-file-symbols
+             consult-lsp-diagnostics
+             consult-lsp-file-diagnostics))
+
 ;; Cape (was capefy) - extra completion utilities for lsp's capf.
 (use-package cape
   :config
@@ -415,7 +423,11 @@ install nothing."
    ("l l"  . my/list-lsp-servers)
    ("l s"  . my/show-lsp-status)
    ("l d"  . my/lsp-treesit-doctor)
-   ("l +"  . my/install-lsp-for-current-mode)))
+   ("l +"  . my/install-lsp-for-current-mode)
+   ("l S"  . consult-lsp-symbols)
+   ("l F"  . consult-lsp-file-symbols)
+   ("l E"  . consult-lsp-diagnostics)
+   ("l e"  . consult-lsp-file-diagnostics)))
 
 (provide 'my-lsp)
 ;;; lsp.el ends here

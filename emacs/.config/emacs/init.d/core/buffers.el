@@ -375,16 +375,26 @@
 (my-leader
  '(("a" . embark-act)))
 
-;; Cape provides capf backends. There is no `cape-configure' any more, so
-;; the backends are added to completion-at-point-functions directly. LSP
-;; completion is wired in langs/lsp.el.
+;; Cape provides extra capf backends. There is no `cape-configure' any
+;; more, so they are added to `completion-at-point-functions' directly.
+;; LSP adds its own backend in langs/lsp.el; `C-M-i' asks all of them.
+;; The leader gets interactive versions in keys.el (`SPC i ...').
 (use-package cape
   :init
-  (add-hook 'completion-at-point-functions
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  (add-hook 'completion-at-point-functions #'cape-file)
+  (add-hook 'completion-at-point-functions #'cape-line)
+  ;; Elisp buffers complete symbols; Org/Markdown complete Elisp inside
+  ;; source blocks.
+  (add-hook 'emacs-lisp-mode-hook
             (lambda ()
-              (add-completion-at-point-functions
-               '(cape-abbrev cape-dabbrev cape-history cape-file cape-line)))
-            nil t))
+              (add-hook 'completion-at-point-functions
+                        #'cape-elisp-symbol nil t)))
+  (dolist (hook '(org-mode-hook markdown-mode-hook))
+    (add-hook hook
+              (lambda ()
+                (add-hook 'completion-at-point-functions
+                          #'cape-elisp-block nil t)))))
 
 ;;; ### Buffer management
 

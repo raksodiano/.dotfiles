@@ -92,6 +92,56 @@
 ;; Enable visual line mode in org buffers.
 (add-hook 'org-mode-hook #'visual-line-mode)
 
+;;; ### Writing, blogging and manuscript helpers
+
+;; Prettier Org: tables, bullets, tags and blocks. Its boxed faces are
+;; only valid on graphical frames, so terminal Emacs stays vanilla.
+(use-package org-modern
+  :after org
+  :config
+  (when (display-graphic-p)
+    (global-org-modern-mode 1)))
+
+;; Insert a link with the page title taken from the clipboard URL.
+(use-package org-cliplink
+  :after org
+  :commands (org-cliplink))
+
+;; Fetch a web page as readable Org, or insert its link.
+(use-package org-web-tools
+  :after org
+  :commands (org-web-tools-insert-link-for-url
+             org-web-tools-insert-web-page-as-entry
+             org-web-tools-read-url-as-org))
+
+;; Images for posts: paste from the clipboard or download the URL at
+;; point. The default directory is `images/' next to the Org file.
+(use-package org-download
+  :after org
+  :custom
+  (org-download-heading-lvl nil)
+  :commands (org-download-clipboard org-download-yank))
+
+;; Pandoc export for manuscripts (docx, epub, odt, pdf). Pandoc is
+;; already a system dependency of the Markdown preview.
+(defun my/org-pandoc-export ()
+  "Export the current Org buffer with Pandoc, prompting for a format."
+  (interactive)
+  (let ((format (completing-read "Pandoc export: "
+                                 '("docx" "epub3" "odt" "latex-pdf" "gfm"))))
+    (call-interactively (intern (concat "org-pandoc-export-to-" format)))))
+
+(use-package ox-pandoc
+  :after ox)
+
+(my-leader
+ '(("n l" . org-cliplink)
+   ("n w" . org-web-tools-insert-web-page-as-entry)
+   ("o u" . org-web-tools-read-url-as-org)
+   ("m d" . org-download-clipboard)
+   ("m D" . org-download-yank)
+   ("m E" . my/org-pandoc-export)))
+
 ;;; ### Attachments
 
 ;; org-attach is built into Emacs 31. Attachments land in one shared,

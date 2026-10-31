@@ -66,6 +66,7 @@
     ("init.d/modules/ai/aidermacs.el"        . my-aidermacs)
     ("init.d/modules/tools/detached.el"      . my-detached)
     ("init.d/modules/tools/pass.el"          . my-pass)
+    ("init.d/modules/tools/secrets.el"       . my-secrets)
     ("init.d/modules/tools/treemacs.el"      . my-treemacs)
     ("init.d/modules/tools/docker.el"        . my-docker)
     ("init.d/modules/tools/keycast.el"       . my-keycast)

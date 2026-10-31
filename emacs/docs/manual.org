@@ -1,0 +1,328 @@
+#+TITLE: Manual de Configuración de Emacs
+#+AUTHOR: Configurador 
+#+LANGUAGE: es
+#+OPTIONS: toc:2 num:t ^:{}
+#+STARTUP: overview
+#
+#  Este documento explica la configuración de Emacs que se mantiene en el
+#  repositorio `~/.dotfiles/emacs`.  Todo el código está distribuido en
+#  dos carpetas:
+#  - `init.d/core/`: dependencias y bases que todos los módulos usan.
+#  - `init.d/modules/`: dominio‑saldos (git, langs, org…).
+#  La carga se hace con `init.el` en orden explícito; no se puede
+#  confiar en el nombre de los ficheros.
+#
+#  El atajo maestro es `SPC` (meow).  La librería `which-key` provee
+#  descripciones concisas.
+#
+#  Los módulos están diseñados para funcionar con Emacs 31.1.
+#
+#  Este archivo se abre con `SPC h r`.
+#
+#  ---
+#  ## Instalación
+#
+#  ```bash
+#  # 1. Instalar dependencias (Arch / CachyOS)
+#  paru -S emacs git-delta ripgrep fd
+#  # 2. Enlazar la configuracion con Stow
+#  cd ~/.dotfiles && stow emacs
+#  # 3. Lanzar Emacs (el primer arranque instalará los paquetes automáticamente)
+#  emacs
+#  ```
+#
+#  ---
+#  ## Estructura de Carpetas
+#  ```org
+#  ~/.config/emacs/
+#  ├── early-init.el           ; Parche de paquetes, GC y rutas XDG
+#  ├── init.el                  ; Punto de entrada, carga módulos
+#  ├── init.d/
+#  │   ├── core/                ; Fundamentos (core)
+#  │   │   ├── defaults.el       ; Codificación, GC, rutas
+#  │   │   ├── keys.el             ; Meow + leader + which-key
+#  │   │   ├── ui.el              ; Tema, modeline, tabs, workspaces
+#  │   │   ├── buffers.el         ; completado, dired, historial
+#  │   │   └── editing.el         ; snippets, multi‑cursor, formateo, TS
+#  │   └── modules/                ; dominios opcionales
+#  │       ├── git/                ; magit, magit‑delta
+#  │       ├── langs/              ; lsp, treesit, languagetool
+#  │       ├── org/                ; org, capture, journal, hugo, roam…
+#  │       ├── feeds/              ; elfeed
+#  │       ├── media/              ; pdf, epub, calibre
+#  │       ├── ai/                ; gptel, ellama, agent‑shell, aidermacs
+#  │       ├── tools/              : detached, pass, treemacs, docker, keycast
+#  │       └── term/                ; vterm
+#  └── assets/                    ; sonidos, imágenes, plantillas LaTeX
+#  ```
+#
+#  ---
+#  ## Resumen de paquetes instalados (170)
+#  - Todos los paquetes vienen en `packages.el` o `packages-complete.el`
+#  - Se intentan instalar los paquetes que faltan al arrancar
+#  - Se controlan manualmente las dependencias que *no* están en
+#    EmacsFS: `hugo`, `gopls`, `pass`, `delta` (por falta de binario).
+#  
+#  ### Paquetes por dominio
+#  | Dominio | Paquetes (n) |
+#  |----------|-------------|
+#  | core     | 25 |
+#  | git      | 3 |
+#  | langs     | 9 |
+#  | lsp       | 2 |
+#  | org       | 14 |
+#  | feeds     | 1 |
+#  | media     | 3 |
+#  | ai        | 5 |
+#  | tools     | 7 |
+#  | term      | 1 |
+#  
+#  Se describe cada paquete a continuación.
+#
+#  ## Paquetes centrales (core)
+#  | paquete | descripción |
+#  | `meow` | emulación modal alternativa a Evil.
+#  | `which-key` | ayuda de menús.
+#  | `gruvbox-theme` | tema.
+#  | `all-the-icons` | iconos.
+#  | `doom-modeline` | barra de estado.
+#  | `centaur-tabs` | pestañas.
+#  | `persp-mode` | espacios de trabajo.
+#  | `diff-hl` | diffs con línea.
+#  | `solaire-mode` | sombreado.
+#  | `rainbow-delimiters` | colores.
+#  | `visual-fill-column` | columnas.
+#  | `dashboard` | inicio.
+#  | `vertico` | selección.
+#  | `orderless` | busca.
+#  | `ediff` | comparador.
+#  | `tramp` | acceso remoto.
+#  
+#  ## Paquetes de Git
+#  | paquete | descripción |
+#  | `magit` | interfaz git.
+#  | `magit-delta` | diffs con delta.
+#  | `marginalia` | anotaciones en minibuffer.
+#  
+#  ## Paquetes de Lenguajes
+#  | paquete | descripción |
+#  | `lsp-mode` | servidor LSP.
+#  | `treesit-auto` | gramáticas Tree‑Sitter.
+#  | `flymake-languagetool` | gramática AIL.
+#  | `flyspell` | ortografía.
+#  | `smartparens` | paréntesis.
+#  | `multiple-cursors` | multi‑curs.
+#  | `yasnippet` | snippets.
+#  | `web-mode` | HTML, CSS.
+#  
+#  ## Paquetes Org
+#  | paquete | descripción |
+#  | `org` | núcleo Org.
+#  | `org-ref` | bibliografía.
+#  | `org-cliplink` | pegar enlaces.
+#  | `org-download` | clipbrd.
+#  | `ox-pandoc` | export a pdf,html.
+#  | `org-web-tools` | arrastrar web page.
+#  | `org-super-agenda` | agendas agrupadas.
+#  | `org-macros` | macros.
+#  | `org-attach` | adjuntos.
+#  | `org-clock` | cron.
+#  | `org-overview` | la vista.
+#  | `org-journal` | diario.
+#  | `org-roam` | wiki.
+#  | `org-roam-bullets` | bullets.
+#  | `org-tree-slide` | presentaciones.
+#  | `org-modern` | tablas.
+#  
+#  ## Paquetes de Feed
+#  | paquete | descripción |
+#  | `elfeed` | lector RSS.
+#  
+#  ## Paquetes de Media
+#  | paquete | descripción |
+#  | `pdf-tools` | pdf.
+#  | `nov` | epub.
+#  | `calibredb` | calibre.
+#  
+#  ## Paquetes AI
+#  | paquete | descripción |
+#  | `gptel` | chat GPT de NVIDIA.
+#  | `ellama` | Ollama local.
+#  | `agent-shell` | Code‑Assist.
+#  | `aidermacs` | Aider.
+#  | `display` | UI.
+#  
+#  ## Paquetes Herramientas
+#  | paquete | descripción |
+#  | `detached` | shell background.
+#  | `pass` | gestor de contraseñas.
+#  | `treemacs` | explorador.
+#  | `docker` | Docker.
+#  | `keycast` | indicador.
+#  | `vterm` | terminal.
+#  | `edit-server` | Extensión GhostText.
+#  | `writeroom` | modo escrito.
+#  
+#  ---
+#  ## Mapeo de teclas Leader
+#  $$
+#+BEGIN_SRC emacs-lisp
+; Colores utilizados en `#+DESCRIPTION`.
+#+END_SRC
+#  
+#  
+*** Introducción al mapeo
+#  
+#  La mayoría de los atajos están agrupados bajo prefijos que se determinan
+#  por `which-key`.  Un prefijo conocido (por ejemplo `g` para Git) indica que
+#  los siguientes atajos pertenecen a ese ámbito.
+#  
+#  Aquí se muestra la tabla completa de atajos de `SPC`.  Para ver una
+#  explicación más detallada, usar la ayuda de `which-key` al presionar
+#  `SPC` seguido del prefijo y `?`.
+#  
+#  
+#  | Prefijo | Tecla | Comando | Descripción |
+#  |---------|-------|---------|-------------|
+#  | `SPC `  | `SPC` | consult-buffer | Selecciona un buffer (consult). |
+#  | `SPC j c` | `c` | org-capture | Captura. |
+#  | `SPC o e` | `e` | elfeed | RSS. |
+#  | `SPC o p` | `p` | treemacs | Explorador. |
+#  | `SPC o t` | `t` | my/vterm-toggle | Terminal. |
+#  | `SPC o u` | `u` | org-web-tools-read-url-as-org | URL al Org |
+#  | `SPC o r` | `r` | recentf | archivos recientes |
+#  | `SPC x h` | `h` | my/easy-hugo | Hugo. |
+#  | `SPC x j` | `j` | my/jinx-toggle | Habilita Jinx. |
+#  | `SPC x w` | `w` | writeroom-mode | Modo escritura. |
+#  | `SPC x m` | `m` | mixed-pitch-mode | tipografía variable. |
+#  | `SPC x o` | `o` | olivetti-mode | ancho fijo. |
+#  | `SPC t k` | `k` | my/keycast-mode | keycast. |
+#  | `SPC t t` | `t` | treemacs | Explorador. |
+#  | `SPC w h` | `h` | windmove-left | mover ventana mas izquierda |
+#  | `SPC w k` | `k` | windmove-up | ventana arriba |
+#  | `SPC w j` | `j` | windmove-down | ventana abajo |
+#  | `SPC w l` | `l` | windmove-right | ventana derecha |
+#  | `SPC w -` | `-` | split-window-below | dividir abajo |
+#  | `SPC w /` | `/` | split-window-right | dividir derecha |
+#  | `SPC w d` | `d` | delete-window | borrar ventana |
+#  | `SPC w m` | `m` | delete-other-windows | borrar otras |
+#  | `SPC w K` | `K` | kill-buffer-and-window |
+#  | `SPC w U` | `U` | winner-undo |
+#  | `SPC w u` | `u` | winner-undo |
+#  | `SPC q s` | `s` | save-session |
+#  | `SPC q l` | `l` | load-session |
+#  | `SPC q Q` | `Q` | kill-emacs |
+#  | `SPC q q` | `q` | save-buffers-kill-terminal |
+#  | `SPC TAB TAB` | `TAB` | display | lista de workspaces |
+#  | `SPC TAB .` | `.` | switch-to | cambiar a WS |
+#  | `SPC TAB ,` | `,` | other | workspace previo |
+#  | `SPC TAB n` | `n` | new | nuevo workspace |
+#  | `SPC TAB N` | `N` | new-named | workspace nombrado |
+#  | `SPC TAB o` | `o` | open | abrir workspace guardado |
+#  | `SPC TAB s` | `s` | save | guardar |
+#  | `SPC TAB x` | `x` | kill-session | borrar session |
+#  | `SPC TAB d` | `d` | kill | eliminar WS |
+#  | `SPC TAB D` | `D` | discard | eliminar guardado |
+#  | `SPC TAB r` | `r` | rename | rename |
+#  | `SPC TAB R` | `R` | restore-last-session | reactivar |
+#  | `SPC TAB ]` | `]` | switch-right | a derechas |
+#  | `SPC TAB [` | `[` | switch-left | a izquierda |
+#  | `SPC TAB 1-9` | `1-9` | switch-to-0-8 | workspace 1-9 |
+#  | `SPC TAB 0` | `0` | switch-to-final | ultimo |
+#  | `SPC f f` | `f` | find-file |
+#  | `SPC f r` | `r` | recentf-open-files |
+#  | `SPC g g` | `g` | magit-status |
+#  | `SPC g d` | `d` | magit-dispatch |
+#  | `SPC l i` | `i` | my/install-lsp-servers |
+#  | `SPC l l` | `l` | my/list-lsp-servers |
+#  | `SPC l s` | `s` | my/show-lsp-status |
+#  | `SPC l d` | `d` | my/lsp-treesit-doctor |
+#  | `SPC l +` | `+` | my/install-lsp-for-current-mode |
+#  | `SPC l S` | `S` | consult-lsp-symbols |
+#  | `SPC l F` | `F` | consult-lsp-file-symbols |
+#  | `SPC l E` | `E` | consult-lsp-diagnostics |
+#  | `SPC l e` | `e` | consult-lsp-file-diagnostics |
+#  | `SPC l t i` | `i` | my/install-all-treesit-grammars |
+#  | `SPC l t l` | `l` | my/list-treesit-grammars |
+#  | `SPC l t d` | `d` | my/treesit-doctor |
+#  | `SPC l t e` | `e` | treesit-ensure-installed |
+#  | `SPC h r` | `r` | my/open-config-docs |
+#  | `SPC h f` | `f` | describe-function |
+#  | `SPC h i` | `i` | info |
+#  | `SPC h k` | `k` | describe-key |
+#  | `SPC h m` | `m` | info-display-manual |
+#  | `SPC h p` | `p` | describe-package |
+#  | `SPC h o` | `o` | describe-symbol |
+#  | `SPC i a` | `a` | cape-abbrev |
+#  | `SPC i b` | `b` | cape-elisp-block |
+#  | `SPC i d` | `d` | cape-dabbrev |
+#  | `SPC i f` | `f` | cape-file |
+#  | `SPC i h` | `h` | cape-history |
+#  | `SPC i l` | `l` | cape-line |
+#  | `SPC i s` | `s` | cape-elisp-symbol |
+#  | `SPC i t` | `t` | cape-text |
+#  | `SPC n d` | `d` | search notes |
+#  | `SPC n p` | `p` | org-pomodoro |
+#  | `SPC n P` | `P` | org-pomodoro-kill |
+#  | `SPC n l` | `l` | org-cliplink |
+#  | `SPC n w` | `w` | org-web-tools-insert-web-page-as-entry |
+#  | `SPC n r f` | `f` | org-roam-node-find |
+#  | `SPC n r i` | `i` | org-roam-node-insert |
+#  | `SPC n r c` | `c` | org-roam-capture |
+#  | `SPC n r l` | `l` | org-roam-buffer-toggle |
+#  | `SPC a` | `a` | embark-act |
+#  | `SPC ?` | `?` | meow‑cheatsheet |
+#  | `SPC s b` | `b` | consult-line |
+#  | `SPC s l` | `l` | consult-line |
+#  | `SPC s s` | `s` | consult-ripgrep |
+#  | `SPC s m` | `m` | consult-mark |
+#  | `SPC s r` | `r` | consult-register |
+#  | `SPC s d` | `d` | consult-register |
+#  | `SPC r` | `r` | consult-register |
+#  | `SPC u` | `u` | consult-register |
+#  | `SPC f` | `f` | consult-register |
+#  | `SPC w` | `w` | consult-register |
+#  | `SPC x` | `x` | consult-register |
+#  | `SPC y A` | `A` | my/gptel-agent |
+#  | `SPC y C` | `C` | ellama-code-complete |
+#  | `SPC y E` | `E` | ellama-define-word |
+#  | `SPC y G` | `G` | ellama-improve-grammar |
+#  | `SPC y M` | `M` | ellama-summarize |
+#  | `SPC y R` | `R` | ellama-code-review |
+#  | `SPC y T` | `T` | ellama-translate |
+#  | `SPC y d` | `d` | ellama-code-edit |
+#  | `SPC y i` | `i` | my/install-all-ellama-models |
+#  | `SPC y j` | `j` | ellama-define-word |
+#  | `SPC y q` | `q` | ellama-define-word |
+#  | `SPC y s` | `s` | ellama-make-list |
+#  | `SPC y t` | `t` | ellama-writ |
+#  | `SPC y u` | `u` | gptel-send |
+#  | `SPC y Y` | `Y` | gptel-send |
+#  | `SPC y z` | `z` | gptel-menu |
+#  | `SPC z` | `z` | gptel-send |
+#  
+#  ## Líneas de comandos no mapeadas en el manual
+#  Se ofrece la ayuda en la consola: cada paquete tiene su propia
+#  documentación global con `C-h` y `C-h i`.
+#  
+#  ## Instrucciones de uso
+#  1. **Cambios en la configuración** – cada vez que editas un
+#     archivo .el en la carpeta `init.d`, guarda y reinicia Emacs.
+#  2. **Actualizar paquetes** – ejecutar `M-x package-refresh-contents`
+#     y luego `M-x package-install-selected-packages`.
+#  3. **Instalar paquetes faltantes** – se detectan automáticamente
+#     al arrancar; fib.
+#  4. **Contribuciones** – crear branch, hacer pull request.
+#  
+#  ## Estado de los paquetes externos
+#  - `hugo`:  no instalado (debe apuntar a un sitio Hugo).
+#  - `gopls`:  falta binario.
+#  - `pass`:  binario disponible (pero no se usa en esta caja).
+#  - `delta`:  falta binario.  Si lo instalas, Magit’ll use
+#               delta.
+#  
+#  ## Conclusión
+#  Este manual pretende ser la guía de referencia para el usuario final,
+#  especialmente para tareas de escritura, programación y manejo de
+#  flujo de trabajo en Emacs.
+

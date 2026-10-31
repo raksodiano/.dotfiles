@@ -49,6 +49,14 @@ No =02-ui.el= naming needed.
 | =SPC=       | leader (normal/motion state) |
 | =SPC SPC=   | consult-buffer               |
 | =SPC ?=     | Meow cheatsheet              |
+| =C-M-i=     | complete at point (Corfu/Cape) |
+| =SPC i d=   | complete dabbrev             |
+| =SPC i f=   | complete file name           |
+| =SPC i l=   | complete line from buffer    |
+| =SPC i h=   | complete history             |
+| =SPC i s=   | complete Elisp symbol        |
+| =SPC i b=   | complete Elisp block         |
+| =SPC i a=   | complete abbrev              |
 | =M-SPC=     | Meow keypad                  |
 | =ESC=       | leave insert state           |
 | =SPC TAB=   | workspace prefix             |
@@ -69,6 +77,9 @@ No =02-ui.el= naming needed.
 | =C-S-t=     | display workspace tabs       |
 | =C-c t=     | next buffer tab              |
 | =C-c T=     | previous buffer tab          |
+| =SPC w -=   | split window below           |
+| =SPC w /=   | split window right           |
+| =SPC w K=   | kill buffer and its window   |
 | =C-c C-w=   | persp-mode command prefix    |
 | =SPC o -=   | dired-jump                   |
 | =SPC o p=   | project tree (dired)         |
@@ -82,6 +93,47 @@ No =02-ui.el= naming needed.
 | =SPC y a=   | aidermacs (Aider)            |
 | =C-c g=     | magit-status                 |
 | =C-c C-f=   | dirvish-open                 |
+
+** Writing, blogging and prose
+
+| Key         | Command                              |
+|-------------+--------------------------------------|
+| =SPC x m=   | mixed pitch (prose typography)       |
+| =SPC x j=   | toggle Jinx (Enchant spell checker)  |
+| =SPC x h=   | Easy Hugo menu                       |
+| =SPC c s=   | correct spelling at point            |
+| =SPC c j=   | correct with Jinx                    |
+| =SPC m E=   | Pandoc export (docx, epub, odt, pdf) |
+| =SPC m d=   | image from clipboard                 |
+| =SPC m D=   | image from URL at point              |
+| =SPC n l=   | insert link from clipboard URL       |
+| =SPC n w=   | fetch web page as Org entry          |
+| =SPC o u=   | read URL as Org                      |
+| =SPC l S=   | LSP symbols                          |
+| =SPC l F=   | LSP file symbols                     |
+| =SPC l E=   | LSP diagnostics                      |
+| =SPC l e=   | LSP file diagnostics                 |
+
+** Documentation
+
+This file is the configuration manual. Open it from Emacs with =SPC h r=.
+The rest of the documentation is Emacs' built-in help system:
+
+| Key         | Command                              |
+|-------------+--------------------------------------|
+| =SPC h r=   | open this manual                     |
+| =SPC h i=   | Info manuals                         |
+| =SPC h m=   | Info manual by name                  |
+| =SPC h f=   | describe function                    |
+| =SPC h v=   | describe variable                    |
+| =SPC h k=   | describe key                         |
+| =SPC h p=   | describe package                     |
+| =SPC h o=   | describe symbol                      |
+| =SPC h b=   | list bindings                        |
+
+The same commands are on =C-h= globally, and =C-h i= opens Info. Package
+manuals appear there when the package ships one; =SPC h p= shows metadata,
+the README and the source location when it does not.
 
 * Commands
 | Command                          | Purpose                                         |
