@@ -29,6 +29,8 @@ few command lines.
 - lazydocker ➔ Docker TUI
 - lazygit ➔ Git TUI
 - mpd ➔ Music Player Daemon (+ rmpc client)
+- noctalia ➔ Noctalia desktop shell
+- niri ➔ Niri compositor (Wayland, KDL config)
 - rmpc ➔ MPD client (Vim keys)
 - starship ➔ Cross-shell prompt
 - tmux ➔ Terminal multiplexer
@@ -51,6 +53,8 @@ few command lines.
 | =lazydocker/=   | Docker TUI                         |
 | =lazygit/=      | Git TUI                            |
 | =mpd/=          | Music Player Daemon                |
+| =noctalia/=     | Noctalia shell config              |
+| =niri/=         | Niri compositor config            |
 | =rmpc/=         | MPD client (Vim keys)              |
 | =starship/=     | Cross-shell prompt                 |
 | =tmux/=         | Terminal multiplexer               |

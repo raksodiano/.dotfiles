@@ -1,0 +1,103 @@
+[shell]
+polkit_agent = true
+
+[bar.default]
+position = "top"
+thickness = 36
+background_opacity = 1.0
+compositor_blur = false
+shadow = false
+margin_edge = 0
+margin_ends = 0
+concave_edge_corners = false
+radius = 0
+radius_bottom_left = 0
+radius_bottom_right = 0
+radius_top_left = 0
+radius_top_right = 0
+padding = 12
+widget_spacing = 6
+hover_highlight = false
+scale = 1.0
+font_scale = 1.0
+start = [ "workspaces", "active_window" ]
+center = [ "clock", "notifications" ]
+end = [ "media", "group:g1", "tray", "group:status", "control-center" ]
+
+    [[bar.default.capsule_group]]
+    border = ""
+    fill = "#3a3f44"
+    id = "g1"
+    members = [ "temp", "sysmon_2", "sysmon_3" ]
+    opacity = 1.0
+    padding = 6.0
+
+    [[bar.default.capsule_group]]
+    border = ""
+    fill = "#3a3f44"
+    id = "status"
+    members = [ "network", "bluetooth", "volume", "battery" ]
+    opacity = 1.0
+    padding = 6.0
+    widget_spacing = 8
+
+[widget.clock]
+anchor = true
+color = "secondary"
+format = "{:%b %d  %H:%M}"
+tooltip_format = "{:%A, %d de %B de %Y}"
+
+[widget.active_window]
+color = "secondary"
+display = "icon_and_text"
+icon_size = 14
+max_length = 220
+min_length = 80
+title_scroll = "on_hover"
+
+[widget.control-center]
+color = "secondary"
+glyph = "menu-2"
+
+[widget.media]
+hide_when_no_media = true
+title_scroll = "on_hover"
+
+[widget.network]
+color = "secondary"
+show_label = false
+show_vpn_label = false
+
+[widget.notifications]
+color = "secondary"
+
+[widget.temp]
+show_value = false
+
+[widget.sysmon_2]
+glyph = "gpu-usage"
+show_value = false
+stat = "gpu_temp"
+type = "sysmon"
+
+[widget.sysmon_3]
+glyph = "cpu-2"
+show_value = false
+stat = "ram_used"
+type = "sysmon"
+
+[widget.tray]
+capsule = true
+capsule_fill = "#3a3f44"
+
+[widget.volume]
+color = "secondary"
+
+[widget.workspaces]
+active_pill_size = 2.5
+capsule = true
+capsule_fill = "#3a3f44"
+hide_when_empty = false
+inactive_pill_size = 1.0
+pill_scale = 0.80
+show_labels = false
