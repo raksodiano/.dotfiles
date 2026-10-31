@@ -1,0 +1,8 @@
+# ~/.brushrc — Brush shell configuration
+#
+# Brush is a Bash-compatible shell, so it loads shell-level settings from
+# here just like it does from .bashrc, including prompt tooling such as
+# starship.
+
+# Starship prompt integration
+eval "$(starship init bash)"
