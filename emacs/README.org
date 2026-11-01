@@ -21,6 +21,10 @@ The icon fonts used by dired, tabs and treemacs are not in the Arch
 repos: run =M-x all-the-icons-install-fonts= once to install them into
 =~/.local/share/fonts=. The Nerd Fonts package covers the modeline.
 
+Mail is shared with neomutt: the same =mbsync= Maildir, the same =msmtp=
+sender. Install =isync msmtp mu neomutt pass= and follow
+=../neomutt/README.org= for the accounts.
+
 * Layout
 #+begin_quote
 ~/.config/emacs/
@@ -38,6 +42,7 @@ repos: run =M-x all-the-icons-install-fonts= once to install them into
 │       ├── langs/        LSP & tree-sitter
 │       ├── org/          org, capture, journal, latex, hugo, roam
 │       ├── feeds/        elfeed
+│       ├── mail/         mu4e reading, msmtp sending
 │       ├── media/        pdf, books, music
 │       ├── ai/           display, ellama, gptel, agent-shell, aidermacs
 │       └── tools/        detached, pass
@@ -65,6 +70,8 @@ No =02-ui.el= naming needed.
 | =SPC TAB [= | previous workspace           |
 | =SPC TAB s= | save workspace to file       |
 | =SPC TAB l= | load workspace from file     |
+| =SPC m m=   | mu4e (mail)                   |
+| =SPC m c=   | compose a message             |
 | =SPC q s=   | save session (all workspaces) |
 | =SPC q l=   | restore session              |
 | =M-1=..=M-9= | switch to workspace 1..9    |
