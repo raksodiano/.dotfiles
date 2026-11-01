@@ -29,12 +29,12 @@
 ;; Same fonts as the Doom config: Cascadia Mono NF for code, Alegreya for
 ;; prose (variable-pitch in Org).
 (when (display-graphic-p)
-  (setq doom-font (font-spec :family "CaskaydiaMono NF" :size 15)
+  (setq doom-font (font-spec :family "CaskaydiaCove NF" :size 15)
         doom-variable-pitch-font (font-spec :family "Alegreya" :size 18)
-        doom-big-font (font-spec :family "CaskaydiaMono NF" :size 22))
+        doom-big-font (font-spec :family "CaskaydiaCove NF" :size 22))
 
   ;; The historical Doom config named the family "Cascadia Mono NF", but
-  ;; this host's installed font is spelled "CaskaydiaMono NF". Apply it to
+  ;; this host's installed font is spelled "CaskaydiaCove NF". Apply it to
   ;; the `default' face instead of only to the dead `doom-font' variable.
   (set-face-attribute 'default nil :font doom-font)
   (set-frame-font doom-font t t)
@@ -968,12 +968,18 @@ When INHIBIT-KILL-P is non-nil, leave its buffers alive."
       vertical-border-width 0
       right-divider-width 0)
 
-(defun my/hide-chrome ()
-  "Hide the menu bar, the tool bar and the internal borders."
+;; NOTE: `after-make-frame-functions' calls its hooks with the new frame,
+;; so this must accept one argument; without it every new frame (daemon,
+;; `emacsclient -c') failed with "Wrong number of arguments" and the rest
+;; of the hook list never ran.
+(defun my/hide-chrome (&optional frame)
+  "Hide the menu bar, the tool bar and the internal borders.
+FRAME defaults to the selected frame; `after-make-frame-functions'
+passes the frame being created."
   (menu-bar-mode -1)
   (when (fboundp 'tool-bar-mode)
     (tool-bar-mode -1)
-    (when (display-graphic-p)
+    (when (display-graphic-p frame)
       ;; tool-bar-mode only affects the first frame reliably.
       (dolist (frame (frame-list))
         (set-frame-parameter frame 'menu-bar-lines 0)
@@ -1006,6 +1012,31 @@ When INHIBIT-KILL-P is non-nil, leave its buffers alive."
 ;;; my-ui.el ends here
 (setq nerd-icons-scale-factor 0.95
       nerd-icons-default-adjust -0.2)
+
+;; nerd-icons (doom-modeline, dirvish, marginalia) draws from "Symbols
+;; Nerd Font Mono", a family the Nerd Fonts package installed here does
+;; not provide; without it the glyphs fall back to whatever font happens
+;; to cover the range. Use an installed patched family instead.
+;; Runs for the first frame as well as for later ones (`emacsclient -c'):
+;; a daemon has no frame yet, so the check has to use the frame it is
+;; given instead of the selected one.
+(defun my/nerd-icons-pick-font (&optional frame)
+  "Point `nerd-icons-font-family' at an installed patched font."
+  (let ((frame (or frame (selected-frame))))
+    (when (and frame
+               (display-graphic-p frame)
+               (boundp 'nerd-icons-font-family)
+               (not (find-font (font-spec :family nerd-icons-font-family) frame)))
+      (let ((family (seq-find (lambda (name)
+                                (find-font (font-spec :family name) frame))
+                              '("CaskaydiaCove NFM" "MesloLGS NFM"
+                                "FantasqueSansM NFM"))))
+        (when family
+          (setq nerd-icons-font-family family))))))
+
+(with-eval-after-load 'nerd-icons
+  (my/nerd-icons-pick-font))
+(add-hook 'after-make-frame-functions #'my/nerd-icons-pick-font)
 
 (provide 'my-ui)
 ;;; my-ui.el ends here

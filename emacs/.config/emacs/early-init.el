@@ -40,7 +40,7 @@
 (setq gcmh-idle-delay 5
       gcmh-high-cons-threshold (* 128 1024 1024))
 
-;; Túnel de GC: después del inicio, permite un GC más rápido.
+;; GC tunnel: after startup, allow a faster GC.
 (add-hook 'emacs-startup-hook
           (lambda ()
             (setq gc-cons-threshold (* 2 1024 1024))
@@ -171,8 +171,8 @@
 ;; Activate packages so their dirs hit load-path.
 (package-initialize)
 
-;; Quickstart puede no estar instalado en todos los sistemas; 
-;; permitir un inicio de Emacs normal sin él.
+;; Quickstart is not available on every system; allow a plain Emacs
+;; startup without it.
 (when (fboundp 'package-quickstart-install)
   (package-quickstart-install t))
 
