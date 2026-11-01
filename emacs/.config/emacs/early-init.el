@@ -155,15 +155,7 @@
 
 ;; Every credential used inside Emacs (gptel, agent-shell, aidermacs,
 ;; ERC, jabber, ...) lives in ~/.secrets/, one file per service; see
-;; modules/tools/secrets.el. auth-source only searches the files named
-;; here, so the directory is scanned: a new file is picked up without
-;; editing this list. Runs before any module, because gptel, agent-shell
-;; and aidermacs all look their keys up through auth-source.
-(setq auth-sources
-      (append (let ((dir (expand-file-name ".secrets" "~")))
-                (when (file-directory-p dir)
-                  (directory-files dir t "\\`[^.]")))
-              auth-sources))
+;; modules/tools/secrets.el.
 
 ;; Point package.el at real package dir.
 (setq package-gnupghome-dir (expand-file-name "gnupg" package-user-dir))

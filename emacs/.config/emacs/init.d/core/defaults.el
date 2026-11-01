@@ -17,6 +17,7 @@
 
 ;; Recycle bin instead of hard deletes.
 (setq delete-by-moving-to-trash t)
+(setq use-short-answers t)
 
 ;; Trailing whitespace and whitespace-mode are Doom UI defaults; the user
 ;; keeps both off globally.

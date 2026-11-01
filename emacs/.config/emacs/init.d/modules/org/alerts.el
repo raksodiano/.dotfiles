@@ -3,7 +3,8 @@
 
 ;;; Code:
 
-(unless (boundp (quote my/assets-dir)) (defvar my/assets-dir (expand-file-name "assets" my/config-dir)))
+(declare-function make-llm-ollama nil)
+(declare-function ellama-provider-set nil)
 
 (my/create-directories)
 
@@ -22,16 +23,7 @@
         (cons 'moderate (my-sound-file "message-new-instant.wav")))
   "Sound files mapped by severity level.")
 
-(defun my/play-sound-by-severity (&optional severity)
-  "Play notification sound based on SEVERITY."
-  (let* ((sev (or severity 'normal))
-         (sound-file (cdr (assoc sev my/sound-files)))
-         (fallback (cdr (assoc 'normal my/sound-files))))
-    (unless (and sound-file (file-exists-p sound-file))
-      (setq sound-file fallback))
-    (when (and sound-file (file-exists-p sound-file))
-      (start-process-shell-command "play-sound" nil
-                                   (format "aplay -q %s" sound-file)))))
+(declare-function my/play-sound-by-severity nil)
 
 (defun my/get-org-item-severity ()
   "Get severity from current org item property."
