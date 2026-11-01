@@ -215,7 +215,10 @@
 
 (defun my/flyspell-prog-maybe-enable ()
   "Enable `flyspell-prog-mode' when a dictionary is available."
-  (when (my/hunspell-available-p) (flyspell-prog-mode 1)))
+  (when (my/hunspell-available-p)
+    (condition-case nil
+        (flyspell-prog-mode)
+      (error nil))))
 
 (use-package flyspell
   :hook ((text-mode . my/flyspell-maybe-enable)
