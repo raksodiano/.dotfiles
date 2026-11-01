@@ -20,10 +20,11 @@
   (define-key treemacs-mode-map (kbd "u") #'treemacs-root-up)
   (define-key treemacs-mode-map (kbd "+") #'treemacs-root-down))
 
+;; treemacs-projectile only provides the `treemacs-projectile' command;
+;; the `treemacs-projectile-mode' it used to define no longer exists.
 (use-package treemacs-projectile
   :after (treemacs projectile)
-  :config
-  (treemacs-projectile-mode +1))
+  :commands treemacs-projectile)
 
 (use-package treemacs-all-the-icons
   :after treemacs

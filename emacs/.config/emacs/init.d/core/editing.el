@@ -189,10 +189,37 @@
 
 ;;; ### Spell checking (hunspell)
 
-;; The dictionaries installed on this machine are en_US and es.
+;; The dictionaries used here are en_US and es.
+;; Enabling flyspell without an installed dictionary only prints
+;; "Error enabling Flyspell mode" in every text buffer, so check once
+;; and turn it on only when hunspell actually has dictionaries.
+(defvar my/hunspell-available 'unknown
+  "Whether hunspell has dictionaries; nil, t, or `unknown' until probed.")
+
+(defun my/hunspell-available-p ()
+  "Return non-nil when hunspell is installed with at least one dictionary."
+  (when (eq my/hunspell-available 'unknown)
+    (setq my/hunspell-available
+          (condition-case nil
+              (progn
+                (require 'ispell)
+                (and (executable-find ispell-program-name)
+                     (ispell-find-hunspell-dictionaries)
+                     t))
+            (error nil))))
+  my/hunspell-available)
+
+(defun my/flyspell-maybe-enable ()
+  "Enable `flyspell-mode' when a dictionary is available."
+  (when (my/hunspell-available-p) (flyspell-mode 1)))
+
+(defun my/flyspell-prog-maybe-enable ()
+  "Enable `flyspell-prog-mode' when a dictionary is available."
+  (when (my/hunspell-available-p) (flyspell-prog-mode 1)))
+
 (use-package flyspell
-  :hook ((text-mode . flyspell-mode)
-         (prog-mode . flyspell-prog-mode))
+  :hook ((text-mode . my/flyspell-maybe-enable)
+         (prog-mode . my/flyspell-prog-maybe-enable))
   :custom
   (ispell-program-name "hunspell")
   (ispell-dictionary "en_US"))

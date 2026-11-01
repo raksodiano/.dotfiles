@@ -17,6 +17,10 @@ cd ~/.dotfiles && stow emacs
 emacs
 #+end_src
 
+The icon fonts used by dired, tabs and treemacs are not in the Arch
+repos: run =M-x all-the-icons-install-fonts= once to install them into
+=~/.local/share/fonts=. The Nerd Fonts package covers the modeline.
+
 * Layout
 #+begin_quote
 ~/.config/emacs/

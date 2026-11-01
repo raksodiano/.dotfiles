@@ -119,6 +119,20 @@
       (make-directory directory t)
       (message "Created directory: %s" directory))))
 
+;;; ### Warnings
+
+;; Some packages still ship sources without the `lexical-binding' cookie,
+;; so Emacs 31 warns every time they are loaded (org-alert, for one).
+;; The warning asks for a change in the package, not in this config, and
+;; every file here sets the cookie, so suppress just this warning type
+;; instead of leaving it in *Warnings* on every start.
+;; Both lists are needed: `warning-suppress-log-types' stops the message
+;; from reaching *Warnings* (and stderr in batch), `warning-suppress-types'
+;; stops the echo-area display.
+(require 'warnings)
+(add-to-list 'warning-suppress-types '(files missing-lexbind-cookie))
+(add-to-list 'warning-suppress-log-types '(files missing-lexbind-cookie))
+
 ;;; ### Dictionary
 
 ;; Ported from Doom's config.el.
