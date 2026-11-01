@@ -50,8 +50,11 @@ binds {
     Mod+Alt+K                           { move-window-to-workspace-up; }
 
     // Mover el foco visual al workspace de abajo/arriba (vertical)
-    Mod+J                               { focus-workspace-down; }
-    Mod+K                               { focus-workspace-up; }
+    // focus-window-or-workspace funciona mejor dentro del overview (Mod+O)
+    Mod+J                               { focus-window-or-workspace-down; }
+    Mod+K                               { focus-window-or-workspace-up; }
+    Mod+U                               { focus-window-or-workspace-down; }
+    Mod+I                               { focus-window-or-workspace-up; }
 
     Mod+Left                            { focus-column-left; }
     Mod+H                               { focus-column-left; }
