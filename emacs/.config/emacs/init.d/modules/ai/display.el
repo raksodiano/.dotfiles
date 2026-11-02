@@ -4,8 +4,9 @@
 ;; AI chat buffers (Ellama, gptel, agent-shell) should never open in a
 ;; window too small to read, and should not display line numbers.  On a
 ;; narrow frame they take the whole frame; on a wide frame they open in
-;; a right side window that is at least 15% wider than Treemacs and is
-;; widened further when necessary to show the whole header line.
+;; a right side window that is at least 15% wider than the file drawer
+;; (Dirvish) and is widened further when necessary to show the whole
+;; header line.
 
 ;;; Code:
 
@@ -19,7 +20,7 @@
   :group 'applications)
 
 (defcustom my/ai-side-window-ratio 1.15
-  "Width of AI side windows as a multiple of the Treemacs width."
+  "Width of AI side windows as a multiple of the file drawer width."
   :type 'number
   :group 'my-ai)
 
@@ -43,7 +44,8 @@ Keep this in sync with `dirvish-side-width'."
 
 (defun my/ai--sidebar-window ()
   "Return the visible left file-drawer window, if any.
-Checks the Dirvish project drawer first, then Treemacs."
+Checks the Dirvish project drawer first, then Treemacs (kept as a
+fallback while the package remains installed)."
   (or (when (fboundp 'dirvish-side--session-visible-p)
         (ignore-errors (dirvish-side--session-visible-p)))
       (when (fboundp 'treemacs-get-local-window)

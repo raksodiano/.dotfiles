@@ -11,7 +11,8 @@
   :custom
   (elfeed-search-filter "@7-days-ago +unread")
   :config
-  ;; No line numbers in feed lists or entries (like treemacs/vterm).
+  ;; No line numbers in feed lists or entries (like the dired/dirvish
+  ;; and vterm listings).
   (add-hook 'elfeed-search-mode-hook
             (lambda ()
               (display-line-numbers-mode -1)

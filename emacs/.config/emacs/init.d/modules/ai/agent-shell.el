@@ -74,8 +74,8 @@ flattened project path (e.g. home-user-Workspace-myproject)."
         (agent-shell-deepseek-make-authentication
          :api-key (lambda () (my/agent-shell-secret "api.deepseek.com"))))
   ;; Same placement rule as the other AI chats: full frame when narrow,
-  ;; otherwise a right side window at least 15% wider than Treemacs and
-  ;; wide enough for the whole header line.
+  ;; otherwise a right side window at least 15% wider than the file
+  ;; drawer (Dirvish) and wide enough for the whole header line.
   (setq agent-shell-display-action '(my/ai-display-buffer)))
 
 (my-leader

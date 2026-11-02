@@ -125,6 +125,18 @@ install_fastfetch() {
   install_dotfile "fastfetch" "Fastfetch"
 }
 
+install_networkmanager() {
+  # NetworkManager system config lives under /etc, so deploy it there
+  # via stow instead of the home directory.
+  if [ -d "./network" ]; then
+    echo "$INFO Configuring NetworkManager..."
+    sudo stow -t /etc -R network
+    echo "$OK NetworkManager configured successfully!"
+  else
+    echo "$WARN NetworkManager directory not found, skipping..."
+  fi
+}
+
 # ============================================
 # USER TOOLS
 # ============================================
@@ -157,6 +169,7 @@ install_all_dotfiles() {
   # System tools
   install_bat
   install_fastfetch
+  install_networkmanager
   
   # Editors
   install_doom

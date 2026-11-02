@@ -24,7 +24,7 @@
   (vterm-max-scrollback 10000)
   (vterm-kill-buffer-on-exit t)
   :config
-  ;; No line numbers in the terminal (like treemacs).
+  ;; No line numbers in the terminal (like the dired/dirvish listings).
   (add-hook 'vterm-mode-hook (lambda () (display-line-numbers-mode -1)))
   ;; The buffer runs in Meow insert state, where ESC switches to normal.
   ;; Keep a way to send a literal ESC to the shell.
