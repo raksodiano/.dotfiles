@@ -175,6 +175,7 @@
   (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
 
   ;; These commands are problematic and automatically show the *Completions* buffer.
+  (require 'tmm)
   (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions)
   (defun +vertico--suppress-completion-help-a (fn &rest args)
     (cl-letf (((symbol-function #'minibuffer-completion-help) #'ignore))
@@ -205,7 +206,7 @@
         ;; note that despite override in the name orderless can still be used in
         ;; find-file etc.
         completion-category-overrides '((file (styles orderless partial-completion)))
-        orderless-component-separator #'orderless-escapable-split-on-space)
+        orderless-component-separator #'orderless-escapable-split)
   ;; ...otherwise find-file gets different highlighting than other commands
   (set-face-attribute 'completions-first-difference nil :inherit nil))
 
@@ -379,11 +380,10 @@
 ;; the backends are added to completion-at-point-functions directly. LSP
 ;; completion is wired in langs/lsp.el.
 (use-package cape
-  :init
+  :config
   (add-hook 'completion-at-point-functions
-            (lambda ()
-              (add-completion-at-point-functions
-               '(cape-abbrev cape-dabbrev cape-history cape-file cape-line)))
+            (cape-capf-super #'cape-abbrev #'cape-dabbrev
+                             #'cape-history #'cape-file #'cape-line)
             nil t))
 
 ;;; ### Buffer management
@@ -406,7 +406,7 @@
           (project-vc-dir "VC-Dir")
           (project-eshell "Eshell"))))
 (global-set-key (kbd "C-c p p") #'project-switch-project)
-(global-set-key (kbd "C-c p k") #'project-delete-project)
+(global-set-key (kbd "C-c p k") #'project-forget-project)
 (global-set-key (kbd "C-c p d") #'project-current)
 (global-set-key (kbd "C-c p a") #'project-remember-project)
 (global-set-key (kbd "C-c p l") #'my/project-list)
@@ -480,33 +480,107 @@ d forgets it, g refreshes the list."
 ;; dired is built into Emacs. Doom's (dired +icons +dirvish).
 (eval-after-load 'dired
   (lambda ()
-    (setq dired-listing-switches "-la")
+    ;; Directories first, then files, each group alphabetically; `-A' keeps
+    ;; dotfiles but drops the useless `.' and `..' entries, and `-h' makes
+    ;; the sizes human readable.  GNU ls understands all three flags.
+    (setq dired-listing-switches "-Alh --group-directories-first")
     (add-hook 'dired-mode-hook #'dired-hide-details-mode)
     ;; Ported from config.el.
     (define-key dired-mode-map (kbd "N") #'dired-create-empty-file)
-    (define-key dired-mode-map (kbd "R") #'dired-async-do-rename)
-    (define-key dired-mode-map (kbd "C") #'dired-async-do-copy)
-    (define-key dired-mode-map (kbd "S") #'dired-async-do-symlink)
-    (define-key dired-mode-map (kbd "H") #'dired-async-do-hardlink)
+    (define-key dired-mode-map (kbd "R") #'dired-do-rename)
+    (define-key dired-mode-map (kbd "C") #'dired-do-copy)
+    (define-key dired-mode-map (kbd "S") #'dired-do-symlink)
+    (define-key dired-mode-map (kbd "H") #'dired-do-hardlink)
+    ;; `.` and `..` are not listed (`ls -A'), so give "go to parent" its
+    ;; own keys: `-' like ranger/oil, Backspace like a file manager.
+    ;; `^' is Dired's default.  `dirvish-mode-map' inherits this map.
+    (define-key dired-mode-map (kbd "-") #'dired-up-directory)
+    (define-key dired-mode-map (kbd "<backspace>") #'dired-up-directory)
     ;; dired-dwim-target, ported from config.el.
     (setq dired-dwim-target #'dired-dwim-target-recent)))
 
-;; File manager inside Emacs, replacing dired's icons + dirvish module.
+;; Directory listings and the Dirvish drawer have no use for line numbers.
+;; Hook the line-number mode itself: `global-display-line-numbers-mode'
+;; turns it back on after the major mode hook has run.
+(defun my/dired-disable-line-numbers ()
+  "Keep line numbers out of Dired and Dirvish buffers."
+  (when (and (bound-and-true-p display-line-numbers-mode)
+             (or (derived-mode-p 'dired-mode)
+                 (derived-mode-p 'dirvish-directory-view-mode)
+                 (derived-mode-p 'dirvish-misc-mode)
+                 (derived-mode-p 'dirvish-special-preview-mode)))
+    (display-line-numbers-mode -1)))
+
+(add-hook 'display-line-numbers-mode-hook #'my/dired-disable-line-numbers)
+
+;; GNU ls sorts with the collation of the active locale, which interleaves
+;; dot entries with the rest.  The C collation sorts "." before letters, so
+;; hidden entries come first inside each group.  Bind it only around Dired's
+;; own `ls' call, leaving the collation of the rest of Emacs untouched.
+(defun my/dired-ls-hidden-first (orig &rest args)
+  "Run ORIG with the C collation so dot entries sort first."
+  (let ((process-environment (cons "LC_ALL=C" process-environment)))
+    (apply orig args)))
+
+(advice-add 'insert-directory :around #'my/dired-ls-hidden-first)
+
+;;; ### Dirvish (file manager and project drawer)
+
+;; Doom's (dired +icons +dirvish), tuned as a lighter replacement for
+;; Treemacs: the same project drawer, built on Dired, without file
+;; watchers or a second icon set.
 (use-package dirvish
-  :bind (("C-c C-f" . dirvish-open)
+  :commands (dirvish dirvish-dwim)
+  :bind (("C-c C-f" . dirvish)
          ("C-c C-d" . dirvish-dwim)
-         ("C-c C-p" . dirvish-open-parent))
+         ("C-c C-p" . dirvish-side))
+  :custom
+  ;; Full-frame manager: parent pane, listing and preview.
+  (dirvish-default-layout '(1 0.2 0.4))
+  (dirvish-attributes '(nerd-icons vc-state subtree-state file-size))
+  ;; Only previews whose external tools are installed (ffmpegthumbnailer
+  ;; and pdftoppm here).  The rest fall back to the text preview instead
+  ;; of complaining about missing executables on every session.
+  (dirvish-preview-dispatchers '(video pdf))
+  ;; Nerd Font glyphs are drawn a bit small for this font; scale only
+  ;; Dirvish's icons so tabs, corfu and the modeline keep their size.
+  ;; `nerd-icons-scale-factor' is 0.95, so the effective height is ~1.19.
+  (dirvish-nerd-icons-height 1.25)
+  ;; Project drawer: narrow and compact, revealing the edited file.
+  (dirvish-side-width 35)
+  (dirvish-side-attributes '(nerd-icons vc-state subtree-state))
+  (dirvish-side-auto-expand t)
+  (dirvish-quick-access-entries
+   '(("h" "~/" "Home")
+     ("c" "~/.config" "Config")
+     ("e" "~/.config/emacs" "Emacs config")
+     ("d" "~/Downloads" "Downloads")))
   :config
-  (setq dirvish-default-layout '(0 0 0.4)
-        dirvish-layout-recipes '((1 0.11 0.55) (0 0 0.40))
-        dirvish-attributes '(vc-state subtree-state nerd-icons file-size)))
+  ;; Let Dired itself use Dirvish's subtree, attributes and preview.
+  (dirvish-override-dired-mode)
+  ;; Follow the current buffer's project/file, like `treemacs-follow-mode'.
+  (dirvish-side-follow-mode 1)
+  ;; `TAB' expands/collapses directories; `dirvish-mode-map' inherits
+  ;; from `dired-mode-map', so one binding covers both.
+  (define-key dired-mode-map (kbd "TAB") #'dirvish-subtree-toggle)
+  (define-key dired-mode-map (kbd "<backtab>") #'dirvish-subtree-clear))
+
+(my-leader
+ '(("o p" . dirvish-side)          ; project drawer (toggle)
+   ("o D" . dirvish)               ; full-frame manager
+   ("o d" . dirvish-dwim)          ; jump to the file/dir at point
+   ("o q" . dirvish-quick-access)  ; bookmarked directories
+   ("o G" . dirvish-emerge-menu))) ; group files by type/date
+
+(which-key-add-key-based-replacements
+  "SPC o p" "project drawer"
+  "SPC o D" "file manager"
+  "SPC o d" "dired here"
+  "SPC o q" "quick access"
+  "SPC o G" "group files")
 
 (use-package dired-open
   :commands (dired-open dired-open-xdg dired-open-browser dired-open-emacs))
-
-(use-package dired-subtree
-  :after dired
-  :bind-keymap ("s" . dired-subtree-map))
 
 ;;; ### Large files
 
@@ -531,18 +605,6 @@ d forgets it, g refreshes the list."
 (setq custom-file (expand-file-name "custom.el" my/emacs-cache))
 (when (file-exists-p custom-file)
   (load custom-file nil t))
-
-  ;; Dirvish (Doom's dired +icons +dirvish).
-(use-package dirvish
-  :commands (dirvish dirvish-side)
-  :config
-  (dirvish-override-dired-mode)
-  (setq dirvish-default-layout (quote (0 0 0.4))
-        dirvish-layout-recipes
-        (quote ((1 0.11 0.55) (2 0.22 0.55) (3 0.15 0.55)))
-        dirvish-attributes
-        (quote (vc-state subtree-state nerd-icons file-size))))
-
 
 ;;; ### Persistent scratch
 

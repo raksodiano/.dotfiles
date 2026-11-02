@@ -22,6 +22,7 @@
   (define-minor-mode my/keycast-mode
     "Toggle keycast in the mode line, doom-modeline aware."
     :global t
+    :group 'keycast
     (keycast-mode-line-mode (if my/keycast-mode 1 -1))))
 
 (provide 'my-keycast)

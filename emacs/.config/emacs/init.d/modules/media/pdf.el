@@ -9,7 +9,7 @@
   (pdf-loader-install)
   (require 'pdf-occur)
   (add-to-list 'revert-without-query ".pdf")
-  (add-hook 'pdf-view-mode-hook #'pdf-view-auto-slice-minimap)
+  (add-hook 'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode)
   (add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
   :bind (:map pdf-view-mode-map
          ("j" . pdf-view-next-line-or-next-page)

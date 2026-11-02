@@ -758,7 +758,6 @@ When INHIBIT-KILL-P is non-nil, leave its buffers alive."
   :hook (dired-mode . diff-hl-dired-mode)
   :config
   (global-diff-hl-mode 1)
-  (add-hook 'magit-pre-refresh-hook #'diff-hl-magit-pre-refresh)
   (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh))
 
 ;; solaire-mode: Doom's depth cue, dimming sidebars and popups.
@@ -911,12 +910,16 @@ When INHIBIT-KILL-P is non-nil, leave its buffers alive."
     "Jump to the dashboard Recent Files section."
     (interactive)
     (my/dashboard-jump-to-section "Recent Files:"))
-  ;; The dashboard runs in Meow motion state, so its local map is not
-  ;; shadowed by the normal-state bindings.
+  ;; The dashboard has its own local map, so these bindings are active
+  ;; regardless of the Meow state assigned to `dashboard-mode'.
   (define-key dashboard-mode-map (kbd "p") #'my/dashboard-jump-to-projects)
   (define-key dashboard-mode-map (kbd "a") #'my/dashboard-jump-to-agenda)
   (define-key dashboard-mode-map (kbd "m") #'my/dashboard-jump-to-bookmarks)
   (define-key dashboard-mode-map (kbd "r") #'my/dashboard-jump-to-recents)
+  (define-key dashboard-mode-map (kbd "h") #'widget-backward)
+  (define-key dashboard-mode-map (kbd "l") #'widget-forward)
+  (define-key dashboard-mode-map (kbd "j") #'widget-forward)
+  (define-key dashboard-mode-map (kbd "k") #'widget-backward)
   ;; RET activates widgets (navigator buttons, section items).
   (defun my/dashboard-press-button ()
     "Press the widget button at point, if any."

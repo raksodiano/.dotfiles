@@ -12,24 +12,60 @@
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
+(defvar my/config-dir
+  (file-name-directory (or load-file-name buffer-file-name))
+  "Directory holding the Emacs configuration.")
+
 ;;; ### Package archives
 
 ;; nongnu moved: elpa.elpa.org is gone.
 (defconst my/package-archives
   '(("gnu"    . "https://elpa.gnu.org/packages/")
-    ("melpa" . "https://melpa.org/packages/")
+    ("melpa"  . "https://melpa.org/packages/")
     ("nongnu" . "https://elpa.nongnu.org/nongnu/"))
   "Package archives used by `package-refresh-contents'.")
 
 (require 'package)
-(unless (equal package-archives my/package-archives)
-  (setq package-archives my/package-archives))
+(setq package-archives my/package-archives)
 
-;; Native comp built-in since Emacs 30.
+;;; ### Package user dir
+
+;; Put packages in the XDG data dir, not inside ~/.emacs.d.
+(setq user-install-directory
+      (expand-file-name "elpa" (or (getenv "XDG_DATA_HOME")
+                                   (expand-file-name "~/.local/share")))
+      package-user-dir user-install-directory)
+
+;; Native compilation is built in since Emacs 30.
 (setq package-always-enable-native-comp t)
 
-;; Don't refresh index on start; use `M-x package-refresh-all'.
+;; Don't refresh the package index on every start; use
+;; `M-x package-refresh-contents' when needed.
 (setq package-enable-at-startup nil)
+
+(defconst my/xdg-cache
+  (or (getenv "XDG_CACHE_HOME") (expand-file-name "~/.cache"))
+  "XDG cache directory.")
+
+(defconst my/emacs-cache
+  (expand-file-name "emacs" my/xdg-cache)
+  "Cache directory used by this Emacs configuration.")
+
+(defconst my/emacs-data
+  (expand-file-name "emacs" (or (getenv "XDG_DATA_HOME")
+                                (expand-file-name "~/.local/share")))
+  "Data directory used by this Emacs configuration.")
+
+;;; ### Package manager (straight.el)
+
+;; straight.el keeps its Git checkouts and builds under the XDG data dir,
+;; next to package.el's elpa, never inside this stow-managed repository.
+(setq straight-base-dir my/emacs-data)
+(make-directory straight-base-dir t)
+
+;; `straight.el' bootstraps straight on first start and is a no-op after
+;; that. Loading it with NOSUFFIX avoids picking up a stale `straight.elc'.
+(load (expand-file-name "straight.el" my/config-dir) nil t t)
 
 ;;; ### Garbage collection
 
@@ -46,30 +82,9 @@
             (setq gc-cons-threshold (* 2 1024 1024))
             (message "GC post-startup %S MB" (/ gc-cons-threshold 1024 1024))))
 
-;;; ### Package location
-
-;; Put packages in XDG data dir, not ~/.emacs.d.
-(setq user-install-directory
-      (expand-file-name "elpa" (or (getenv "XDG_DATA_HOME")
-                                   (expand-file-name "~/.local/share")))
-      package-user-dir user-install-directory)
-
 ;;; ### Runtime state
 
 ;; Config is a stow symlink to git — keep runtime writes in XDG dirs.
-(defconst my/xdg-cache
-  (or (getenv "XDG_CACHE_HOME") (expand-file-name "~/.cache"))
-  "XDG cache directory.")
-
-(defconst my/emacs-cache
-  (expand-file-name "emacs" my/xdg-cache)
-  "Cache directory used by this Emacs configuration.")
-
-(defconst my/emacs-data
-  (expand-file-name "emacs" (or (getenv "XDG_DATA_HOME")
-                                (expand-file-name "~/.local/share")))
-  "Data directory used by this Emacs configuration.")
-
 (dolist (dir (list my/emacs-cache
                    (expand-file-name "eln-cache" my/emacs-cache)
                    (expand-file-name "auto-save" my/emacs-cache)

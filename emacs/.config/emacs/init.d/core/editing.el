@@ -63,9 +63,14 @@
     sh-mode json-mode yaml-mode)
   "Modes whose buffers are formatted before saving.")
 
+(defgroup my-editing nil
+  "Editing helpers."
+  :group 'convenience)
+
 (defcustom my/black-args '("-q")
   "Command-line arguments passed to black."
-  :type '(repeat string))
+  :type '(repeat string)
+  :group 'my-editing)
 
 (defun my-buffer-formatter ()
   "Return the formatter command for the current buffer, or nil."
@@ -88,7 +93,7 @@
     (when (and command (file-exists-p file))
       (save-buffer)
       (apply #'call-process command nil nil nil file)
-      (revert-buffer :ignore-auto :noconfirm :preserve-modes t)
+      (revert-buffer t t t)
       (set-buffer-modified-p nil))))
 
 (add-hook 'before-save-hook #'my-format-on-save nil t)

@@ -35,33 +35,38 @@ window grows further when a client needs more room."
   :type 'integer
   :group 'my-ai)
 
-(defcustom my/ai-side-window-fallback-treemacs-width 35
-  "Treemacs width used when Treemacs is not loaded.
-Keep this in sync with `treemacs-width'."
+(defcustom my/ai-side-window-fallback-sidebar-width 35
+  "Sidebar width used when no file drawer is loaded.
+Keep this in sync with `dirvish-side-width'."
   :type 'integer
   :group 'my-ai)
 
-(defun my/ai--treemacs-window ()
-  "Return the visible Treemacs window in the selected frame, if any."
-  (when (fboundp 'treemacs-get-local-window)
-    (ignore-errors (treemacs-get-local-window))))
+(defun my/ai--sidebar-window ()
+  "Return the visible left file-drawer window, if any.
+Checks the Dirvish project drawer first, then Treemacs."
+  (or (when (fboundp 'dirvish-side--session-visible-p)
+        (ignore-errors (dirvish-side--session-visible-p)))
+      (when (fboundp 'treemacs-get-local-window)
+        (ignore-errors (treemacs-get-local-window)))))
 
-(defun my/ai--treemacs-width ()
-  "Return the width in columns of Treemacs.
-When Treemacs is not visible, use its configured width, or
-`my/ai-side-window-fallback-treemacs-width' if it is not loaded."
-  (if-let* ((window (my/ai--treemacs-window)))
+(defun my/ai--sidebar-width ()
+  "Return the width in columns of the visible file drawer.
+When it is not visible, use its configured width, or
+`my/ai-side-window-fallback-sidebar-width' when it is not loaded."
+  (if-let* ((window (my/ai--sidebar-window)))
       (window-width window)
-    (if (boundp 'treemacs-width)
-        (symbol-value 'treemacs-width)
-      my/ai-side-window-fallback-treemacs-width)))
+    (cond ((boundp 'dirvish-side-width)
+           (symbol-value 'dirvish-side-width))
+          ((boundp 'treemacs-width)
+           (symbol-value 'treemacs-width))
+          (t my/ai-side-window-fallback-sidebar-width))))
 
 (defun my/ai-side-window-width ()
   "Return the base width in columns for an AI side window.
-It is at least 15% wider than Treemacs and never narrower than
+It is at least 15% wider than the file drawer and never narrower than
 `my/ai-side-window-min-width'."
   (max my/ai-side-window-min-width
-       (round (* my/ai-side-window-ratio (my/ai--treemacs-width)))))
+       (round (* my/ai-side-window-ratio (my/ai--sidebar-width)))))
 
 (defun my/ai-gptel-header-width ()
   "Return the width needed by the current gptel header line, or nil.
@@ -134,7 +139,7 @@ formatted header line when it is available."
 
 (defun my/ai-side-window-width-for-buffer (buffer)
   "Return the side-window width needed to show BUFFER's header line.
-Never smaller than `my/ai-side-window-min-width' or the Treemacs
+Never smaller than `my/ai-side-window-min-width' or the file-drawer
 based width."
   (max (my/ai-side-window-width)
        (or (my/ai-header-width buffer) 0)))
@@ -143,14 +148,14 @@ based width."
   "Return non-nil when a right-hand AI side window fits.
 WIDTH defaults to `my/ai-side-window-width'.  Leave
 `my/ai-side-window-min-main-width' columns for the main window,
-plus the Treemacs width when it is visible."
+plus the file-drawer width when it is visible."
   (let* ((width (or width (my/ai-side-window-width)))
-         (treemacs-window (my/ai--treemacs-window))
-         (treemacs-width (if treemacs-window
-                             (window-width treemacs-window)
-                           0)))
+         (sidebar-window (my/ai--sidebar-window))
+         (sidebar-width (if sidebar-window
+                            (window-width sidebar-window)
+                          0)))
     (>= (frame-width)
-        (+ treemacs-width
+        (+ sidebar-width
            width
            my/ai-side-window-min-main-width))))
 
@@ -190,15 +195,16 @@ This runs in the buffer where the AI response was inserted."
           (when (org-at-table-p)
             (org-table-align)
             (goto-char (org-table-end))
-            (forward-line 1))))))
-     ((and (derived-mode-p 'markdown-mode) (fboundp 'markdown-table-at-point-p))
+            (forward-line 1)))))
+     ((and (derived-mode-p 'markdown-mode)
+           (fboundp 'markdown-table-at-point-p))
       (save-excursion
         (goto-char start)
         (while (and (< (point) end) (not (eobp)))
           (when (markdown-table-at-point-p)
             (markdown-table-align)
             (goto-char (markdown-table-end))
-            (forward-line 1)))))))
+            (forward-line 1))))))))
 
 (defun my/ai-post-response-tables (start end)
   "Align tables inserted by an AI client.

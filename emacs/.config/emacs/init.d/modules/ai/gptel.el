@@ -262,13 +262,6 @@ body) so the caller can fall back to a static list."
    ("y u" . gptel-send)
    ("y R" . gptel-rewrite)))
 
-(defun my/gptel-sync-model-access (backend)
-  "For the regression test: start a probe for BACKEND and wait for the
-first result so the model list can be observed synchronously."
-  (let* ((host (gptel-backend-host backend))
-         (key (my/gptel-secret host)))
-    (gptel-model-access backend :creds key)))
-
 (with-eval-after-load 'gptel
   (defun my/gptel-agent--safe-path (path)
     "Return an absolute PATH, refusing sensitive files."

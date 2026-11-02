@@ -18,7 +18,7 @@
       default-directory)))
 
 (use-package vterm
-  :commands (vterm my/vterm-toggle)
+  :commands (vterm)
   :custom
   (vterm-shell (or (getenv "SHELL") "/bin/bash"))
   (vterm-max-scrollback 10000)
