@@ -39,13 +39,12 @@
 (add-hook 'text-mode-hook #'writegood-mode)
 
 (use-package powerthesaurus
-  :commands (powerthesaurus-lookup-word-dwim
-             powerthesaurus-lookup-word-dwim-selected))
+  :commands (powerthesaurus-lookup-dwim))
 
 (my-leader
  '(("x w" . writeroom-mode)
    ("x o" . olivetti-mode)
-   ("_ t" . powerthesaurus-lookup-word-dwim)))
+   ("_ t" . powerthesaurus-lookup-dwim)))
 
 (provide 'my-writing)
 ;;; writing.el ends here

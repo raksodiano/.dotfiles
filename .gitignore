@@ -2,6 +2,10 @@
 # so anything Emacs writes at runtime must stay out of git.
 emacs/.config/emacs/eln-cache/
 emacs/.config/emacs/elpa/
+emacs/.config/emacs/straight/
+emacs/.config/emacs/*.elc
+emacs/.config/emacs/**/*.elc
+emacs/.config/emacs/recentf.eld
 emacs/.config/emacs/persp-confs/
 emacs/.config/emacs/auto-save-list/
 emacs/.config/emacs/custom.el

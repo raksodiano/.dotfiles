@@ -361,6 +361,7 @@ install nothing."
     (if servers
         (dolist (server servers)
           (message "LSP server %s: %s"
+                   server
                    (if (executable-find server) "installed" "not found")))
       (message "No LSP server configured for %s" mode))))
 

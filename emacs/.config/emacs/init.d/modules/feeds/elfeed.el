@@ -102,15 +102,23 @@
 
 (with-eval-after-load 'elfeed
   (define-key elfeed-search-mode-map "d" #'elfeed-download-current-entry)
-  (define-key elfeed-search-mode-map "O" #'my/elfeed-open-entry)
-;; `v' plays the entry with mpv in both views.
-  (define-key elfeed-search-mode-map "v" #'elfeed-tube-mpv)
-  (define-key elfeed-show-mode-map "v" #'elfeed-tube-mpv))
+  (define-key elfeed-search-mode-map "O" #'my/elfeed-open-entry))
 
 (use-package elfeed-tube
+  :ensure t
   :after elfeed
   :config
   (elfeed-tube-setup))
+
+;; Companion package: provides `elfeed-tube-mpv' (and the `mpv' library it
+;; needs). It is a separate package from `elfeed-tube' on MELPA.
+(use-package elfeed-tube-mpv
+  :ensure t
+  :after elfeed-tube
+  :config
+  ;; `v' plays the entry with mpv in both views.
+  (define-key elfeed-search-mode-map (kbd "v") #'elfeed-tube-mpv)
+  (define-key elfeed-show-mode-map (kbd "v") #'elfeed-tube-mpv))
 
 ;; Route YouTube entries to mpv; the rest browses normally.
 (defconst my/elfeed-youtube-rx "youtube\\.com\\|youtu\\.be"
@@ -174,15 +182,12 @@ YouTube entries play in mpv, others browse normally."
         (start-process "mpv" nil "mpv" "--force-window=yes" url))
     (apply orig url args)))
 
-;; Load it before the routing advices can fire.
-(require 'elfeed-tube-mpv nil t)
+;; The `browse-url' advice below also covers links clicked in `shr'.
 
 (advice-add 'elfeed-show-visit :around #'my/elfeed-show-visit-a)
 (advice-add 'elfeed-search-browse-url :around #'my/elfeed-search-browse-url-a)
 (advice-add 'push-button :around #'my/elfeed-push-button-a)
 (advice-add 'browse-url :around #'my/elfeed-browse-url-a)
-(with-eval-after-load 'shr
-  (advice-add 'shr-browse-url :around #'my/elfeed-shr-browse-url-a))
 
 (add-hook 'elfeed-show-mode-hook #'visual-fill-column-mode)
 

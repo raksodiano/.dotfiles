@@ -7,7 +7,9 @@
 
 ;;; Code:
 
-(defconst my/config-dir
+(require 'cl-lib)
+
+(defvar my/config-dir
   (file-name-directory (or load-file-name buffer-file-name))
   "Directory holding the Emacs configuration.")
 
@@ -66,7 +68,6 @@
     ("init.d/modules/ai/aidermacs.el"        . my-aidermacs)
     ("init.d/modules/tools/detached.el"      . my-detached)
     ("init.d/modules/tools/pass.el"          . my-pass)
-    ("init.d/modules/tools/treemacs.el"      . my-treemacs)
     ("init.d/modules/tools/docker.el"        . my-docker)
     ("init.d/modules/tools/keycast.el"       . my-keycast)
     ("init.d/modules/term/vterm.el"         . my-term))
@@ -146,7 +147,7 @@ checking that it provided its feature."
 (add-hook 'emacs-startup-hook
           (lambda ()
             (when my/init-errors
-              (run-with-timer 10
+              (run-with-timer 10 nil
                               (lambda ()
                                 (message "my/init: %d module(s) did not finish loading - run M-x my-init-status"
                                          (length my/init-errors)))))))

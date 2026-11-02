@@ -11,7 +11,6 @@
   (org-roam-db-location (expand-file-name "org-roam.db" my/emacs-cache))
   (org-roam-completion-everywhere t)
   :config
-  (org-roam-setup)
   (org-roam-db-autosync-mode 1))
 
 (my-leader

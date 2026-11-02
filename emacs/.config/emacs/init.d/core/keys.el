@@ -39,7 +39,9 @@
 
     (meow-define-keys 'motion
       '("j" . meow-next)
-      '("k" . meow-prev))
+      '("k" . meow-prev)
+      '("l" . meow-end-of-thing)
+      '("h" . meow-beginning-of-thing))
 
     (meow-normal-define-key
      '("0" . meow-expand-0)
@@ -123,8 +125,7 @@
              (pdf-view-mode . motion)
              (nov-mode . motion)
              (org-agenda-mode . motion)
-             (treemacs-mode . motion)
-             (dashboard-mode . motion)
+             (dashboard-mode . normal)
              (calibredb-search-mode . motion)
              (detached-list-mode . motion)
              (my/projects-mode . motion)))
@@ -401,7 +402,7 @@ the leader key itself."
     "C-c M-g" "file dispatch"
     "C-c C-f" "open directory"
     "C-c C-d" "directory at point"
-    "C-c C-p" "parent directory"
+    "C-c C-p" "project drawer"
     "C-c t"   "tab right"
     "C-c T"   "tab left"
     "C-c e"   "chat"
@@ -419,20 +420,17 @@ the leader key itself."
     "M-9" "workspace 9"
     "M-0" "last workspace"))
 
+;;; ### Common DOOM-like bindings
 
-(provide 'my-keys)
-;;; my-keys.el ends here
-
-;; ### Doom-like common bindings (basic)
+;; These live here (not in a module) because every module can rely on them.
+;; `SPC' and `SPC o -' are already bound above, so they are not repeated.
 (my-leader
- '(("SPC" . consult-buffer)
-   ;; Doom's workspaces module replaces the plain buffer switchers on the
-   ;; buffer map with workspace-aware ones.
-   ("b b"  . persp-switch-to-buffer)
+ '(("b b"  . persp-switch-to-buffer)
    ("b B"  . switch-to-buffer)
    ("b I"  . buffers)
    ("b k"  . kill-this-buffer)
-   ("b K"  . (lambda () (interactive) (mapc #'kill-buffer (delq (current-buffer) (buffer-list)))))
+   ("b K"  . (lambda () (interactive)
+               (mapc #'kill-buffer (delq (current-buffer) (buffer-list)))))
    ("b l"  . ibuffer)
    ;; Workspace-aware cycling; defined in ui.el next to the workspace
    ;; library. Plain `next-buffer' is unusable here: persp-mode's frame
@@ -448,16 +446,16 @@ the leader key itself."
    ("s b"  . consult-line)
    ("s l"  . consult-line)
    ("s s"  . consult-ripgrep)
-   ("t t"  . treemacs)
+   ("t t"  . dirvish-side)
    ("w /"  . split-window-right)
    ("w -"  . split-window-below)
    ("w d"  . delete-window)
    ("w m"  . delete-other-windows)
    ("q q"  . save-buffers-kill-terminal)
-   ("q Q"  . (lambda () (interactive) (kill-emacs)))
-   ("o -"  . dired-jump)))
+   ("q Q"  . (lambda () (interactive) (kill-emacs)))))
 
-;; ### Doom window bindings
+;;; ### Window bindings
+
 (my-leader
  '(("w h" . windmove-left)
    ("w j" . windmove-down)
@@ -466,8 +464,6 @@ the leader key itself."
    ("w s" . split-window-below)
    ("w v" . split-window-right)
    ("w c" . delete-window)
-   ("w d" . delete-window)
-   ("w m" . delete-other-windows)
    ("w u" . winner-undo)
    ("w U" . winner-redo)))
 
@@ -491,19 +487,5 @@ the leader key itself."
   "SPC w U" "redo")
 
 
-(defun my-leader-sanity-check ()
-  "Open a diagnostic buffer for SPC bindings."
-  (interactive)
-  (let ((buffer (get-buffer-create "*leader-check*")))
-    (with-current-buffer buffer
-      (read-only-mode -1)
-      (erase-buffer)
-      (insert (format "major-mode: %s\n" (symbol-name major-mode)))
-      (insert (format "meow state: %s\n" meow--current-state))
-      (insert (format "current-local-map SPC: %S\n" (lookup-key (current-local-map) (kbd "SPC"))))
-      (insert (format "global SPC: %S\n" (lookup-key global-map (kbd "SPC"))))
-      (insert (format "meow-normal SPC: %S\n" (lookup-key meow-normal-state-keymap (kbd "SPC"))))
-      (insert (format "meow-motion SPC: %S\n" (lookup-key meow-motion-state-keymap (kbd "SPC"))))
-      (goto-char (point-min))
-      (read-only-mode 1))
-    (display-buffer buffer)))
+(provide 'my-keys)
+;;; my-keys.el ends here

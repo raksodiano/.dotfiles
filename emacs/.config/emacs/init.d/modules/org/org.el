@@ -40,15 +40,20 @@
 
 ;; Custom todo keywords and faces.
 (defface +org-todo-wait '((t (:inherit (bold warning org-todo))))
-  "Face for WAIT tasks.")
+  "Face for WAIT tasks."
+  :group 'org-faces)
 (defface +org-todo-active '((t (:inherit (bold org-todo))))
-  "Face for NEXT tasks.")
+  "Face for NEXT tasks."
+  :group 'org-faces)
 (defface +org-todo-onhold '((t (:inherit (italic org-todo))))
-  "Face for EVENT tasks.")
+  "Face for EVENT tasks."
+  :group 'org-faces)
 (defface +org-todo-project '((t (:inherit (bold font-lock-doc-face org-todo))))
-  "Face for PROJ tasks.")
+  "Face for PROJ tasks."
+  :group 'org-faces)
 (defface +org-todo-cancel '((t (:inherit (shadow org-done))))
-  "Face for CANCELLED tasks.")
+  "Face for CANCELLED tasks."
+  :group 'org-faces)
 
 (setq org-todo-keywords
       '((sequence
