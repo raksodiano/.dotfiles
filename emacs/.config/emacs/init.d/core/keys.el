@@ -270,7 +270,7 @@ the leader key itself."
     "SPC p l" "list"
     "SPC p d" "forget"
     ;; open
-    "SPC o -" "dired here"
+    "SPC o -" "go up"
     "SPC o e" "feeds"
     "SPC o f" "file"
     "SPC o p" "project tree"

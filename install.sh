@@ -58,32 +58,21 @@ SUDO_REFRESH_PID=$!
 trap 'kill $SUDO_REFRESH_PID 2>/dev/null' EXIT
 
 # Package manager
-PACKAGE_MANAGER=dnf
+PACKAGE_MANAGER=paru
 
-# Check if an RPM package is installed
+# Check if an Arch Linux package is installed
 is_installed() {
-    rpm -q "$1" &>/dev/null
+    pacman -Qi "$1" &>/dev/null
 }
 
-# Check if a DNF group is installed
+# Check if an Arch Linux group is installed
 is_group_installed() {
-    # dnf5 group info shows "Installed: yes/no" with spacing
-    local info
-    info=$(dnf group info "$1" 2>/dev/null)
-    if echo "$info" | grep -q "Installed.*yes"; then
-        return 0
-    fi
-    return 1
+    pacman -Si "$1" &>/dev/null
 }
 
-# Check if a COPR repository is enabled
-is_copr_enabled() {
-    dnf copr list enabled 2>/dev/null | grep -qw "$1"
-}
-
-# Check if a repo file exists in /etc/yum.repos.d/
+# Check if a repo file exists in /etc/pacman.d/
 is_repo_file_present() {
-    [ -f "/etc/yum.repos.d/$1" ]
+    [ -f "/etc/pacman.d/$1" ]
 }
 
 # Function to install packages if not already installed
@@ -99,7 +88,7 @@ install_packages() {
 
     if [ ${#to_install[@]} -ne 0 ]; then
         echo "$INFO Installing: ${to_install[*]}"
-        sudo $PACKAGE_MANAGER install -y "${to_install[@]}"
+        sudo $PACKAGE_MANAGER -S --noconfirm --needed "${to_install[@]}"
         echo "$OK Installation completed"
     else
         echo "$NOTE All packages already installed, skipping"
@@ -122,13 +111,12 @@ if [ -n "$HOSTNAME" ]; then
     echo "$OK Hostname set to $HOSTNAME"
 fi
 
-echo "$INFO Appending missing DNF config options if not present..."
+echo "$INFO Appending missing pacman config options if not present..."
 echo "-----"
-options=("fastestmirror=true" "max_parallel_downloads=5" "deltarpm=true")
+options=("ParallelDownloads=5")
 for option in "${options[@]}"; do
-    # Check uncommented lines for exact option match
-    if ! grep -v '^\s*#' /etc/dnf/dnf.conf | grep -qFx "$option"; then
-        echo "$option" | sudo tee -a /etc/dnf/dnf.conf
+    if ! grep -v '^\s*#' /etc/pacman.conf | grep -qFx "$option"; then
+        echo "$option" | sudo tee -a /etc/pacman.conf
     fi
 done
 
@@ -174,96 +162,33 @@ fi
 echo "$INFO Updating the system..."
 echo "-----"
 
-sudo dnf update -y
-echo "$OK System updated successfully"
+sudo paru -Syu
+echo "$OK System update completed successfully"
 
 echo "$INFO Adding plugins..."
 echo "-----"
 
-if ! is_installed dnf-plugins-core; then
-    sudo dnf install -y dnf-plugins-core
-    echo "$OK dnf-plugins-core installed"
+# CachyOS ships its own repositories and tooling; the base package lists
+# above are enough.
+
+if ! is_installed docker; then
+    echo "$INFO Docker..."
+    sudo paru -S --noconfirm --needed docker
+    echo "$OK Docker installed"
 fi
 
-if ! is_group_installed core; then
-    sudo dnf group upgrade -y core
-    sudo dnf group install -y core
-    echo "$OK Core group installed"
+if ! is_installed nerd-fonts; then
+    echo "$INFO Nerd Fonts..."
+    sudo paru -S --noconfirm --needed nerd-fonts
+    echo "$OK Nerd Fonts installed"
 fi
 
 echo "$INFO Adding repositories to the system..."
 echo "-----"
 
-# Fedora Workstation repositories
-if ! is_installed fedora-workstation-repositories; then
-    echo "$INFO Fedora Workstation..."
-    sudo dnf install -y fedora-workstation-repositories
-fi
+# CachyOS ships its own repositories through pacman; the Fedora/RPM/COPR
+# specific repository steps no longer apply to this system.
 
-# RPM Fusion
-if ! is_installed rpmfusion-free-release || ! is_installed rpmfusion-nonfree-release; then
-    echo "$INFO RPM Fusion..."
-    sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-fi
-
-# Terra repository
-if ! is_installed terra-release; then
-    echo "$INFO Terra..."
-    sudo dnf install -y --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
-fi
-
-# Brave browser repository
-if ! is_repo_file_present brave-browser.repo; then
-    echo "$INFO Brave browser..."
-    sudo dnf config-manager addrepo -y --from-repofile=https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
-fi
-
-# Librewolf repository
-if ! is_repo_file_present librewolf.repo; then
-    echo "$INFO Librewolf..."
-    sudo dnf config-manager addrepo -y --from-repofile=https://repo.librewolf.net/librewolf.repo
-fi
-
-# VSCodium repository
-if ! is_repo_file_present vscodium.repo; then
-    echo "$INFO VSCodium..."
-    sudo tee /etc/yum.repos.d/vscodium.repo << 'EOF'
-[gitlab.com_paulcarroty_vscodium_repo]
-name=gitlab.com_paulcarroty_vscodium_repo
-baseurl=https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/rpms/
-enabled=1
-gpgcheck=1
-repo_gpgcheck=1
-gpgkey=https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
-metadata_expire=1h
-EOF
-fi
-
-# Antigravity repository
-if ! is_repo_file_present antigravity.repo; then
-    echo "$INFO Antigravity..."
-    sudo tee /etc/yum.repos.d/antigravity.repo << 'EOF'
-[antigravity-rpm]
-name=Antigravity RPM Repository
-baseurl=https://us-central1-yum.pkg.dev/projects/antigravity-auto-updater-dev/antigravity-rpm
-enabled=1
-gpgcheck=0
-EOF
-fi
-
-# Nerd Fonts COPR
-if ! is_copr_enabled aquacash5/nerd-fonts; then
-    echo "$INFO Nerd Fonts..."
-    sudo dnf copr enable -y aquacash5/nerd-fonts
-fi
-
-# Docker repository
-if ! is_repo_file_present docker-ce.repo; then
-    echo "$INFO Docker..."
-    sudo dnf config-manager addrepo -y --from-repofile https://download.docker.com/linux/fedora/docker-ce.repo
-fi
-
-# Flatpak
 echo "$INFO Flatpak..."
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
@@ -284,31 +209,18 @@ fwupdmgr update || echo "$WARN Firmware update requires manual intervention"
 echo "$INFO Adding codecs to the system..."
 echo "-----"
 
-if ! is_group_installed multimedia; then
-    sudo dnf group install -y multimedia
-    echo "$OK Multimedia group installed"
-fi
-
-if is_installed ffmpeg-free && ! is_installed ffmpeg; then
-    sudo dnf swap -y 'ffmpeg-free' 'ffmpeg' --allowerasing
-    echo "$OK Swapped to ffmpeg"
-fi
-
-if ! is_group_installed sound-and-video; then
-    sudo dnf group install -y sound-and-video
-fi
-
-if is_installed libva-intel-media-driver && ! is_installed intel-media-driver; then
-    sudo dnf swap -y libva-intel-media-driver intel-media-driver --allowerasing
+if ! is_installed ffmpeg; then
+    echo "$INFO Installing ffmpeg..."
+    sudo paru -S --noconfirm --needed ffmpeg
+    echo "$OK ffmpeg installed"
 fi
 
 for pkg in libva-intel-driver openh264 gstreamer1-plugin-openh264 mozilla-openh264; do
     if ! is_installed "$pkg"; then
-        sudo dnf install -y "$pkg"
+        sudo paru -S --noconfirm --needed "$pkg" || echo "$WARN Could not install $pkg"
     fi
 done
 
-sudo dnf config-manager setopt fedora-cisco-openh264.enabled=1
 echo "$OK Codecs configured successfully"
 
 echo "$INFO Installing packages..."
@@ -409,86 +321,13 @@ source "$SCRIPT_DIR/scripts/dotfiles/default.sh"
 install_all_dotfiles
 echo "$OK Dotfiles configured successfully"
 
-echo "$INFO Configuring GNOME settings..."
+echo "$INFO Configuring system settings..."
 echo "-----"
 
-## Themes
-if ! is_installed gnome-tweaks; then
-    echo "$INFO Installing gnome-tweaks..."
-    sudo dnf install -y gnome-tweaks
-    echo "$OK gnome-tweaks installed"
-fi
+## The current system runs niri + alacritty/kitty instead of GNOME, so the
+## desktop appearance lives in the stow-managed packages (niri, kitty, ...).
 
-echo "$INFO Setting flatpak filesystem access..."
-if ! flatpak override --user --show 2>/dev/null | grep -q "xdg-config/gtk-4.0"; then
-    flatpak override --user --filesystem=xdg-config/gtk-4.0
-    echo "$OK Flatpak filesystem configured for user"
-fi
-
-## Extensions
-echo "$INFO Installing Extension Manager..."
-if ! flatpak info --system flathub com.mattjakeman.ExtensionManager &>/dev/null; then
-    sudo flatpak install --system -y flathub com.mattjakeman.ExtensionManager
-    echo "$OK Extension Manager installed (system-wide)"
-fi
-
-## GNOME Configurations
-echo "$INFO Applying GNOME configurations..."
-
-## Display scaling
-gsettings set org.gnome.desktop.interface text-scaling-factor 1.0
-echo "$OK Display scaling set to 1.0"
-
-## Keyboard Layout
-gsettings set org.gnome.desktop.input-sources show-all-sources true
-gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'eu')]"
-echo "$OK Keyboard layout configured (EU)"
-
-## Time format
-gsettings set org.gnome.desktop.interface clock-format '24h'
-echo "$OK 24h time format enabled"
-
-## Window buttons
-gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
-echo "$OK Window buttons configured"
-
-## Dark theme
-gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-echo "$OK Dark theme enabled"
-
-## Animations
-gsettings set org.gnome.desktop.interface enable-animations false
-echo "$OK Animations disabled"
-
-## Lock screen
-gsettings set org.gnome.desktop.session idle-delay 900
-echo "$OK Lock screen delay set to 15 minutes"
-
-## Nautilus
-gsettings set org.gnome.nautilus.preferences default-sort-order type
-echo "$OK Nautilus sort order set to type"
-
-## Enable extensions
-if gnome-extensions list | grep -q "appindicatorsupport@rgcjonas.gmail.com"; then
-    gnome-extensions enable appindicatorsupport@rgcjonas.gmail.com
-    echo "$OK AppIndicator extension enabled"
-else
-    echo "$NOTE AppIndicator extension not found"
-fi
-
-## Keyboard shortcuts
-echo "$INFO Configuring keyboard shortcuts..."
-
-# Terminal shortcut
-gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']"
-
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ name 'Terminal'
-
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ command 'ptyxis'
-
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ binding '<Ctrl><Alt>t'
-
-echo "$OK Terminal shortcut Ctrl+Alt+T configured"
+echo "$OK System settings step handled by stow-managed packages"
 
 echo "$OK System setup completed successfully."
 echo "-----"

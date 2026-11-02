@@ -542,10 +542,11 @@ d forgets it, g refreshes the list."
   ;; and pdftoppm here).  The rest fall back to the text preview instead
   ;; of complaining about missing executables on every session.
   (dirvish-preview-dispatchers '(video pdf))
-  ;; Nerd Font glyphs are drawn a bit small for this font; scale only
-  ;; Dirvish's icons so tabs, corfu and the modeline keep their size.
-  ;; `nerd-icons-scale-factor' is 0.95, so the effective height is ~1.19.
-  (dirvish-nerd-icons-height 1.25)
+  ;; Nerd Font glyphs are drawn small for this font; scale only Dirvish's
+  ;; icons (the Dired listing / drawer) so tabs, corfu and the modeline
+  ;; keep their size.  `nerd-icons-scale-factor' is 0.95, so 1.5 lands the
+  ;; icons around 1.42 on the face.
+  (dirvish-nerd-icons-height 1.5)
   ;; Project drawer: narrow and compact, revealing the edited file.
   (dirvish-side-width 35)
   (dirvish-side-attributes '(nerd-icons vc-state subtree-state))
@@ -558,7 +559,7 @@ d forgets it, g refreshes the list."
   :config
   ;; Let Dired itself use Dirvish's subtree, attributes and preview.
   (dirvish-override-dired-mode)
-  ;; Follow the current buffer's project/file, like `treemacs-follow-mode'.
+  ;; Follow the current buffer's project/file, like `dirvish-side-follow-mode'.
   (dirvish-side-follow-mode 1)
   ;; `TAB' expands/collapses directories; `dirvish-mode-map' inherits
   ;; from `dired-mode-map', so one binding covers both.
@@ -569,6 +570,7 @@ d forgets it, g refreshes the list."
  '(("o p" . dirvish-side)          ; project drawer (toggle)
    ("o D" . dirvish)               ; full-frame manager
    ("o d" . dirvish-dwim)          ; jump to the file/dir at point
+   ("o -" . dired-up-directory)   ; up one directory (no `..' entry)
    ("o q" . dirvish-quick-access)  ; bookmarked directories
    ("o G" . dirvish-emerge-menu))) ; group files by type/date
 

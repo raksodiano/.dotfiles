@@ -158,7 +158,8 @@ body) so the caller can fall back to a static list."
         gptel-model 'openai/gpt-oss-20b)
   ;; Keep the chat readable and its header buttons visible: full frame
   ;; when narrow, otherwise a right side window at least 15% wider than
-  ;; Treemacs and wide enough for the header line (see modules/ai/display.el).
+  ;; the file drawer (Dirvish) and wide enough for the header line (see
+  ;; modules/ai/display.el).
   (setq gptel-display-buffer-action '(my/ai-display-buffer))
   ;; Keep tables in AI responses aligned after insertion.
   (add-hook 'gptel-post-response-functions #'my/ai-post-response-tables)
