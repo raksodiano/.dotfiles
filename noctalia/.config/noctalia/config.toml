@@ -1,11 +1,16 @@
 [shell]
 polkit_agent = true
+telemetry_enabled = false
+offline_mode = true
+
+[weather]
+enabled = false
 
 [bar.default]
 position = "top"
 thickness = 36
-background_opacity = 1.0
-compositor_blur = false
+background_opacity = 0.85
+compositor_blur = true
 shadow = false
 margin_edge = 0
 margin_ends = 0
@@ -20,15 +25,23 @@ widget_spacing = 6
 hover_highlight = false
 scale = 1.0
 font_scale = 1.0
-start = [ "workspaces", "active_window" ]
+start = [ "workspaces", "taskbar", "active_window" ]
 center = [ "clock", "notifications" ]
-end = [ "media", "group:g1", "tray", "group:status", "control-center" ]
+end = [ "media", "group:net", "group:g1", "tray", "group:status", "control-center" ]
 
     [[bar.default.capsule_group]]
     border = ""
     fill = "#3a3f44"
     id = "g1"
     members = [ "temp", "sysmon_2", "sysmon_3" ]
+    opacity = 1.0
+    padding = 6.0
+
+    [[bar.default.capsule_group]]
+    border = ""
+    fill = "#3a3f44"
+    id = "net"
+    members = [ "net_down", "net_up" ]
     opacity = 1.0
     padding = 6.0
 
@@ -63,6 +76,18 @@ glyph = "menu-2"
 hide_when_no_media = true
 title_scroll = "on_hover"
 
+[widget.net_down]
+type = "sysmon"
+stat = "net_rx"
+glyph = "arrow-down"
+show_value = true
+
+[widget.net_up]
+type = "sysmon"
+stat = "net_tx"
+glyph = "arrow-up"
+show_value = true
+
 [widget.network]
 color = "secondary"
 show_label = false
@@ -75,14 +100,14 @@ color = "secondary"
 show_value = false
 
 [widget.sysmon_2]
-glyph = "gpu-usage"
+glyph = "temperature"
 show_value = false
 stat = "gpu_temp"
 type = "sysmon"
 
 [widget.sysmon_3]
 glyph = "cpu-2"
-show_value = false
+show_value = true
 stat = "ram_used"
 type = "sysmon"
 
@@ -101,3 +126,16 @@ hide_when_empty = false
 inactive_pill_size = 1.0
 pill_scale = 0.80
 show_labels = false
+
+[widget.taskbar]
+group_by_workspace = true
+only_active_workspace = true
+workspace_group_content = "icons"
+icon_scale = 0.8
+capsule_radius = 14
+show_active_indicator = true
+show_workspace_label = false
+hide_empty_workspaces = true
+workspace_group_capsule = false
+capsule = true
+capsule_fill = "#3a3f44"

@@ -9,19 +9,21 @@ binds {
     Mod+Shift+ESCAPE                     { show-hotkey-overlay; }
 
     // ─── Applications ───
-    Mod+Return                          hotkey-overlay-title="Open Terminal: Alacritty" { spawn "alacritty"; }
+    Mod+Return                          hotkey-overlay-title="Open Terminal: Kitty" { spawn "kitty"; }
     Mod+B                               hotkey-overlay-title="Open Browser: firefox" { spawn "firefox"; }
 
     // ─── Emacs ───
     Mod+Shift+E                         hotkey-overlay-title="Open Emacs" { spawn "emacs"; }
 
     // --- Noctalia ---
-    Mod+Shift+Return                    hotkey-overlay-title="Open Wallpaper Selector: noctalia wallpaper toggle" { spawn-sh "noctalia msg panel-toggle wallpaper"; }
-    Mod+S                               hotkey-overlay-title="Open Control Center: noctalia controlCenter" { spawn-sh "noctalia msg panel-toggle control-center"; }
-    Mod+Shift+S                         hotkey-overlay-title="Open Settings: noctalia settings" { spawn-sh "noctalia msg settings-toggle"; }
-    Mod+CTRL+Return                     hotkey-overlay-title="Open App Launcher: noctalia launcher" { spawn-sh "noctalia msg panel-toggle launcher"; }
-    Mod+ALT+L                           hotkey-overlay-title="Lock Screen: noctalia lock" { spawn-sh "noctalia msg session lock"; }
-    Mod+Shift+Q                         hotkey-overlay-title="Session Menu: noctalia sessionMenu" { spawn-sh "noctalia msg panel-toggle session"; }
+    Mod+Shift+Return                    repeat=false hotkey-overlay-title="Open Wallpaper Selector: noctalia wallpaper toggle" { spawn-sh "noctalia msg panel-toggle wallpaper"; }
+    Mod+S                               repeat=false hotkey-overlay-title="Open Control Center: noctalia controlCenter" { spawn-sh "noctalia msg panel-toggle control-center"; }
+    Mod+Shift+S                         repeat=false hotkey-overlay-title="Open Settings: noctalia settings" { spawn-sh "noctalia msg settings-toggle"; }
+    Mod+CTRL+Return                     repeat=false hotkey-overlay-title="Open App Launcher: noctalia launcher" { spawn-sh "noctalia msg panel-toggle launcher"; }
+    Mod+ALT+L                           repeat=false hotkey-overlay-title="Lock Screen: noctalia lock" { spawn-sh "noctalia msg session lock"; }
+    Mod+Shift+Q                         repeat=false hotkey-overlay-title="Session Menu: noctalia sessionMenu" { spawn-sh "noctalia msg panel-toggle session"; }
+    Mod+N                               repeat=false hotkey-overlay-title="Notifications: noctalia control center" { spawn-sh "noctalia msg panel-toggle control-center notifications"; }
+    Mod+D                               repeat=false hotkey-overlay-title="Clock/Calendar: noctalia control center" { spawn-sh "noctalia msg panel-toggle control-center calendar"; }
 
     // Please set the text editor of your choice.
     // Mod+Shift+E                               hotkey-overlay-title="Open Text Editor: Zed" { spawn "zed"; }
@@ -160,6 +162,12 @@ binds {
     Mod+M                               { maximize-window-to-edges; }
 
     // ─── Screenshots ───
+    Print { spawn-sh r#"[ -d ~/Pictures/Screenshots ] || mkdir -p ~/Pictures/Screenshots; grim -g "$(slurp)" - | satty -f - --fullscreen --copy-command wl-copy -o ~/Pictures/Screenshots/%Y%m%d_%H%M%S.png"#; }
+    Mod+Print { spawn-sh "grim -g \"$(slurp)\" - | wl-copy"; }
+
+    CTRL+Print                           { screenshot-screen; }
+    ALT+Print                            { screenshot-window; }
+
     CTRL+Shift+1                        { screenshot; }
     CTRL+Shift+2                        { screenshot-screen; }
     CTRL+Shift+3                        { screenshot-window; }
