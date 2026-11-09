@@ -58,6 +58,7 @@ PACMAN_PKGS=(
   xdg-desktop-portal-gtk
   xdg-utils
   xdg-user-dirs
+  tailscale             # plugin Tailscale (daemon + CLI)
   shared-mime-info
   desktop-file-utils
   hicolor-icon-theme
@@ -112,6 +113,7 @@ PACMAN_PKGS=(
   msmtp-mta
   neomutt
   syncthing
+  task                   # taskwarrior (plugin Task Warrior)
 
   # --- Emacs / Doom --------------------------------------------------------
   emacs
@@ -195,6 +197,7 @@ PACMAN_PKGS=(
   zathura-pdf-poppler
   lazygit
   lazydocker
+  thunderbird            # plugin Thunderbird Companion (native messaging)
 
   # --- Códecs y aceleración Intel -----------------------------------------
   ffmpeg
@@ -340,6 +343,7 @@ Listo. Servicios recomendados (actívalos manualmente):
   systemctl --user enable --now syncthing
   systemctl --user enable --now mpd
   systemctl --user enable --now emacs
+  sudo systemctl enable --now tailscaled   # plugin Tailscale
 
 Opcional:
   - Habilita [multilib] en /etc/pacman.conf y luego: sudo pacman -S steam

@@ -25,9 +25,9 @@ widget_spacing = 6
 hover_highlight = false
 scale = 1.0
 font_scale = 1.0
-start = [ "workspaces", "taskbar", "active_window" ]
+start = [ "workspaces", "preview", "active_window" ]
 center = [ "clock", "notifications" ]
-end = [ "media", "group:net", "group:g1", "tray", "group:status", "control-center" ]
+end = [ "media", "group:g1", "mini-docker", "group:netp", "group:prod", "tray", "group:status", "control-center" ]
 
     [[bar.default.capsule_group]]
     border = ""
@@ -53,6 +53,22 @@ end = [ "media", "group:net", "group:g1", "tray", "group:status", "control-cente
     opacity = 1.0
     padding = 6.0
     widget_spacing = 8
+
+    [[bar.default.capsule_group]]
+    border = ""
+    fill = "#3a3f44"
+    id = "netp"
+    members = [ "dns-switcher", "tailscale", "syncthing" ]
+    opacity = 1.0
+    padding = 6.0
+
+    [[bar.default.capsule_group]]
+    border = ""
+    fill = "#3a3f44"
+    id = "prod"
+    members = [ "task-warrior", "thunderbird" ]
+    opacity = 1.0
+    padding = 6.0
 
 [widget.clock]
 anchor = true
@@ -127,18 +143,46 @@ inactive_pill_size = 1.0
 pill_scale = 0.80
 show_labels = false
 
-[widget.taskbar]
-group_by_workspace = true
-only_active_workspace = true
-workspace_group_content = "icons"
-icon_scale = 0.8
-capsule_radius = 14
-show_active_indicator = true
-show_workspace_label = false
-hide_empty_workspaces = true
-workspace_group_capsule = false
-capsule = true
-capsule_fill = "#3a3f44"
+
+[widget.preview]
+type = "teagar/niri-workspace-preview:preview"
+output_scope = "current"
+size_mode = "auto"
+preview_size = 24
+show_icons = true
+
+[widget.dns-switcher]
+type = "nightwatch75/dns-switcher:dns-switcher"
+show_label = false
+poll_seconds = 30
+
+
+[widget.tailscale]
+type = "davemhammer/tailscale:status"
+show_counts = true
+hide_when_healthy = false
+refresh_interval = 30
+show_label = false
+
+[widget.mini-docker]
+type = "8bury/mini-docker:mini-docker"
+show_count = true
+respect_socket_activation = true
+refresh_interval = 10
+
+
+[widget.syncthing]
+type = "rylos/syncthing:bar"
+poll_interval = 30
+
+[widget.task-warrior]
+type = "asj/task-warrior:bar"
+refresh_interval = 30
+
+[widget.thunderbird]
+type = "mdj2812/thunderbird-companion:mail"
+notify_new = false
+max_messages = 20
 
 [wallpaper]
 enabled = true
@@ -151,3 +195,7 @@ interval_seconds = 1800
 order = "random"
 recursive = false
 pause_on_fullscreen = true
+
+[plugins]
+enabled = [ "teagar/niri-workspace-preview", "emrtnn/pass", "nightwatch75/dns-switcher", "davemhammer/tailscale", "8bury/mini-docker", "rylos/syncthing", "asj/task-warrior", "mdj2812/thunderbird-companion", "congluantran/calibre", "radimous/prismlauncher-instances" ]
+auto_update = "none"
