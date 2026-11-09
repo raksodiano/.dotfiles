@@ -58,6 +58,7 @@ PACMAN_PKGS=(
   xdg-desktop-portal-gtk
   xdg-utils
   xdg-user-dirs
+  evtest             # bongocat plugin (keyboard reactivity)
   tailscale             # plugin Tailscale (daemon + CLI)
   shared-mime-info
   desktop-file-utils

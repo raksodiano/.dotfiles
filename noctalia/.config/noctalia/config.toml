@@ -25,7 +25,7 @@ widget_spacing = 6
 hover_highlight = false
 scale = 1.0
 font_scale = 1.0
-start = [ "workspaces", "preview", "active_window" ]
+start = [ "cat", "workspaces", "preview", "active_window" ]
 center = [ "clock", "notifications" ]
 end = [ "media", "group:g1", "mini-docker", "group:netp", "group:prod", "tray", "group:status", "control-center" ]
 
@@ -94,6 +94,14 @@ title_scroll = "on_hover"
 art_size = 14
 min_length = 60
 max_length = 140
+
+[widget.cat]
+type = "noctalia/bongocat:cat"
+audio_spectrum = false
+tappy_mode = false
+rave_mode = false
+use_mpris_filter = false
+input_devices = [ "/dev/input/event18", "/dev/input/by-path/platform-i8042-serio-0-event-kbd" ]
 
 [widget.net_down]
 type = "sysmon"
@@ -200,5 +208,5 @@ recursive = false
 pause_on_fullscreen = true
 
 [plugins]
-enabled = [ "teagar/niri-workspace-preview", "emrtnn/pass", "nightwatch75/dns-switcher", "davemhammer/tailscale", "8bury/mini-docker", "rylos/syncthing", "asj/task-warrior", "mdj2812/thunderbird-companion", "congluantran/calibre", "radimous/prismlauncher-instances" ]
+enabled = [ "teagar/niri-workspace-preview", "emrtnn/pass", "nightwatch75/dns-switcher", "davemhammer/tailscale", "8bury/mini-docker", "rylos/syncthing", "asj/task-warrior", "mdj2812/thunderbird-companion", "congluantran/calibre", "radimous/prismlauncher-instances", "noctalia/bongocat" ]
 auto_update = "none"
