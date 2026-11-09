@@ -91,6 +91,9 @@ glyph = "menu-2"
 [widget.media]
 hide_when_no_media = true
 title_scroll = "on_hover"
+art_size = 14
+min_length = 60
+max_length = 140
 
 [widget.net_down]
 type = "sysmon"
