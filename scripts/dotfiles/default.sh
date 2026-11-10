@@ -153,6 +153,10 @@ install_ytdlp() {
   install_dotfile "yt-dlp" "yt-dlp"
 }
 
+install_profanity() {
+  install_dotfile "profanity" "Profanity"
+}
+
 # ============================================
 # INSTALL ALL DOTFILES
 # ============================================
@@ -178,6 +182,7 @@ install_all_dotfiles() {
   install_tridactyl
   install_zathura
   install_ytdlp
+  install_profanity
 
   echo "-----"
   echo "$OK All dotfiles configured!"

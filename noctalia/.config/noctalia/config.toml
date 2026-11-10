@@ -27,7 +27,7 @@ scale = 1.0
 font_scale = 1.0
 start = [ "cat", "workspaces", "preview", "active_window" ]
 center = [ "clock", "notifications" ]
-end = [ "media", "group:g1", "mini-docker", "group:netp", "group:prod", "tray", "group:status", "control-center" ]
+end = [ "media", "group:g1", "mini-docker", "group:netp", "tray", "group:status", "control-center" ]
 
     [[bar.default.capsule_group]]
     border = ""
@@ -59,14 +59,6 @@ end = [ "media", "group:g1", "mini-docker", "group:netp", "group:prod", "tray", 
     fill = "#3a3f44"
     id = "netp"
     members = [ "dns-switcher", "tailscale", "syncthing" ]
-    opacity = 1.0
-    padding = 6.0
-
-    [[bar.default.capsule_group]]
-    border = ""
-    fill = "#3a3f44"
-    id = "prod"
-    members = [ "task-warrior", "thunderbird" ]
     opacity = 1.0
     padding = 6.0
 
@@ -186,14 +178,6 @@ refresh_interval = 10
 type = "rylos/syncthing:bar"
 poll_interval = 30
 
-[widget.task-warrior]
-type = "asj/task-warrior:bar"
-refresh_interval = 30
-
-[widget.thunderbird]
-type = "mdj2812/thunderbird-companion:mail"
-notify_new = false
-max_messages = 20
 
 [wallpaper]
 enabled = true
@@ -208,5 +192,5 @@ recursive = false
 pause_on_fullscreen = true
 
 [plugins]
-enabled = [ "teagar/niri-workspace-preview", "emrtnn/pass", "nightwatch75/dns-switcher", "davemhammer/tailscale", "8bury/mini-docker", "rylos/syncthing", "asj/task-warrior", "mdj2812/thunderbird-companion", "congluantran/calibre", "radimous/prismlauncher-instances", "noctalia/bongocat" ]
+enabled = [ "teagar/niri-workspace-preview", "emrtnn/pass", "nightwatch75/dns-switcher", "davemhammer/tailscale", "8bury/mini-docker", "rylos/syncthing", "congluantran/calibre", "radimous/prismlauncher-instances", "noctalia/bongocat" ]
 auto_update = "none"

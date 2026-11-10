@@ -36,14 +36,14 @@ Gruvbox Material Hard theme applied via an external script.
 - =tmux-continuum= -- auto-save sessions
 - =tmux-sessionx= -- session management
 - =tmuxifier= -- session layout management
-- =tokyo-night-tmux= -- Tokyo Night theme
+- =tmux-gruvbox= (z3z1ma) -- Gruvbox Material theme
 - =tmux-mighty-scroll= -- smooth scrolling
 - =tmux-yank= -- copy to system clipboard
 
 * Theme
 
-Gruvbox Material Hard is applied via =~/.config/tmux/gruvbox-tmux.sh=, run
-after TPM loads plugins.
+Gruvbox Material Hard is provided by the =z3z1ma/tmux-gruvbox= plugin
+(flavour =material=), keeping the status bar at the top.
 
 * Other Settings
 

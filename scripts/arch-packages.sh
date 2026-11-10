@@ -113,6 +113,7 @@ PACMAN_PKGS=(
   msmtp
   msmtp-mta
   neomutt
+  profanity
   syncthing
   task                   # taskwarrior (plugin Task Warrior)
 
