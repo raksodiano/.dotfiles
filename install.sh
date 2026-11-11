@@ -88,7 +88,7 @@ install_packages() {
 
     if [ ${#to_install[@]} -ne 0 ]; then
         echo "$INFO Installing: ${to_install[*]}"
-        sudo $PACKAGE_MANAGER -S --noconfirm --needed "${to_install[@]}"
+        $PACKAGE_MANAGER -S --noconfirm --needed "${to_install[@]}"
         echo "$OK Installation completed"
     else
         echo "$NOTE All packages already installed, skipping"
@@ -162,7 +162,7 @@ fi
 echo "$INFO Updating the system..."
 echo "-----"
 
-sudo paru -Syu
+paru -Syu
 echo "$OK System update completed successfully"
 
 echo "$INFO Adding plugins..."
@@ -173,14 +173,8 @@ echo "-----"
 
 if ! is_installed docker; then
     echo "$INFO Docker..."
-    sudo paru -S --noconfirm --needed docker
+    paru -S --noconfirm --needed docker
     echo "$OK Docker installed"
-fi
-
-if ! is_installed nerd-fonts; then
-    echo "$INFO Nerd Fonts..."
-    sudo paru -S --noconfirm --needed nerd-fonts
-    echo "$OK Nerd Fonts installed"
 fi
 
 echo "$INFO Adding repositories to the system..."
@@ -211,13 +205,13 @@ echo "-----"
 
 if ! is_installed ffmpeg; then
     echo "$INFO Installing ffmpeg..."
-    sudo paru -S --noconfirm --needed ffmpeg
+    paru -S --noconfirm --needed ffmpeg
     echo "$OK ffmpeg installed"
 fi
 
-for pkg in libva-intel-driver openh264 gstreamer1-plugin-openh264 mozilla-openh264; do
+for pkg in libva-intel-driver openh264; do
     if ! is_installed "$pkg"; then
-        sudo paru -S --noconfirm --needed "$pkg" || echo "$WARN Could not install $pkg"
+        paru -S --noconfirm --needed "$pkg" || echo "$WARN Could not install $pkg"
     fi
 done
 

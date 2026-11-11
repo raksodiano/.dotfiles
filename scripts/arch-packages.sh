@@ -16,8 +16,8 @@
 #   - steam requiere habilitar [multilib] en /etc/pacman.conf.
 #   - xdg-desktop-portal-gnome (compartir pantalla) arrastra nautilus; es
 #     opcional. Sin él, niri usa xdg-desktop-portal-gtk.
-#   - Paquetes pesados: texlive-meta, calibre, ollama, nixd (arrastra nix y
-#     llvm) y antigravity. Coméntalos si no los necesitas.
+#   - Paquetes pesados: texlive-meta, calibre, nixd (arrastra nix y llvm)
+#     y antigravity. Coméntalos si no los necesitas.
 #   - Equivalencias Fedora -> Arch usadas:
 #       fd-find -> fd, python3 -> python, python3-pip -> python-pip,
 #       poppler-utils -> poppler, libvterm-devel -> libvterm,
@@ -132,9 +132,8 @@ PACMAN_PKGS=(
   sbcl
   python
   python-pip
-  python-pipx             # pipx install aider-chat (aidermacs)
+  python-pipx             # instalación aislada de herramientas Python
   python-debugpy
-  ollama                  # backend local de ellama/gptel
   rust                    # incluye cargo y rustfmt
   go
   delve
@@ -247,9 +246,8 @@ AUR_PKGS=(
   ttf-alegreya
   ttf-alegreya-sans
 
-  # Emacs: procesos en segundo plano y Aider
+  # Emacs: procesos en segundo plano
   dtach                   # requerido por detached.el
-  aider-chat              # requerido por aidermacs.el
 
   # LSP / formato para los módulos de Doom
   nixd
@@ -316,20 +314,20 @@ fi
 # paru no puede instalarse a sí mismo, así que se compila una sola vez.
 if ! command -v paru >/dev/null 2>&1; then
   echo "==> paru no está instalado. Compilando desde AUR..."
-  sudo pacman -S --needed --noconfirm base-devel git
+  sudo pacman -S --needed base-devel git
 
   tmpdir="$(mktemp -d)"
   trap 'rm -rf "$tmpdir"' EXIT
 
   git clone --depth 1 https://aur.archlinux.org/paru.git "$tmpdir/paru"
-  (cd "$tmpdir/paru" && makepkg -si --noconfirm)
+  (cd "$tmpdir/paru" && makepkg -si)
 fi
 
 echo "==> Instalando paquetes oficiales con pacman..."
-sudo pacman -S --needed --noconfirm "${PACMAN_PKGS[@]}"
+sudo pacman -S --needed "${PACMAN_PKGS[@]}"
 
 echo "==> Instalando paquetes AUR con paru..."
-paru -S --needed --noconfirm "${AUR_PKGS[@]}"
+paru -S --needed "${AUR_PKGS[@]}"
 
 cat <<'EOF'
 
@@ -338,7 +336,6 @@ Listo. Servicios recomendados (actívalos manualmente):
   sudo systemctl enable --now NetworkManager
   sudo systemctl enable --now bluetooth
   sudo systemctl enable --now docker
-  sudo systemctl enable --now ollama
   sudo systemctl enable greetd
 
   systemctl --user enable --now pipewire pipewire-pulse wireplumber
