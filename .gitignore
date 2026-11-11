@@ -15,3 +15,6 @@ emacs/.config/emacs/.emacs.d/
 emacs/.config/emacs/.tramp-history
 emacs/.config/emacs/packages.noid
 emacs/.config/emacs/org-roam.db
+
+# Profanity runtime config (contains account prefs; keep out of repo)
+profanity/.config/profanity/profrc

@@ -11,6 +11,7 @@ binds {
     // ─── Applications ───
     Mod+Return                          hotkey-overlay-title="Open Terminal: Kitty" { spawn "kitty"; }
     Mod+B                               hotkey-overlay-title="Open Browser: firefox" { spawn "firefox"; }
+    Mod+P                               hotkey-overlay-title="Open Profanity (Kitty, no tmux)" { spawn-sh "kitty --session none profanity"; }
 
     // ─── Emacs ───
     Mod+Shift+E                         hotkey-overlay-title="Open Emacs" { spawn "emacs"; }

@@ -1,0 +1,38 @@
+#+title: Profanity Configuration
+#+author: raksodiano
+
+* Overview
+
+Profanity is a terminal-based XMPP client with native OMEMO support.
+Configuration is stowed from this directory to =~/.config/profanity/=.
+
+* Files
+
+| File        | Purpose                                           |
+|-------------+---------------------------------------------------|
+| =themes/=   | Custom themes (gruvbox included)                  |
+
+Note: =profrc= is intentionally *not* managed by this repo. It lives as a real
+file in =~/.config/profanity/profrc= (runtime/local settings, including account
+preferences) and is ignored by git.
+
+* Setup
+
+1. Install profanity (Arch: =pacman -S profanity=).
+2. Edit =profrc= and set =account= under =[connection]= to your JID.
+3. Stow: =stow -R profanity= (from the dotfiles root).
+4. Launch =profanity=; create the account once with =/account add <jid>=
+   (password is prompted and stored in =~/.local/share/profanity/accounts=).
+5. Connect with =/connect <jid>= (or set =account= and use =/connect=).
+6. Trust OMEMO keys with =/omemo trust <jid> <fingerprint>=.
+
+* Theme
+
+The gruvbox theme is bundled (copied from profanity's built-in gruvbox).
+Activate with =/theme set gruvbox= (already set in =profrc= as =theme=gruvbox=).
+
+* Notes
+
+- Passwords are never stored in this repo; they live in =~/.local/share/profanity/accounts=.
+- OMEMO is set to =policy=automatic= with =trustmode=manual= (recommended).
+- The accounts file is runtime state and is intentionally not managed by stow.
