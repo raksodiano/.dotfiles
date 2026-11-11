@@ -137,6 +137,27 @@ install_networkmanager() {
   fi
 }
 
+install_reflector() {
+  # Reflector system config lives under /etc, so deploy it there
+  # via stow instead of the home directory.
+  if [ -d "./reflector" ]; then
+    echo "$INFO Configuring Reflector..."
+    # Reflector ships a default config; back it up so stow can link ours.
+    if [ -f /etc/xdg/reflector/reflector.conf ] && [ ! -L /etc/xdg/reflector/reflector.conf ]; then
+      sudo mv /etc/xdg/reflector/reflector.conf /etc/xdg/reflector/reflector.conf.bak
+    fi
+    sudo stow -t /etc -R reflector
+    echo "$OK Reflector configured successfully!"
+
+    # Enable the weekly timer that refreshes the mirrorlist.
+    if systemctl list-unit-files reflector.timer &>/dev/null; then
+      sudo systemctl enable --now reflector.timer
+    fi
+  else
+    echo "$WARN Reflector directory not found, skipping..."
+  fi
+}
+
 # ============================================
 # USER TOOLS
 # ============================================
@@ -174,7 +195,7 @@ install_all_dotfiles() {
   install_bat
   install_fastfetch
   install_networkmanager
-  
+  install_reflector  
   # Editors
   install_doom
 

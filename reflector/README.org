@@ -1,0 +1,61 @@
+#+title: Reflector Configuration
+#+author: raksodiano
+
+* Overview
+
+Reflector regenerates =/etc/pacman.d/mirrorlist= from Arch's official mirror
+list, filtering and sorting mirrors (HTTPS, recently synced, by download speed)
+to avoid slow/unreachable mirrors ("Operation too slow").
+
+* Configuration
+
+File: =/etc/xdg/reflector/reflector.conf= (deployed via stow to =/etc=).
+
+Current options:
+- =--save /etc/pacman.d/mirrorlist=
+- =--protocol https=
+- =--latest 20=
+- =--sort rate=
+
+No country filter is set (uses global mirrors). To restrict by country, add
+e.g. =--country Spain,France= to the config.
+
+* Timer / scheduling
+
+=reflector.timer= runs =reflector.service= weekly with a randomized delay
+(=RandomizedDelaySec=12h=). To check status and next run:
+
+#+begin_src bash
+systemctl status reflector.timer
+systemctl list-timers --all | grep reflector
+#+end_src
+
+Execution history:
+
+#+begin_src bash
+journalctl -u reflector.service
+#+end_src
+
+Force a run manually:
+
+#+begin_src bash
+sudo systemctl start reflector.service
+#+end_src
+
+* Usage
+
+Regenerate the mirrorlist manually:
+
+#+begin_src bash
+sudo reflector @/etc/xdg/reflector/reflector.conf
+sudo pacman -Syyu
+#+end_src
+
+After regenerating mirrors, use =-Syyu= once to refresh package databases;
+otherwise normal updates can use =-Syu=.
+
+* Good practices
+
+- Keep the timer enabled for automatic weekly refresh.
+- Do not run =pacman -Syyu= constantly; weekly is enough.
+- Always do full upgrades (=pacman -Syu=), never partial upgrades.
