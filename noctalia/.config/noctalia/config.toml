@@ -194,3 +194,13 @@ pause_on_fullscreen = true
 [plugins]
 enabled = [ "teagar/niri-workspace-preview", "emrtnn/pass", "nightwatch75/dns-switcher", "davemhammer/tailscale", "8bury/mini-docker", "rylos/syncthing", "congluantran/calibre", "radimous/prismlauncher-instances", "noctalia/bongocat" ]
 auto_update = "none"
+
+[shell.launcher]
+layout = "simple"
+width = 560
+search_position = "top"
+default_view = "recent"
+categories = false
+show_icons = true
+compact = true
+app_grid = false
