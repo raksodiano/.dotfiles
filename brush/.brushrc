@@ -6,3 +6,34 @@
 
 # Starship prompt integration
 eval "$(starship init bash)"
+
+# zoxide (smart cd)
+if command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init bash)"
+fi
+
+# atuin (shell history)
+if command -v atuin >/dev/null 2>&1; then
+    eval "$(atuin init bash)"
+fi
+
+# carapace (completions)
+if command -v carapace >/dev/null 2>&1; then
+    source <(carapace _carapace)
+fi
+
+# fzf keybindings and completion
+if [[ -f /usr/share/fzf/key-bindings.bash ]]; then
+    source /usr/share/fzf/key-bindings.bash
+fi
+if [[ -f /usr/share/fzf/completion.bash ]]; then
+    source /usr/share/fzf/completion.bash
+fi
+
+# Aliases: eza and bat
+alias ls='eza --icons=auto'
+alias ll='eza -l --icons=auto --git'
+alias la='eza -a --icons=auto'
+alias lla='eza -la --icons=auto --git'
+alias tree='eza --tree --icons=auto'
+alias cat='bat'

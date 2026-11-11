@@ -1,0 +1,7 @@
+# atuin configuration
+auto_sync = false
+update_check = false
+
+[ui]
+columns = ["duration", "time", "command"]
+style = "compact"

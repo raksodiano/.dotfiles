@@ -11,7 +11,7 @@
 #
 # Notas:
 #   - paru se compila automáticamente si no está instalado.
-#   - oh-my-zsh, TPM, los plugins de zsh y Doom se instalan por git desde
+#   - TPM y Doom se instalan por git desde install.sh; no se repiten aquí.
 #     install.sh; no se repiten aquí para no duplicar.
 #   - steam requiere habilitar [multilib] en /etc/pacman.conf.
 #   - xdg-desktop-portal-gnome (compartir pantalla) arrastra nautilus; es
@@ -91,8 +91,8 @@ PACMAN_PKGS=(
   lm_sensors
 
   # --- Shell, terminal y monitoreo ----------------------------------------
-  zsh
   starship
+  atuin
   tmux
   brush
   bat
@@ -233,6 +233,8 @@ AUR_PKGS=(
   # paru (se compila antes si no existe)
   paru
 
+  # Shell completions
+  carapace-bin
   # Navegadores / editores de packages.conf
   brave-bin
   vscodium-bin

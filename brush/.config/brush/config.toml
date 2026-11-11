@@ -19,4 +19,4 @@ zsh-hooks = false
 
 # Enable terminal shell integration (for terminals that support it).
 # Default: false
-terminal-shell-integration = false
+terminal-shell-integration = true

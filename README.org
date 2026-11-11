@@ -38,7 +38,6 @@ few command lines.
 - yazi ➔ File manager (Vim keys)
 - yt-dlp ➔ Media downloader
 - zathura ➔ PDF viewer (Vim keys)
-- zsh ➔ Customizable shell (Oh My Zsh + Starship)
 
 * Available Dotfiles
 
@@ -62,7 +61,6 @@ few command lines.
 | =yazi/=         | File manager (Vim keys)            |
 | =yt-dlp/=       | Media downloader config            |
 | =zathura/=      | PDF viewer (Vim keys)              |
-| =zsh/=          | Zsh shell config                   |
 
 * Getting Started
 

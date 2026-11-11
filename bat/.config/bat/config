@@ -1,0 +1,4 @@
+# bat configuration
+--theme="gruvbox-dark"
+--paging=never
+--style=numbers,changes,header

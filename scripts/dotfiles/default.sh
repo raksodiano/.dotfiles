@@ -22,43 +22,6 @@ install_dotfile() {
 # SHELL & PROMPT
 # ============================================
 
-install_zsh() {
-  # Install oh-my-zsh if not present
-  if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    echo "$INFO Installing Oh My Zsh..."
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-  fi
-  
-  # Install zsh plugins
-  local ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
-  
-  # zsh-autosuggestions
-  if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
-    echo "$INFO Installing zsh-autosuggestions plugin..."
-    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
-  fi
-  
-  # zsh-history-substring-search
-  if [ ! -d "$ZSH_CUSTOM/plugins/zsh-history-substring-search" ]; then
-    echo "$INFO Installing zsh-history-substring-search plugin..."
-    git clone https://github.com/zsh-users/zsh-history-substring-search "$ZSH_CUSTOM/plugins/zsh-history-substring-search"
-  fi
-  
-  # zsh-syntax-highlighting
-  if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
-    echo "$INFO Installing zsh-syntax-highlighting plugin..."
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
-  fi
-
-  install_dotfile "zsh" "Zsh"
-  
-  # Change default shell to zsh
-  if [ "$SHELL" != "/usr/bin/zsh" ]; then
-    echo "$INFO Changing default shell to Zsh..."
-    chsh -s /usr/bin/zsh
-  fi
-}
-
 install_starship() {
   install_dotfile "starship" "Starship"
 }
@@ -187,7 +150,6 @@ install_all_dotfiles() {
   echo "-----"
   
   # Shell & prompt
-  install_zsh
   install_starship
   install_tmux
   

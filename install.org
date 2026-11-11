@@ -99,7 +99,6 @@ Functions to configure each dotfile using GNU Stow:
 
 | Function             | Dotfile             |
 |----------------------+---------------------|
-| =install_zsh=          | Zsh + Oh My Zsh     |
 | =install_starship=     | Starship prompt     |
 | =install_tmux=         | Tmux multiplexer    |
 | =install_doom=         | Doom Emacs          |
