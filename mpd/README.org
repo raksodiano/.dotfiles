@@ -1,5 +1,4 @@
 #+title: MPD Configuration
-#+author: raksodiano
 
 * Overview
 
@@ -8,14 +7,13 @@ with rmpc as the client interface.
 
 * Server Settings
 
-| Setting            | Value                     |
-|--------------------+---------------------------|
-| Bind address       | =127.0.0.1= (localhost)   |
-| Port               | =6600=                    |
-| Music directory    | =~/Music=                 |
-| Log level          | =notice=                  |
-| Auto-update        | =yes= (depth 5)           |
-| Follow symlinks    | =yes= (inside and outside)|
+| Setting            | Value                       |
+|--------------------+-----------------------------|
+| Bind address       | =$XDG_RUNTIME_DIR/mpd.sock= |
+| Music directory    | =~/Music=                   |
+| Log level          | =notice=                    |
+| Auto-update        | =yes= (depth 5)             |
+| Follow symlinks    | =no=                        |
 
 * Runtime Files
 
@@ -26,6 +24,11 @@ All runtime files are kept outside the repository:
 - State: =~/.local/share/mpd/state=
 - Logs: =~/.cache/mpd/log=
 - PID: =~/.cache/mpd/pid=
+
+MPD does not create the parent directories. Create them before the first start:
+#+begin_src bash
+mkdir -p ~/.local/share/mpd/playlists ~/.cache/mpd
+#+end_src
 
 * Audio Output
 
@@ -39,3 +42,6 @@ name: PipeWire
 
 [[https://github.com/djrm/rmpc][rmpc]] is the terminal client, configured with Vim
 keybindings and Gruvbox Material Hard theme.
+
+The client reaches the Unix socket through =MPD_HOST=, exported in
+=~/.bashrc=; the =address= in =config.ron= is only a fallback.

@@ -2,6 +2,7 @@
 #![enable(unwrap_newtypes)]
 #![enable(unwrap_variant_newtypes)]
 (
+    // Fallback; MPD_HOST overrides it with the Unix socket.
     address: "127.0.0.1:6600",
     password: None,
     theme: "gruvbox",

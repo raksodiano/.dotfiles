@@ -18,3 +18,19 @@ emacs/.config/emacs/org-roam.db
 
 # Profanity runtime config (contains account prefs; keep out of repo)
 profanity/.config/profanity/profrc
+
+# Secrets and credentials
+*.env
+*.pem
+*.key
+*.p12
+*.pfx
+*.kdbx
+*.token
+id_rsa*
+id_ed25519*
+id_ecdsa*
+authinfo*
+.netrc
+netrc
+cookies.txt

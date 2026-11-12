@@ -177,7 +177,7 @@ recursive = false
 pause_on_fullscreen = true
 
 [plugins]
-enabled = [ "teagar/niri-workspace-preview", "emrtnn/pass", "nightwatch75/dns-switcher", "davemhammer/tailscale", "rylos/syncthing", "congluantran/calibre", "radimous/prismlauncher-instances" ]
+enabled = [ "teagar/niri-workspace-preview", "nightwatch75/dns-switcher", "davemhammer/tailscale", "rylos/syncthing", "congluantran/calibre", "radimous/prismlauncher-instances" ]
 auto_update = "none"
 
 [shell.launcher]

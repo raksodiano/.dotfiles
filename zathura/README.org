@@ -1,5 +1,4 @@
 #+title: Zathura Configuration
-#+author: raksodiano
 
 * Overview
 

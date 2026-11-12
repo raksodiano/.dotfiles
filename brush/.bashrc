@@ -12,4 +12,5 @@ PS1='[\u@\h \W]\$ '
 if [[ $- == *i* ]] && [ -f "$HOME/.brushrc" ]; then
     source "$HOME/.brushrc"
 fi
-export PATH=~/.npm-global/bin:$PATH
+export PATH="$PATH:$HOME/.npm-global/bin"
+export MPD_HOST="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/mpd.sock"

@@ -1,5 +1,4 @@
 #+title: Lazygit Configuration
-#+author: raksodiano
 
 * Overview
 

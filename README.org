@@ -90,7 +90,7 @@ to your package manager:
 Once the installation is complete, make a clone of the repository:
 
   #+BEGIN_SRC bash
-  git clone https://github.com/raksodiano/.dotfiles.git
+  git clone <repository-url>
   #+END_SRC
 
 You can now install any configurations you wish to copy using GNU Stow:

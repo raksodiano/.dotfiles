@@ -1,5 +1,4 @@
 #+title: Tmux Configuration
-#+author: raksodiano
 
 * Overview
 

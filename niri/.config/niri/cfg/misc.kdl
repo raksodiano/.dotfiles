@@ -23,11 +23,6 @@
         saturation 1.0  // color saturation boost (default: 1.5)
     }
 
-    debug {
-        // Allows notification actions and window activation from Noctalia.
-        honor-xdg-activation-with-invalid-serial
-    }
-
     hotkey-overlay {
        skip-at-startup
     }

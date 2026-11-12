@@ -1,5 +1,4 @@
 #+title: Yazi Configuration
-#+author: raksodiano
 
 * Overview
 
