@@ -1,4 +1,5 @@
 #+title: MPD Configuration
+#+author: raksodiano
 
 * Overview
 

@@ -1,4 +1,5 @@
 #+title: Starship Configuration
+#+author: raksodiano
 
 * Overview
 

@@ -1,4 +1,5 @@
 #+title: Profanity Configuration
+#+author: raksodiano
 
 * Overview
 
